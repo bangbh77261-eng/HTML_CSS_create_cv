@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional CV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
         body {
@@ -269,6 +270,106 @@
             border-radius: 8px;
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            max-width: 280px;
+        }
+        
+        .panel-section {
+            margin-bottom: 15px;
+        }
+        
+        .panel-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            color: #bdc3c7;
+            font-weight: 600;
+        }
+        
+        .color-picker-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .color-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #2c3e50;
+            padding: 6px 10px;
+            border-radius: 5px;
+        }
+        
+        .color-input-wrapper label {
+            font-size: 11px;
+            color: #bdc3c7;
+            flex: 1;
+        }
+        
+        .color-input-wrapper input[type="color"] {
+            width: 35px;
+            height: 25px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .size-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .size-controls input[type="range"] {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: #2c3e50;
+            outline: none;
+        }
+        
+        .size-controls input[type="range"]::-webkit-slider-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #1abc9c;
+            cursor: pointer;
+        }
+        
+        .size-controls input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #1abc9c;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .size-value {
+            font-size: 11px;
+            color: #1abc9c;
+            min-width: 35px;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .section-selector {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #2c3e50;
+            background-color: #2c3e50;
+            color: white;
+            font-size: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .section-selector:focus {
+            outline: none;
+            border-color: #1abc9c;
         }
         
         .btn-group {
@@ -366,14 +467,55 @@
 </head>
 <body>
     <div class="control-panel">
+        <div class="panel-section">
+            <div class="panel-label">🎨 <span data-lang-en="Customize Section" data-lang-vi="Tùy Chỉnh Phần">Customize Section</span></div>
+            <select class="section-selector" id="sectionSelector">
+                <option value="name" data-lang-en="Name" data-lang-vi="Họ Tên">Name</option>
+                <option value="profession" data-lang-en="Job Title" data-lang-vi="Chức Danh">Job Title</option>
+                <option value="section-title" data-lang-en="Left Section Titles" data-lang-vi="Tiêu Đề Trái">Left Section Titles</option>
+                <option value="right-section-title" data-lang-en="Right Section Titles" data-lang-vi="Tiêu Đề Phải">Right Section Titles</option>
+                <option value="contact-item" data-lang-en="Contact Info" data-lang-vi="Thông Tin Liên Hệ">Contact Info</option>
+                <option value="skill-name" data-lang-en="Skill Names" data-lang-vi="Tên Kỹ Năng">Skill Names</option>
+                <option value="about-me" data-lang-en="Career Objective" data-lang-vi="Mục Tiêu">Career Objective</option>
+                <option value="date" data-lang-en="Dates" data-lang-vi="Ngày Tháng">Dates</option>
+                <option value="role" data-lang-en="Job Titles/Roles" data-lang-vi="Chức Danh/Vai Trò">Job Titles/Roles</option>
+                <option value="company" data-lang-en="Companies/Schools" data-lang-vi="Công Ty/Trường">Companies/Schools</option>
+                <option value="description" data-lang-en="Descriptions" data-lang-vi="Mô Tả">Descriptions</option>
+            </select>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label"><span data-lang-en="Text Color" data-lang-vi="Màu Chữ">Text Color</span></div>
+            <div class="color-input-wrapper">
+                <label data-lang-en="Color" data-lang-vi="Màu">Color</label>
+                <input type="color" id="textColor" value="#2c3e50">
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label"><span data-lang-en="Font Size" data-lang-vi="Cỡ Chữ">Font Size</span></div>
+            <div class="size-controls">
+                <input type="range" id="fontSize" min="10" max="40" value="14">
+                <span class="size-value"><span id="fontSizeValue">14</span>px</span>
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label"><span data-lang-en="Font Weight" data-lang-vi="Độ Đậm">Font Weight</span></div>
+            <div class="size-controls">
+                <input type="range" id="fontWeight" min="300" max="700" step="100" value="400">
+                <span class="size-value" id="fontWeightValue">400</span>
+            </div>
+        </div>
+        
         <div class="btn-group">
-            <button class="control-btn" onclick="printCV()">🖨️ <span data-lang-en="Print CV" data-lang-vi="In CV">Print CV</span></button>
+            <button class="control-btn" onclick="printCV()">🖨️ <span data-lang-en="Print" data-lang-vi="In">Print</span></button>
             <button class="control-btn secondary" onclick="toggleLanguage()">🌐 <span data-lang-en="EN/VI" data-lang-vi="VI/EN">EN/VI</span></button>
         </div>
+        
         <div class="instructions">
-            <p data-lang-en="• Click on any item to edit" data-lang-vi="• Nhấp vào mục để chỉnh sửa">• Click on any item to edit</p>
-            <p data-lang-en="• Click skill bar to adjust level" data-lang-vi="• Nhấp thanh kỹ năng để điều chỉnh">• Click skill bar to adjust level</p>
-            <p data-lang-en="• Click image to upload photo" data-lang-vi="• Nhấp ảnh để tải lên">• Click image to upload photo</p>
+            <p data-lang-en="• Select section above to customize" data-lang-vi="• Chọn phần ở trên để tùy chỉnh">• Select section above to customize</p>
+            <p data-lang-en="• Changes apply to all similar items" data-lang-vi="• Thay đổi áp dụng cho tất cả">• Changes apply to all similar items</p>
         </div>
     </div>
     
@@ -507,6 +649,74 @@
     <script>
         let currentLanguage = 'en';
         
+        // Customization functionality
+        const sectionSelector = document.getElementById('sectionSelector');
+        const textColor = document.getElementById('textColor');
+        const fontSize = document.getElementById('fontSize');
+        const fontWeight = document.getElementById('fontWeight');
+        const fontSizeValue = document.getElementById('fontSizeValue');
+        const fontWeightValue = document.getElementById('fontWeightValue');
+        
+        // Update display values
+        fontSize.addEventListener('input', function() {
+            fontSizeValue.textContent = this.value;
+            applyCustomization();
+        });
+        
+        fontWeight.addEventListener('input', function() {
+            fontWeightValue.textContent = this.value;
+            applyCustomization();
+        });
+        
+        textColor.addEventListener('input', applyCustomization);
+        sectionSelector.addEventListener('change', loadCurrentStyles);
+        
+        function loadCurrentStyles() {
+            const selectedClass = sectionSelector.value;
+            let element;
+            
+            if (selectedClass === 'name') {
+                element = document.querySelector('.name');
+            } else if (selectedClass === 'profession') {
+                element = document.querySelector('.profession');
+            } else {
+                element = document.querySelector('.' + selectedClass);
+            }
+            
+            if (element) {
+                const styles = window.getComputedStyle(element);
+                textColor.value = rgbToHex(styles.color);
+                fontSize.value = parseInt(styles.fontSize);
+                fontSizeValue.textContent = parseInt(styles.fontSize);
+                fontWeight.value = styles.fontWeight;
+                fontWeightValue.textContent = styles.fontWeight;
+            }
+        }
+        
+        function rgbToHex(rgb) {
+            const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (!match) return '#2c3e50';
+            
+            function hex(x) {
+                return ("0" + parseInt(x).toString(16)).slice(-2);
+            }
+            return "#" + hex(match[1]) + hex(match[2]) + hex(match[3]);
+        }
+        
+        function applyCustomization() {
+            const selectedClass = sectionSelector.value;
+            const elements = document.querySelectorAll('.' + selectedClass);
+            
+            elements.forEach(element => {
+                element.style.color = textColor.value;
+                element.style.fontSize = fontSize.value + 'px';
+                element.style.fontWeight = fontWeight.value;
+            });
+        }
+        
+        // Initialize with name styles
+        loadCurrentStyles();
+        
         function toggleLanguage() {
             currentLanguage = currentLanguage === 'en' ? 'vi' : 'en';
             const elements = document.querySelectorAll('[data-lang-en]');
@@ -519,6 +729,12 @@
                         el.textContent = el.getAttribute(`data-lang-${currentLanguage}`);
                     }
                 }
+            });
+            
+            // Update option texts
+            const options = document.querySelectorAll('option[data-lang-en]');
+            options.forEach(option => {
+                option.textContent = option.getAttribute(`data-lang-${currentLanguage}`);
             });
             
             // Update placeholders

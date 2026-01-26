@@ -14,19 +14,19 @@
         
         body {
             width: 210mm;
-            height: 297mm;
+            min-height: 297mm;
             margin: 0 auto;
             background-color: #f5f5f5;
-            padding: 10px;
+            padding: 10px 10px 50px 10px;
         }
         
         .cv-container {
             width: 100%;
-            height: 100%;
+            min-height: 297mm;
             background-color: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: flex;
-            overflow: hidden;
+            overflow: visible;
         }
         
         .left-section {
@@ -34,6 +34,7 @@
             background-color: #2c3e50;
             color: white;
             padding: 30px 20px;
+            min-height: 100%;
         }
         
         .profile-image {
@@ -144,6 +145,7 @@
             width: 65%;
             padding: 30px;
             background-color: white;
+            min-height: 100%;
         }
         
         .header {
@@ -334,13 +336,13 @@
         @media print {
             body {
                 width: 210mm;
-                height: 297mm;
                 padding: 0;
                 margin: 0;
             }
             
             .cv-container {
                 box-shadow: none;
+                min-height: auto;
             }
             
             .control-panel {
@@ -353,6 +355,11 @@
             
             .add-item-btn {
                 display: none !important;
+            }
+            
+            /* Page break control */
+            .experience-item, .education-item {
+                page-break-inside: avoid;
             }
         }
     </style>

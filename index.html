@@ -70,6 +70,7 @@
             border-bottom: 2px solid #1abc9c;
             padding-bottom: 5px;
             font-weight: 600;
+            cursor: text;
         }
         
         .contact-item {
@@ -178,6 +179,7 @@
             position: relative;
             padding-left: 20px;
             font-weight: 600;
+            cursor: text;
         }
         
         .right-section-title::before {
@@ -375,7 +377,7 @@
             </div>
             
             <div class="contact-info">
-                <h3 class="section-title" data-lang-en="Personal Information" data-lang-vi="Thông Tin Cá Nhân">Personal Information</h3>
+                <h3 class="section-title" contenteditable="true" data-lang-en="Personal Information" data-lang-vi="Thông Tin Cá Nhân">Personal Information</h3>
                 <div class="contact-item">
                     <div class="contact-icon">📱</div>
                     <div contenteditable="true" data-placeholder="Phone number"></div>
@@ -395,7 +397,7 @@
             </div>
             
             <div class="skills-section">
-                <h3 class="section-title" data-lang-en="Skills" data-lang-vi="Kỹ Năng">Skills</h3>
+                <h3 class="section-title" contenteditable="true" data-lang-en="Skills" data-lang-vi="Kỹ Năng">Skills</h3>
                 <div id="skills-container">
                     <div class="skill-item">
                         <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
@@ -417,7 +419,7 @@
             </div>
             
             <div class="languages-section">
-                <h3 class="section-title" data-lang-en="Languages" data-lang-vi="Ngôn Ngữ">Languages</h3>
+                <h3 class="section-title" contenteditable="true" data-lang-en="Languages" data-lang-vi="Ngôn Ngữ">Languages</h3>
                 <div id="languages-container">
                     <div class="language-item" contenteditable="true" data-placeholder="Language & proficiency"></div>
                 </div>
@@ -427,7 +429,7 @@
             </div>
             
             <div class="skills-section">
-                <h3 class="section-title" data-lang-en="Other" data-lang-vi="Khác">Other</h3>
+                <h3 class="section-title" contenteditable="true" data-lang-en="Other" data-lang-vi="Khác">Other</h3>
                 <div id="other-container">
                     <div class="language-item" contenteditable="true" data-placeholder="Other skills or tools"></div>
                 </div>
@@ -445,12 +447,12 @@
             </div>
             
             <div class="about-section">
-                <h2 class="right-section-title" data-lang-en="Career Objective" data-lang-vi="Mục Tiêu Nghề Nghiệp">Career Objective</h2>
+                <h2 class="right-section-title" contenteditable="true" data-lang-en="Career Objective" data-lang-vi="Mục Tiêu Nghề Nghiệp">Career Objective</h2>
                 <div class="about-me" contenteditable="true" data-placeholder="Your career objectives and goals..."></div>
             </div>
             
             <div class="education-section">
-                <h2 class="right-section-title" data-lang-en="Education" data-lang-vi="Học Vấn">Education</h2>
+                <h2 class="right-section-title" contenteditable="true" data-lang-en="Education" data-lang-vi="Học Vấn">Education</h2>
                 <div id="education-container">
                     <div class="education-item">
                         <div class="date" contenteditable="true" data-placeholder="Year - Year"></div>
@@ -465,7 +467,7 @@
             </div>
             
             <div class="experience-section">
-                <h2 class="right-section-title" data-lang-en="Work Experience" data-lang-vi="Kinh Nghiệm Làm Việc">Work Experience</h2>
+                <h2 class="right-section-title" contenteditable="true" data-lang-en="Work Experience" data-lang-vi="Kinh Nghiệm Làm Việc">Work Experience</h2>
                 <div id="experience-container">
                     <div class="experience-item">
                         <div class="date" contenteditable="true" data-placeholder="Start Date - End Date"></div>
@@ -480,7 +482,7 @@
             </div>
             
             <div class="certifications-section">
-                <h2 class="right-section-title" data-lang-en="Projects / Certifications" data-lang-vi="Dự Án / Chứng Chỉ">Projects / Certifications</h2>
+                <h2 class="right-section-title" contenteditable="true" data-lang-en="Projects / Certifications" data-lang-vi="Dự Án / Chứng Chỉ">Projects / Certifications</h2>
                 <div id="certifications-container">
                     <div class="education-item">
                         <div class="date" contenteditable="true" data-placeholder="Year"></div>
@@ -503,8 +505,12 @@
             const elements = document.querySelectorAll('[data-lang-en]');
             
             elements.forEach(el => {
-                if (!el.hasAttribute('contenteditable')) {
-                    el.textContent = el.getAttribute(`data-lang-${currentLanguage}`);
+                if (!el.hasAttribute('contenteditable') || el.classList.contains('section-title') || el.classList.contains('right-section-title')) {
+                    if (el.classList.contains('section-title') || el.classList.contains('right-section-title')) {
+                        el.textContent = el.getAttribute(`data-lang-${currentLanguage}`);
+                    } else if (!el.hasAttribute('contenteditable')) {
+                        el.textContent = el.getAttribute(`data-lang-${currentLanguage}`);
+                    }
                 }
             });
             

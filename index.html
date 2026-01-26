@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV Chuyên Nghiệp</title>
+    <title>Professional CV</title>
     <style>
-        /* Reset CSS */
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +12,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        /* Kích thước A4 */
         body {
             width: 210mm;
             height: 297mm;
@@ -31,7 +29,6 @@
             overflow: hidden;
         }
         
-        /* Phần bên trái */
         .left-section {
             width: 35%;
             background-color: #2c3e50;
@@ -49,13 +46,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #ddd;
-            color: #555;
+            background-color: #34495e;
+            color: #95a5a6;
             text-align: center;
             cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
         }
         
-        .contact-info {
+        .profile-image:hover {
+            background-color: #1abc9c;
+            color: white;
+        }
+        
+        .contact-info, .skills-section, .languages-section {
             margin-bottom: 30px;
         }
         
@@ -65,30 +69,30 @@
             margin-bottom: 15px;
             border-bottom: 2px solid #1abc9c;
             padding-bottom: 5px;
+            font-weight: 600;
         }
         
         .contact-item {
             display: flex;
             margin-bottom: 10px;
             font-size: 14px;
+            align-items: flex-start;
         }
         
         .contact-icon {
             margin-right: 10px;
             width: 20px;
-        }
-        
-        .skills-section {
-            margin-bottom: 30px;
+            flex-shrink: 0;
         }
         
         .skill-item {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .skill-name {
             font-size: 14px;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            min-height: 20px;
         }
         
         .skill-bar {
@@ -96,23 +100,45 @@
             background-color: #34495e;
             border-radius: 4px;
             position: relative;
+            margin-bottom: 5px;
         }
         
         .skill-progress {
             height: 100%;
             background-color: #1abc9c;
             border-radius: 4px;
+            transition: width 0.3s;
         }
         
-        .languages-section {
-            margin-bottom: 30px;
+        .skill-level-editor {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        
+        .level-btn {
+            width: 18%;
+            height: 12px;
+            background-color: #34495e;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .level-btn:hover {
+            background-color: #16a085;
+        }
+        
+        .level-btn.active {
+            background-color: #1abc9c;
         }
         
         .language-item {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            min-height: 20px;
         }
         
-        /* Phần bên phải */
         .right-section {
             width: 65%;
             padding: 30px;
@@ -128,12 +154,14 @@
             font-weight: bold;
             margin-bottom: 5px;
             color: #2c3e50;
+            min-height: 40px;
         }
         
         .profession {
             font-size: 18px;
             color: #7f8c8d;
             margin-bottom: 20px;
+            min-height: 25px;
         }
         
         .divider {
@@ -149,6 +177,7 @@
             margin-bottom: 20px;
             position: relative;
             padding-left: 20px;
+            font-weight: 600;
         }
         
         .right-section-title::before {
@@ -160,17 +189,22 @@
             width: 10px;
             height: 10px;
             background-color: #1abc9c;
+            border-radius: 2px;
+        }
+        
+        .about-section, .experience-section, .education-section, .certifications-section {
+            margin-bottom: 30px;
         }
         
         .about-me {
-            margin-bottom: 30px;
             font-size: 14px;
             line-height: 1.6;
             color: #555;
+            min-height: 60px;
         }
         
         .experience-item, .education-item {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             position: relative;
         }
         
@@ -178,6 +212,7 @@
             font-size: 14px;
             color: #1abc9c;
             margin-bottom: 5px;
+            font-weight: 500;
         }
         
         .role, .degree {
@@ -197,12 +232,13 @@
             font-size: 14px;
             color: #555;
             line-height: 1.5;
+            margin-bottom: 5px;
         }
         
-        /* Chỉnh sửa */
         [contentEditable="true"] {
             outline: none;
             transition: background-color 0.3s;
+            cursor: text;
         }
         
         [contentEditable="true"]:hover {
@@ -213,7 +249,86 @@
             background-color: rgba(26, 188, 156, 0.2);
         }
         
-        /* Print settings */
+        [contentEditable="true"]:empty:before {
+            content: attr(data-placeholder);
+            color: #95a5a6;
+            font-style: italic;
+        }
+        
+        .control-panel {
+            background-color: #34495e;
+            color: white;
+            padding: 15px;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            border-radius: 8px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .control-btn {
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .control-btn:hover {
+            background-color: #16a085;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .control-btn.secondary {
+            background-color: #3498db;
+        }
+        
+        .control-btn.secondary:hover {
+            background-color: #2980b9;
+        }
+        
+        .instructions {
+            font-size: 12px;
+            line-height: 1.6;
+            border-top: 1px solid #7f8c8d;
+            padding-top: 10px;
+        }
+        
+        .instructions p {
+            margin-bottom: 5px;
+        }
+        
+        .add-item-btn {
+            background-color: transparent;
+            color: #1abc9c;
+            border: 2px dashed #1abc9c;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 10px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .add-item-btn:hover {
+            background-color: rgba(26, 188, 156, 0.1);
+            border-style: solid;
+        }
+        
         @media print {
             body {
                 width: 210mm;
@@ -225,294 +340,244 @@
             .cv-container {
                 box-shadow: none;
             }
-        }
-        
-        /* Nút in và hướng dẫn */
-        .control-panel {
-            background-color: #34495e;
-            color: white;
-            padding: 10px;
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-        
-        .print-btn {
-            background-color: #1abc9c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        
-        .print-btn:hover {
-            background-color: #16a085;
-        }
-        
-        .instructions {
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-        
-        /* Skill level editor */
-        .skill-level-editor {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 5px;
-        }
-        
-        .level-btn {
-            width: 18%;
-            height: 12px;
-            background-color: #34495e;
-            border-radius: 2px;
-            cursor: pointer;
-        }
-        
-        .level-btn:hover {
-            background-color: #1abc9c;
-        }
-        
-        .level-btn.active {
-            background-color: #1abc9c;
+            
+            .control-panel {
+                display: none !important;
+            }
+            
+            .skill-level-editor {
+                display: none !important;
+            }
+            
+            .add-item-btn {
+                display: none !important;
+            }
         }
     </style>
 </head>
 <body>
     <div class="control-panel">
-        <button class="print-btn" onclick="printCV()">In CV</button>
+        <div class="btn-group">
+            <button class="control-btn" onclick="printCV()">🖨️ <span data-lang-en="Print CV" data-lang-vi="In CV">Print CV</span></button>
+            <button class="control-btn secondary" onclick="toggleLanguage()">🌐 <span data-lang-en="EN/VI" data-lang-vi="VI/EN">EN/VI</span></button>
+        </div>
         <div class="instructions">
-            <p>• Nhấp vào mỗi mục để chỉnh sửa</p>
-            <p>• Nhấp vào thanh kỹ năng để điều chỉnh</p>
-            <p>• Nhấn nút In CV để in hoặc lưu PDF</p>
+            <p data-lang-en="• Click on any item to edit" data-lang-vi="• Nhấp vào mục để chỉnh sửa">• Click on any item to edit</p>
+            <p data-lang-en="• Click skill bar to adjust level" data-lang-vi="• Nhấp thanh kỹ năng để điều chỉnh">• Click skill bar to adjust level</p>
+            <p data-lang-en="• Click image to upload photo" data-lang-vi="• Nhấp ảnh để tải lên">• Click image to upload photo</p>
         </div>
     </div>
     
     <div class="cv-container">
         <div class="left-section">
-            <div class="profile-image" onclick="changeProfilePic(this)" title="Nhấp để thay đổi">
-                Thêm ảnh
+            <div class="profile-image" onclick="changeProfilePic(this)" title="Click to upload photo">
+                <span data-lang-en="Add Photo" data-lang-vi="Thêm Ảnh">Add Photo</span>
             </div>
             
             <div class="contact-info">
-                <h3 class="section-title">Person Information</h3>
+                <h3 class="section-title" data-lang-en="Personal Information" data-lang-vi="Thông Tin Cá Nhân">Personal Information</h3>
                 <div class="contact-item">
                     <div class="contact-icon">📱</div>
-                    <div contenteditable="true">0337048334</div>
+                    <div contenteditable="true" data-placeholder="Phone number"></div>
                 </div>
                 <div class="contact-item">
                     <div class="contact-icon">🎂</div>
-                    <div contenteditable="true">Date of birth: 19/01/2000</div>
+                    <div contenteditable="true" data-placeholder="Date of birth"></div>
                 </div>
                 <div class="contact-item">
                     <div class="contact-icon">✉️</div>
-                    <div contenteditable="true">bangbh77261@gmail.com</div>
+                    <div contenteditable="true" data-placeholder="Email"></div>
                 </div>
                 <div class="contact-item">
                     <div class="contact-icon">🏠</div>
-                    <div contenteditable="true">8/18/89 Trần Nguyên Hãn, Lê Chân, Hải Phòng</div>
+                    <div contenteditable="true" data-placeholder="Address"></div>
                 </div>
-                
             </div>
             
             <div class="skills-section">
-                <h3 class="section-title">Skills</h3>
-                <div class="skill-item">
-                    <div class="skill-name" contenteditable="true">Programming languages: React JS, C#, Flutter (Dart)</div>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 90%"></div>
-                    </div>
-                    <div class="skill-level-editor">
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 20)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 40)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 60)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 80)"></div>
-                        <div class="level-btn active" onclick="setSkillLevel(this.parentNode, 100)"></div>
-                    </div>
-                </div>
-                
-                <div class="skill-item">
-                    <div class="skill-name" contenteditable="true">Knowledge of Robotic Process Automation (RPA)</div>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 75%"></div>
-                    </div>
-                    <div class="skill-level-editor">
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 20)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 40)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 60)"></div>
-                        <div class="level-btn active" onclick="setSkillLevel(this.parentNode, 80)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 100)"></div>
+                <h3 class="section-title" data-lang-en="Skills" data-lang-vi="Kỹ Năng">Skills</h3>
+                <div id="skills-container">
+                    <div class="skill-item">
+                        <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 80%"></div>
+                        </div>
+                        <div class="skill-level-editor">
+                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 20)"></div>
+                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 40)"></div>
+                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 60)"></div>
+                            <div class="level-btn active" onclick="setSkillLevel(this.parentNode, 80)"></div>
+                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 100)"></div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="skill-item">
-                    <div class="skill-name" contenteditable="true">Experienced in data conversion: Excel, PDF, XML, Word</div>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 65%"></div>
-                    </div>
-                    <div class="skill-level-editor">
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 20)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 40)"></div>
-                        <div class="level-btn active" onclick="setSkillLevel(this.parentNode, 60)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 80)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 100)"></div>
-                    </div>
-                </div>
-                
-                <div class="skill-item">
-                    <div class="skill-name" contenteditable="true">Teamwork and documentation analysis skills</div>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: 80%"></div>
-                    </div>
-                    <div class="skill-level-editor">
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 20)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 40)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 60)"></div>
-                        <div class="level-btn active" onclick="setSkillLevel(this.parentNode, 80)"></div>
-                        <div class="level-btn" onclick="setSkillLevel(this.parentNode, 100)"></div>
-                    </div>
-                </div>
+                <button class="add-item-btn" onclick="addSkill()">
+                    <span data-lang-en="+ Add Skill" data-lang-vi="+ Thêm Kỹ Năng">+ Add Skill</span>
+                </button>
             </div>
             
             <div class="languages-section">
-                <h3 class="section-title">Language</h3>
-                
-                <div class="language-item">
-                    <div contenteditable="true">Basic English</div>
+                <h3 class="section-title" data-lang-en="Languages" data-lang-vi="Ngôn Ngữ">Languages</h3>
+                <div id="languages-container">
+                    <div class="language-item" contenteditable="true" data-placeholder="Language & proficiency"></div>
                 </div>
-                <div class="language-item">
-                    <div contenteditable="true">Basic Chinese</div>
-                </div>
+                <button class="add-item-btn" onclick="addLanguage()">
+                    <span data-lang-en="+ Add Language" data-lang-vi="+ Thêm Ngôn Ngữ">+ Add Language</span>
+                </button>
             </div>
             
             <div class="skills-section">
-                <h3 class="section-title">Other</h3>
-                <div class="language-item">
-                    <div contenteditable="true">Using AI to improve work: Cursor, Chat GPT, Claude AI ...</div>
+                <h3 class="section-title" data-lang-en="Other" data-lang-vi="Khác">Other</h3>
+                <div id="other-container">
+                    <div class="language-item" contenteditable="true" data-placeholder="Other skills or tools"></div>
                 </div>
-                <div class="language-item">
-                    <div contenteditable="true">Git lab + Git hub</div>
-                </div>
-                <div class="language-item">
-                    <div contenteditable="true">Other: Figma, Postman ...</div>
-                </div>
+                <button class="add-item-btn" onclick="addOther()">
+                    <span data-lang-en="+ Add Item" data-lang-vi="+ Thêm Mục">+ Add Item</span>
+                </button>
             </div>
         </div>
         
         <div class="right-section">
             <div class="header">
-                <div class="name" contenteditable="true">Bui Hai Bang</div>
-                <div class="profession" contenteditable="true">Software Programmer 
-
-                </div>
+                <div class="name" contenteditable="true" data-placeholder="Full Name"></div>
+                <div class="profession" contenteditable="true" data-placeholder="Job Title"></div>
                 <div class="divider"></div>
             </div>
             
             <div class="about-section">
-                <h2 class="right-section-title">Career Objective</h2>
-                <div class="about-me" contenteditable="true">
-                    I want to grow by working on real projects and learning from experienced teammates.
-                    I'm looking for a place that supports learning and encourages new ideas,
-                    where I can apply my knowledge and skills to contribute to the company’s success.
-                </div>
-            </div>
-            <div class="education-section">
-                <h2 class="right-section-title">Education</h2>
-                
-                <div class="education-item">
-                    <div class="date" contenteditable="true">2018 - 2024</div>
-                    <div class="degree" contenteditable="true">Software Engineer</div>
-                    <div class="school" contenteditable="true">Vietnam Maritime University</div>
-                    <div class="description" contenteditable="true">
-                        GPA: 2.41/4.0 Degree: Software Engineer - Information Technology
-                    </div>
-                </div>
-            </div>
-            <div class="experience-section">
-                <h2 class="right-section-title">Work Experience</h2>
-                
-                <div class="experience-item">
-                    <div class="date" contenteditable="true">20-08-2025 / present</div>
-                    <div class="role" contenteditable="true">Junior Software Engineer</div>
-                    <div class="company" contenteditable="true">Regina Miracle International Ltd</div>
-                    <div class="description" contenteditable="true">
-                        - Project Supporter: Supported users of the ERP SAP system.Analyzed requirements, and proposed new system developments: Label printing, LAB system, and automation system.
-                    </div>
-                    <div class="description">
-                        - Developer: Developed the Label Printing System. Implemented automated email scheduling system.
-
-                    </div>
-                </div>
-                
-                <div class="experience-item">
-                    <div class="date" contenteditable="true">07/08/2024 to 07/08/2025</div>
-                    <div class="role" contenteditable="true">Intern Frontend Developer - Business Analysis</div>
-                    <div class="company" contenteditable="true">SiSix</div>
-                    <div class="description" contenteditable="true">
-                        I was a programming intern with one year of experience.
-                        I built a timekeeping feature for a web application, developed some modules for ETE Vietnam's mobile app, 
-                        and wrote reports to help plan new features for new modules.
-                    </div>
-                </div>
-                
-                <!-- <div class="experience-item">
-                    <div class="date" contenteditable="true">2016 - 2018</div>
-                    <div class="role" contenteditable="true">Web Developer Intern</div>
-                    <div class="company" contenteditable="true">Startup DEF, Đà Nẵng</div>
-                    <div class="description" contenteditable="true">
-                        - Hỗ trợ phát triển website công ty<br>
-                        - Tối ưu hóa SEO và khả năng truy cập<br>
-                        - Thiết kế banner và tài liệu quảng cáo
-                    </div>
-                </div> -->
+                <h2 class="right-section-title" data-lang-en="Career Objective" data-lang-vi="Mục Tiêu Nghề Nghiệp">Career Objective</h2>
+                <div class="about-me" contenteditable="true" data-placeholder="Your career objectives and goals..."></div>
             </div>
             
+            <div class="education-section">
+                <h2 class="right-section-title" data-lang-en="Education" data-lang-vi="Học Vấn">Education</h2>
+                <div id="education-container">
+                    <div class="education-item">
+                        <div class="date" contenteditable="true" data-placeholder="Year - Year"></div>
+                        <div class="degree" contenteditable="true" data-placeholder="Degree / Major"></div>
+                        <div class="school" contenteditable="true" data-placeholder="School / University"></div>
+                        <div class="description" contenteditable="true" data-placeholder="Description, GPA, achievements..."></div>
+                    </div>
+                </div>
+                <button class="add-item-btn" onclick="addEducation()">
+                    <span data-lang-en="+ Add Education" data-lang-vi="+ Thêm Học Vấn">+ Add Education</span>
+                </button>
+            </div>
+            
+            <div class="experience-section">
+                <h2 class="right-section-title" data-lang-en="Work Experience" data-lang-vi="Kinh Nghiệm Làm Việc">Work Experience</h2>
+                <div id="experience-container">
+                    <div class="experience-item">
+                        <div class="date" contenteditable="true" data-placeholder="Start Date - End Date"></div>
+                        <div class="role" contenteditable="true" data-placeholder="Job Title"></div>
+                        <div class="company" contenteditable="true" data-placeholder="Company Name"></div>
+                        <div class="description" contenteditable="true" data-placeholder="Job responsibilities and achievements..."></div>
+                    </div>
+                </div>
+                <button class="add-item-btn" onclick="addExperience()">
+                    <span data-lang-en="+ Add Experience" data-lang-vi="+ Thêm Kinh Nghiệm">+ Add Experience</span>
+                </button>
+            </div>
             
             <div class="certifications-section">
-                <h2 class="right-section-title">Personal project</h2>
-                <h5 class="education-item" >Git: https://github.com/bangbh77261-eng</h5>
-                <div class="education-item">
-                    <!-- <div class="date" contenteditable="true">2019</div> -->
-                    <div class="degree" contenteditable="true">Business Management</div>
-                    <div class="description" contenteditable="true">Application: Mobile App</div>
-                    <div class="description" contenteditable="true">Module: Importing and exporting,
-                         managing remaining stock, and analyzing monthly data.</div>
+                <h2 class="right-section-title" data-lang-en="Projects / Certifications" data-lang-vi="Dự Án / Chứng Chỉ">Projects / Certifications</h2>
+                <div id="certifications-container">
+                    <div class="education-item">
+                        <div class="date" contenteditable="true" data-placeholder="Year"></div>
+                        <div class="degree" contenteditable="true" data-placeholder="Project / Certificate Name"></div>
+                        <div class="description" contenteditable="true" data-placeholder="Description..."></div>
+                    </div>
                 </div>
-                
-                <!-- <div class="education-item">
-                    <div class="date" contenteditable="true">2018</div>
-                    <div class="degree" contenteditable="true">Professional Scrum Master I</div>
-                    <div class="description" contenteditable="true">Scrum.org</div>
-                </div> -->
+                <button class="add-item-btn" onclick="addCertification()">
+                    <span data-lang-en="+ Add Item" data-lang-vi="+ Thêm Mục">+ Add Item</span>
+                </button>
             </div>
         </div>
     </div>
     
     <script>
-        // Chức năng đặt mức độ kỹ năng
+        let currentLanguage = 'en';
+        
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'vi' : 'en';
+            const elements = document.querySelectorAll('[data-lang-en]');
+            
+            elements.forEach(el => {
+                if (!el.hasAttribute('contenteditable')) {
+                    el.textContent = el.getAttribute(`data-lang-${currentLanguage}`);
+                }
+            });
+            
+            // Update placeholders
+            const editableElements = document.querySelectorAll('[contenteditable="true"][data-placeholder]');
+            editableElements.forEach(el => {
+                const placeholders = {
+                    en: {
+                        'Phone number': 'Phone number',
+                        'Date of birth': 'Date of birth',
+                        'Email': 'Email',
+                        'Address': 'Address',
+                        'Skill name': 'Skill name',
+                        'Language & proficiency': 'Language & proficiency',
+                        'Other skills or tools': 'Other skills or tools',
+                        'Full Name': 'Full Name',
+                        'Job Title': 'Job Title',
+                        'Your career objectives and goals...': 'Your career objectives and goals...',
+                        'Year - Year': 'Year - Year',
+                        'Degree / Major': 'Degree / Major',
+                        'School / University': 'School / University',
+                        'Description, GPA, achievements...': 'Description, GPA, achievements...',
+                        'Start Date - End Date': 'Start Date - End Date',
+                        'Job Title': 'Job Title',
+                        'Company Name': 'Company Name',
+                        'Job responsibilities and achievements...': 'Job responsibilities and achievements...',
+                        'Year': 'Year',
+                        'Project / Certificate Name': 'Project / Certificate Name',
+                        'Description...': 'Description...'
+                    },
+                    vi: {
+                        'Phone number': 'Số điện thoại',
+                        'Date of birth': 'Ngày sinh',
+                        'Email': 'Email',
+                        'Address': 'Địa chỉ',
+                        'Skill name': 'Tên kỹ năng',
+                        'Language & proficiency': 'Ngôn ngữ & trình độ',
+                        'Other skills or tools': 'Kỹ năng hoặc công cụ khác',
+                        'Full Name': 'Họ và Tên',
+                        'Job Title': 'Chức Danh',
+                        'Your career objectives and goals...': 'Mục tiêu nghề nghiệp của bạn...',
+                        'Year - Year': 'Năm - Năm',
+                        'Degree / Major': 'Bằng cấp / Chuyên ngành',
+                        'School / University': 'Trường học / Đại học',
+                        'Description, GPA, achievements...': 'Mô tả, GPA, thành tích...',
+                        'Start Date - End Date': 'Ngày Bắt Đầu - Ngày Kết Thúc',
+                        'Job Title': 'Chức Danh',
+                        'Company Name': 'Tên Công Ty',
+                        'Job responsibilities and achievements...': 'Trách nhiệm và thành tích công việc...',
+                        'Year': 'Năm',
+                        'Project / Certificate Name': 'Tên Dự Án / Chứng Chỉ',
+                        'Description...': 'Mô tả...'
+                    }
+                };
+                
+                const currentPlaceholder = el.getAttribute('data-placeholder');
+                const newPlaceholder = placeholders[currentLanguage][currentPlaceholder] || currentPlaceholder;
+                el.setAttribute('data-placeholder', newPlaceholder);
+            });
+        }
+        
         function setSkillLevel(parentElement, percentage) {
             const skillBar = parentElement.previousElementSibling;
             const progressBar = skillBar.querySelector('.skill-progress');
             progressBar.style.width = percentage + '%';
             
-            // Cập nhật nút level
             const levelButtons = parentElement.querySelectorAll('.level-btn');
             levelButtons.forEach((btn, index) => {
                 const btnPercentage = (index + 1) * 20;
-                if (btnPercentage <= percentage) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                btn.classList.toggle('active', btnPercentage <= percentage);
             });
         }
         
-        // Chức năng thay đổi ảnh đại diện
         function changeProfilePic(element) {
             const input = document.createElement('input');
             input.type = 'file';
@@ -534,23 +599,96 @@
             
             input.click();
         }
+        
+        function addSkill() {
+            const container = document.getElementById('skills-container');
+            const skillItem = document.createElement('div');
+            skillItem.className = 'skill-item';
+            skillItem.innerHTML = `
+                <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
+                <div class="skill-bar">
+                    <div class="skill-progress" style="width: 80%"></div>
+                </div>
+                <div class="skill-level-editor">
+                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 20)"></div>
+                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 40)"></div>
+                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 60)"></div>
+                    <div class="level-btn active" onclick="setSkillLevel(this.parentNode, 80)"></div>
+                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 100)"></div>
+                </div>
+            `;
+            container.appendChild(skillItem);
+        }
+        
+        function addLanguage() {
+            const container = document.getElementById('languages-container');
+            const item = document.createElement('div');
+            item.className = 'language-item';
+            item.setAttribute('contenteditable', 'true');
+            item.setAttribute('data-placeholder', currentLanguage === 'en' ? 'Language & proficiency' : 'Ngôn ngữ & trình độ');
+            container.appendChild(item);
+        }
+        
+        function addOther() {
+            const container = document.getElementById('other-container');
+            const item = document.createElement('div');
+            item.className = 'language-item';
+            item.setAttribute('contenteditable', 'true');
+            item.setAttribute('data-placeholder', currentLanguage === 'en' ? 'Other skills or tools' : 'Kỹ năng hoặc công cụ khác');
+            container.appendChild(item);
+        }
+        
+        function addEducation() {
+            const container = document.getElementById('education-container');
+            const item = document.createElement('div');
+            item.className = 'education-item';
+            item.innerHTML = `
+                <div class="date" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Year - Year' : 'Năm - Năm'}"></div>
+                <div class="degree" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Degree / Major' : 'Bằng cấp / Chuyên ngành'}"></div>
+                <div class="school" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'School / University' : 'Trường học / Đại học'}"></div>
+                <div class="description" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Description, GPA, achievements...' : 'Mô tả, GPA, thành tích...'}"></div>
+            `;
+            container.appendChild(item);
+        }
+        
+        function addExperience() {
+            const container = document.getElementById('experience-container');
+            const item = document.createElement('div');
+            item.className = 'experience-item';
+            item.innerHTML = `
+                <div class="date" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Start Date - End Date' : 'Ngày Bắt Đầu - Ngày Kết Thúc'}"></div>
+                <div class="role" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Job Title' : 'Chức Danh'}"></div>
+                <div class="company" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Company Name' : 'Tên Công Ty'}"></div>
+                <div class="description" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Job responsibilities and achievements...' : 'Trách nhiệm và thành tích công việc...'}"></div>
+            `;
+            container.appendChild(item);
+        }
+        
+        function addCertification() {
+            const container = document.getElementById('certifications-container');
+            const item = document.createElement('div');
+            item.className = 'education-item';
+            item.innerHTML = `
+                <div class="date" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Year' : 'Năm'}"></div>
+                <div class="degree" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Project / Certificate Name' : 'Tên Dự Án / Chứng Chỉ'}"></div>
+                <div class="description" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Description...' : 'Mô tả...'}"></div>
+            `;
+            container.appendChild(item);
+        }
+        
         function printCV() {
-            // Ẩn tạm thời các nút điều chỉnh
-            const editors = document.querySelectorAll('.skill-level-editor');
+            const editors = document.querySelectorAll('.skill-level-editor, .add-item-btn');
             editors.forEach(editor => {
                 editor.setAttribute('data-original-display', editor.style.display);
                 editor.style.display = 'none';
             });
             
-            // Ẩn bảng điều khiển
             const controlPanel = document.querySelector('.control-panel');
             controlPanel.setAttribute('data-original-display', controlPanel.style.display);
             controlPanel.style.display = 'none';
             
-            // In trang
             window.print();
             
-            // Khôi phục hiển thị
             setTimeout(function() {
                 editors.forEach(editor => {
                     editor.style.display = editor.getAttribute('data-original-display') || '';
@@ -558,17 +696,6 @@
                 controlPanel.style.display = controlPanel.getAttribute('data-original-display') || '';
             }, 500);
         }
-        // Thêm tính năng tự điều chỉnh kích thước
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('[contenteditable="true"]').forEach(function(element) {
-                element.addEventListener('input', function() {
-                    if (this.scrollHeight > this.clientHeight) {
-                        this.style.height = 'auto';
-                        this.style.height = this.scrollHeight + 'px';
-                    }
-                });
-            });
-        });
     </script>
 </body>
 </html>

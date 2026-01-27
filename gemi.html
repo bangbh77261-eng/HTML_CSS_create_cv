@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional CV Builder - Lê Võ Anh Quân Style</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sage-green: #4a5d4e;
+            --sand-beige: #e5ddd3;
+            --text-dark: #333333;
+            --border-color: #d1c7bc;
+        }
+
+        body {
+            background-color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            padding: 20px 0;
+        }
+
+        /* Khổ giấy A4 */
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            display: flex;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Cột trái */
+        .sidebar {
+            width: 35%;
+            background-color: var(--sand-beige);
+            padding: 40px 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Cột phải */
+        .main-content {
+            width: 65%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Profile Image */
+        .profile-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            border: 5px solid white;
+            overflow: hidden;
+            cursor: pointer;
+            background: #ccc;
+        }
+        .profile-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Header (Green Area) */
+        .header-section {
+            background-color: var(--sage-green);
+            color: white;
+            padding: 40px;
+            min-height: 250px;
+        }
+
+        .name-title { font-size: 36px; font-weight: 700; margin-bottom: 5px; }
+        .job-title { font-size: 18px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
+        .summary-text { font-size: 13px; line-height: 1.6; text-align: justify; }
+
+        /* Section Styling */
+        .sidebar-section { margin-bottom: 35px; }
+        .sidebar-title { font-size: 20px; font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; margin-bottom: 15px; }
+        
+        .main-section { padding: 40px; }
+        .main-title { font-size: 22px; font-weight: 700; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 25px; }
+
+        /* Item blocks */
+        .item-block { position: relative; margin-bottom: 20px; padding: 5px; transition: 0.3s; }
+        .item-block:hover { background-color: rgba(0,0,0,0.02); outline: 1px dashed #ccc; }
+        
+        .delete-btn {
+            position: absolute; right: -10px; top: -10px;
+            background: #ff4757; color: white; border: none; border-radius: 50%;
+            width: 24px; height: 24px; display: none; cursor: pointer; z-index: 10;
+        }
+        .item-block:hover .delete-btn { display: block; }
+
+        .contact-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 13px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+        .contact-icon { width: 30px; height: 30px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+
+        .skill-item { font-size: 13px; margin-bottom: 10px; display: flex; align-items: start; gap: 10px; }
+        .skill-item i { margin-top: 4px; font-size: 10px; }
+
+        /* Timeline style for work experience */
+        .exp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .exp-company { font-weight: 700; font-size: 15px; }
+        .exp-date { background: #555; color: white; padding: 2px 12px; border-radius: 15px; font-size: 12px; }
+        .exp-role { color: var(--sage-green); font-weight: 600; text-transform: uppercase; font-size: 13px; margin-bottom: 10px; }
+        .exp-desc { font-size: 13px; padding-left: 15px; border-left: 1px solid #ddd; }
+
+        /* Floating Controls */
+        .controls {
+            position: fixed; top: 20px; right: 20px;
+            background: white; padding: 20px; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 1000;
+        }
+
+        [contenteditable="true"]:focus { outline: 2px solid var(--sage-green); background: white; }
+
+        @media print {
+            body { padding: 0; background: white; }
+            .controls, .delete-btn, .add-btn { display: none !important; }
+            .a4-page { box-shadow: none; margin: 0; }
+            .item-block:hover { outline: none; background: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls no-print">
+        <h6 class="mb-3">Công cụ CV</h6>
+        <button class="btn btn-primary btn-sm w-100 mb-2" onclick="window.print()">
+            <i class="fa-solid fa-file-pdf me-2"></i> Xuất PDF / In
+        </button>
+        <button class="btn btn-outline-secondary btn-sm w-100 mb-2" onclick="toggleLanguage()">
+            <i class="fa-solid fa-language me-2"></i> Chuyển EN/VI
+        </button>
+        <hr>
+        <div class="small text-muted">Mẹo: Nhấn vào văn bản để sửa nội dung.</div>
+    </div>
+
+    <div class="a4-page" id="cv-content">
+        <div class="sidebar">
+            <div class="profile-container" onclick="document.getElementById('fileInput').click()">
+                <img id="profilePic" src="https://via.placeholder.com/180" alt="Avatar">
+                <input type="file" id="fileInput" hidden accept="image/*" onchange="previewImage(event)">
+            </div>
+
+            <div class="sidebar-section">
+            <h3 class="sidebar-title" data-vi="Liên hệ" data-en="Contact">Liên hệ</h3>
+            <div id="contact-list">
+                <div class="contact-item item-block">
+                    <div class="contact-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                    <div class="contact-text">
+                        <small class="contact-label" data-vi="Ngày sinh" data-en="Birthday">Ngày sinh</small>
+                        <div contenteditable="true">24/08/1996</div>
+                    </div>
+                </div>
+
+                <div class="contact-item item-block">
+                    <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
+                    <div class="contact-text">
+                        <small class="contact-label" data-vi="Số điện thoại" data-en="Phone Number">Số điện thoại</small>
+                        <div contenteditable="true">(024) 6680 5588</div>
+                    </div>
+                </div>
+
+                <div class="contact-item item-block">
+                    <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+                    <div class="contact-text">
+                        <small class="contact-label" data-vi="Email" data-en="Email">Email</small>
+                        <div contenteditable="true">hotro@topcv.vn</div>
+                    </div>
+                </div>
+
+                <div class="contact-item item-block">
+                    <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+                    <div class="contact-text">
+                        <small class="contact-label" data-vi="Địa chỉ" data-en="Address">Địa chỉ</small>
+                        <div contenteditable="true">Số 10, Ngọc Hà, Ba Đình, Hà Nội</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-sm btn-link p-0 add-btn text-dark no-print" onclick="addContact()">+ Thêm thông tin khác</button>
+        </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title" data-vi="Kỹ năng" data-en="Skills">Kỹ năng</h3>
+                <div id="skill-list">
+                    <div class="skill-item item-block">
+                        <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
+                        <i class="fa-solid fa-sparkles text-muted"></i>
+                        <div contenteditable="true">Kỹ năng xây dựng chiến lược truyền thông</div>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-link p-0 add-btn text-dark" onclick="addSkill()">+ Thêm</button>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title" data-vi="Chứng chỉ" data-en="Certifications">Chứng chỉ</h3>
+                <div id="cert-list">
+                    <div class="item-block">
+                        <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
+                        <div class="fw-bold" contenteditable="true">2022</div>
+                        <div contenteditable="true">Digital Marketing Specialization</div>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-link p-0 add-btn text-dark" onclick="addCert()">+ Thêm</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header-section">
+                <h1 class="name-title" contenteditable="true">Lê Võ Anh Quân</h1>
+                <div class="job-title" contenteditable="true" data-vi="TRƯỞNG PHÒNG TRUYỀN THÔNG" data-en="COMMUNICATIONS MANAGER">TRƯỞNG PHÒNG TRUYỀN THÔNG</div>
+                <div class="summary-text" contenteditable="true">
+                    Với 7 năm kinh nghiệm trong lĩnh vực truyền thông, từng đảm nhiệm vai trò xây dựng thương hiệu và triển khai chiến dịch truyền thông cho các doanh nghiệp...
+                </div>
+            </div>
+
+            <div class="main-section">
+                <h3 class="main-title" data-vi="Kinh nghiệm làm việc" data-en="Work Experience">Kinh nghiệm làm việc</h3>
+                <div id="experience-list">
+                    <div class="item-block mb-4">
+                        <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
+                        <div class="exp-header">
+                            <div class="exp-company" contenteditable="true">KMG EcoStyle</div>
+                            <div class="exp-date" contenteditable="true">2021 - Nay</div>
+                        </div>
+                        <div class="exp-role" contenteditable="true">TRƯỞNG NHÓM TRUYỀN THÔNG</div>
+                        <div class="exp-desc" contenteditable="true">
+                            • Xây dựng và triển khai chiến lược truyền thông tích hợp trên các kênh: social media, PR...<br>
+                            • Quản lý ngân sách truyền thông, đo lường hiệu quả...
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-outline-secondary btn-sm w-100 add-btn" onclick="addExperience()">
+                    <i class="fa-solid fa-plus me-2"></i> Thêm kinh nghiệm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'vi';
+
+        // Thay đổi ngôn ngữ
+        function toggleLanguage() {
+            currentLang = currentLang === 'vi' ? 'en' : 'vi';
+            document.querySelectorAll('[data-vi]').forEach(el => {
+                el.innerText = el.getAttribute(`data-${currentLang}`);
+            });
+        }
+
+        // Preview ảnh đại diện
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('profilePic').src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Thêm các thành phần
+        function addContact() {
+            const html = `
+                <div class="contact-item item-block">
+                    <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
+                    <div class="contact-icon"><i class="fa-solid fa-link"></i></div>
+                    <div contenteditable="true">Thông tin mới</div>
+                </div>`;
+            document.getElementById('contact-list').insertAdjacentHTML('beforeend', html);
+        }
+
+        function addSkill() {
+            const html = `
+                <div class="skill-item item-block">
+                    <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
+                    <i class="fa-solid fa-sparkles text-muted"></i>
+                    <div contenteditable="true">Kỹ năng mới</div>
+                </div>`;
+            document.getElementById('skill-list').insertAdjacentHTML('beforeend', html);
+        }
+
+        function addCert() {
+            const html = `
+                <div class="item-block">
+                    <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
+                    <div class="fw-bold" contenteditable="true">Năm</div>
+                    <div contenteditable="true">Tên chứng chỉ</div>
+                </div>`;
+            document.getElementById('cert-list').insertAdjacentHTML('beforeend', html);
+        }
+
+        function addExperience() {
+            const html = `
+                <div class="item-block mb-4">
+                    <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
+                    <div class="exp-header">
+                        <div class="exp-company" contenteditable="true">Tên Công Ty</div>
+                        <div class="exp-date" contenteditable="true">Thời gian</div>
+                    </div>
+                    <div class="exp-role" contenteditable="true">Chức danh</div>
+                    <div class="exp-desc" contenteditable="true">• Mô tả công việc...</div>
+                </div>`;
+            document.getElementById('experience-list').insertAdjacentHTML('beforeend', html);
+        }
+    </script>
+</body>
+</html>

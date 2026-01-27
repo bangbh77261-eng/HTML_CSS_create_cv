@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional CV</title>
+    <title>Professional CV Editor - Cloud Sync</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -150,6 +151,7 @@
         
         .skill-item {
             margin-bottom: 20px;
+            position: relative;
         }
         
         .skill-name {
@@ -174,14 +176,6 @@
             border-radius: 10px;
             transition: width 0.3s;
             position: relative;
-        }
-        
-        .skill-percentage {
-            font-size: 11px;
-            font-weight: 600;
-            color: #6c757d;
-            margin-top: 4px;
-            display: none;
         }
         
         .skill-level-editor {
@@ -214,6 +208,7 @@
             margin-bottom: 12px;
             line-height: 1.6;
             min-height: 20px;
+            position: relative;
         }
         
         /* Main Content Area */
@@ -309,15 +304,6 @@
             margin-bottom: 8px;
         }
         
-        .timeline-description ul {
-            margin-left: 20px;
-            margin-top: 8px;
-        }
-        
-        .timeline-description li {
-            margin-bottom: 5px;
-        }
-        
         /* Editable styles */
         [contenteditable="true"] {
             outline: none;
@@ -340,6 +326,37 @@
             font-style: italic;
         }
         
+        /* Delete buttons */
+        .delete-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .skill-item:hover .delete-btn,
+        .info-item:hover .delete-btn,
+        .timeline-item:hover .delete-btn {
+            opacity: 1;
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+        
         /* Control Panel */
         .control-panel {
             position: fixed;
@@ -352,6 +369,8 @@
             width: 320px;
             z-index: 1000;
             border: 1px solid #e9ecef;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
         }
         
         .panel-header {
@@ -377,7 +396,7 @@
             letter-spacing: 0.5px;
         }
         
-        .panel-select {
+        .panel-input, .panel-select {
             width: 100%;
             padding: 10px 12px;
             border: 1px solid #dee2e6;
@@ -389,11 +408,7 @@
             transition: all 0.2s;
         }
         
-        .panel-select:hover {
-            border-color: #4a5899;
-        }
-        
-        .panel-select:focus {
+        .panel-input:focus, .panel-select:focus {
             outline: none;
             border-color: #4a5899;
             box-shadow: 0 0 0 3px rgba(74, 88, 153, 0.1);
@@ -413,12 +428,6 @@
             cursor: pointer;
         }
         
-        .color-picker-wrapper label {
-            flex: 1;
-            font-size: 13px;
-            color: #495057;
-        }
-        
         .range-control {
             display: flex;
             align-items: center;
@@ -432,26 +441,6 @@
             background: #e9ecef;
             outline: none;
             cursor: pointer;
-        }
-        
-        .range-control input[type="range"]::-webkit-slider-thumb {
-            width: 18px;
-            height: 18px;
-            background: #4a5899;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .range-control input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            background: #4a5899;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .range-value {
@@ -503,6 +492,29 @@
             background: #e9ecef;
         }
         
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-full {
+            grid-column: 1 / -1;
+        }
+        
         .add-item-btn {
             width: 100%;
             padding: 10px;
@@ -521,6 +533,132 @@
             border-color: #4a5899;
             color: #4a5899;
             border-style: solid;
+        }
+        
+        /* Status messages */
+        .status-message {
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-message.show {
+            display: block;
+        }
+        
+        /* CV List Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3561;
+            margin-bottom: 20px;
+        }
+        
+        .cv-list-item {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .cv-list-item:hover {
+            border-color: #4a5899;
+            background: #f8f9fa;
+        }
+        
+        .cv-list-info {
+            flex: 1;
+        }
+        
+        .cv-list-name {
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 5px;
+        }
+        
+        .cv-list-date {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .cv-list-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .cv-list-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .cv-list-btn.load {
+            background: #4a5899;
+            color: white;
+        }
+        
+        .cv-list-btn.load:hover {
+            background: #3d4a7f;
+        }
+        
+        .cv-list-btn.delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .cv-list-btn.delete:hover {
+            background: #c82333;
         }
         
         /* Print styles */
@@ -547,6 +685,10 @@
                 display: none !important;
             }
             
+            .delete-btn {
+                display: none !important;
+            }
+            
             .timeline-item {
                 page-break-inside: avoid;
             }
@@ -554,36 +696,75 @@
     </style>
 </head>
 <body>
+    <!-- CV List Modal -->
+    <div class="modal" id="cvListModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span data-lang-key="my_cvs">My CVs</span>
+            </div>
+            <div id="cvListContainer"></div>
+            <button class="control-btn btn-secondary" style="width: 100%; margin-top: 20px;" onclick="closeCVList()">
+                <span data-lang-key="close">Close</span>
+            </button>
+        </div>
+    </div>
+
     <div class="control-panel">
         <div class="panel-header">
-            <span data-lang-en="Customize CV" data-lang-vi="Tùy Chỉnh CV">Customize CV</span>
+            <span data-lang-key="customize_cv">Customize CV</span>
         </div>
         
+        <!-- Database Section -->
         <div class="panel-section">
-            <div class="panel-label" data-lang-en="Select Element" data-lang-vi="Chọn Phần Tử">Select Element</div>
-            <select class="panel-select" id="elementSelector">
-                <option value="name" data-lang-en="Name" data-lang-vi="Họ Tên">Name</option>
-                <option value="job-title" data-lang-en="Job Title" data-lang-vi="Chức Danh">Job Title</option>
-                <option value="section-title" data-lang-en="Section Titles" data-lang-vi="Tiêu Đề Phần">Section Titles</option>
-                <option value="main-section-title" data-lang-en="Main Section Titles" data-lang-vi="Tiêu Đề Chính">Main Section Titles</option>
-                <option value="timeline-title" data-lang-en="Experience/Education Titles" data-lang-vi="Tiêu Đề Kinh Nghiệm">Experience/Education Titles</option>
-                <option value="timeline-subtitle" data-lang-en="Companies/Schools" data-lang-vi="Công Ty/Trường">Companies/Schools</option>
-                <option value="timeline-date" data-lang-en="Dates" data-lang-vi="Ngày Tháng">Dates</option>
-                <option value="about-text" data-lang-en="About Text" data-lang-vi="Văn Bản Giới Thiệu">About Text</option>
-                <option value="timeline-description" data-lang-en="Descriptions" data-lang-vi="Mô Tả">Descriptions</option>
-            </select>
+            <div class="panel-label" data-lang-key="supabase_config">Supabase Configuration</div>
+            <input type="text" class="panel-input" id="supabaseUrl" placeholder="Supabase URL" style="margin-bottom: 8px;">
+            <input type="password" class="panel-input" id="supabaseKey" placeholder="Supabase Key" style="margin-bottom: 8px;">
+            <button class="control-btn btn-success btn-full" onclick="connectSupabase()">
+                <span data-lang-key="connect">Connect</span>
+            </button>
         </div>
         
+        <div class="status-message" id="statusMessage"></div>
+        
+        <!-- Save/Load Section -->
         <div class="panel-section">
-            <div class="panel-label" data-lang-en="Text Color" data-lang-vi="Màu Chữ">Text Color</div>
-            <div class="color-picker-wrapper">
-                <input type="color" id="textColorPicker" value="#2d3561">
-                <label data-lang-en="Choose color" data-lang-vi="Chọn màu">Choose color</label>
+            <div class="panel-label" data-lang-key="cv_management">CV Management</div>
+            <input type="text" class="panel-input" id="cvName" placeholder="CV Name" style="margin-bottom: 8px;">
+            <div class="btn-group">
+                <button class="control-btn btn-success" onclick="saveCV()">
+                    💾 <span data-lang-key="save">Save</span>
+                </button>
+                <button class="control-btn btn-primary" onclick="showCVList()">
+                    📂 <span data-lang-key="load">Load</span>
+                </button>
             </div>
         </div>
         
         <div class="panel-section">
-            <div class="panel-label" data-lang-en="Font Size" data-lang-vi="Cỡ Chữ">Font Size</div>
+            <div class="panel-label" data-lang-key="select_element">Select Element</div>
+            <select class="panel-select" id="elementSelector">
+                <option value="name" data-lang-key="opt_name">Name</option>
+                <option value="job-title" data-lang-key="opt_job_title">Job Title</option>
+                <option value="section-title" data-lang-key="opt_section_title">Section Titles</option>
+                <option value="main-section-title" data-lang-key="opt_main_section_title">Main Section Titles</option>
+                <option value="timeline-title" data-lang-key="opt_timeline_title">Experience/Education Titles</option>
+                <option value="timeline-subtitle" data-lang-key="opt_timeline_subtitle">Companies/Schools</option>
+                <option value="timeline-date" data-lang-key="opt_timeline_date">Dates</option>
+                <option value="about-text" data-lang-key="opt_about_text">About Text</option>
+                <option value="timeline-description" data-lang-key="opt_timeline_description">Descriptions</option>
+            </select>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label" data-lang-key="text_color">Text Color</div>
+            <div class="color-picker-wrapper">
+                <input type="color" id="textColorPicker" value="#2d3561">
+                <label data-lang-key="choose_color">Choose color</label>
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label" data-lang-key="font_size">Font Size</div>
             <div class="range-control">
                 <input type="range" id="fontSizeRange" min="10" max="48" value="14">
                 <span class="range-value"><span id="fontSizeDisplay">14</span>px</span>
@@ -591,7 +772,7 @@
         </div>
         
         <div class="panel-section">
-            <div class="panel-label" data-lang-en="Font Weight" data-lang-vi="Độ Đậm">Font Weight</div>
+            <div class="panel-label" data-lang-key="font_weight">Font Weight</div>
             <div class="range-control">
                 <input type="range" id="fontWeightRange" min="300" max="700" step="100" value="400">
                 <span class="range-value" id="fontWeightDisplay">400</span>
@@ -600,10 +781,10 @@
         
         <div class="btn-group">
             <button class="control-btn btn-primary" onclick="printCV()">
-                🖨️ <span data-lang-en="Print" data-lang-vi="In">Print</span>
+                🖨️ <span data-lang-key="print">Print</span>
             </button>
             <button class="control-btn btn-secondary" onclick="toggleLanguage()">
-                🌐 <span data-lang-en="EN/VI" data-lang-vi="VI/EN">EN/VI</span>
+                🌐 <span id="langToggleText">EN/VI/中文</span>
             </button>
         </div>
     </div>
@@ -613,7 +794,7 @@
         <div class="cv-header">
             <div class="header-content">
                 <div class="profile-photo" onclick="uploadPhoto(this)">
-                    <span data-lang-en="Click to add photo" data-lang-vi="Nhấp để thêm ảnh">Click to add photo</span>
+                    <span data-lang-key="click_add_photo">Click to add photo</span>
                 </div>
                 <div class="header-info">
                     <h1 class="name" contenteditable="true" data-placeholder="Your Full Name"></h1>
@@ -641,9 +822,10 @@
             <!-- Sidebar -->
             <aside class="cv-sidebar">
                 <div class="sidebar-section">
-                    <h3 class="section-title" contenteditable="true" data-lang-en="Skills" data-lang-vi="Kỹ Năng">Skills</h3>
+                    <h3 class="section-title" contenteditable="true" data-lang-key="skills">Skills</h3>
                     <div id="skillsContainer">
                         <div class="skill-item">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                             <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
                             <div class="skill-bar-container">
                                 <div class="skill-bar" style="width: 85%"></div>
@@ -658,37 +840,43 @@
                         </div>
                     </div>
                     <button class="add-item-btn" onclick="addSkill()">
-                        <span data-lang-en="+ Add Skill" data-lang-vi="+ Thêm Kỹ Năng">+ Add Skill</span>
+                        <span data-lang-key="add_skill">+ Add Skill</span>
                     </button>
                 </div>
 
                 <div class="sidebar-section">
-                    <h3 class="section-title" contenteditable="true" data-lang-en="Languages" data-lang-vi="Ngôn Ngữ">Languages</h3>
+                    <h3 class="section-title" contenteditable="true" data-lang-key="languages">Languages</h3>
                     <div id="languagesContainer">
-                        <div class="info-item" contenteditable="true" data-placeholder="Language - Proficiency"></div>
+                        <div class="info-item" contenteditable="true" data-placeholder="Language - Proficiency">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                        </div>
                     </div>
                     <button class="add-item-btn" onclick="addLanguage()">
-                        <span data-lang-en="+ Add Language" data-lang-vi="+ Thêm Ngôn Ngữ">+ Add Language</span>
+                        <span data-lang-key="add_language">+ Add Language</span>
                     </button>
                 </div>
 
                 <div class="sidebar-section">
-                    <h3 class="section-title" contenteditable="true" data-lang-en="Certifications" data-lang-vi="Chứng Chỉ">Certifications</h3>
+                    <h3 class="section-title" contenteditable="true" data-lang-key="certifications">Certifications</h3>
                     <div id="certificationsContainer">
-                        <div class="info-item" contenteditable="true" data-placeholder="Certification name"></div>
+                        <div class="info-item" contenteditable="true" data-placeholder="Certification name">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                        </div>
                     </div>
                     <button class="add-item-btn" onclick="addCertification()">
-                        <span data-lang-en="+ Add Certification" data-lang-vi="+ Thêm Chứng Chỉ">+ Add Certification</span>
+                        <span data-lang-key="add_certification">+ Add Certification</span>
                     </button>
                 </div>
 
                 <div class="sidebar-section">
-                    <h3 class="section-title" contenteditable="true" data-lang-en="Other" data-lang-vi="Khác">Other</h3>
+                    <h3 class="section-title" contenteditable="true" data-lang-key="other">Other</h3>
                     <div id="otherContainer">
-                        <div class="info-item" contenteditable="true" data-placeholder="Other information"></div>
+                        <div class="info-item" contenteditable="true" data-placeholder="Other information">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                        </div>
                     </div>
                     <button class="add-item-btn" onclick="addOther()">
-                        <span data-lang-en="+ Add Item" data-lang-vi="+ Thêm Mục">+ Add Item</span>
+                        <span data-lang-key="add_item">+ Add Item</span>
                     </button>
                 </div>
             </aside>
@@ -696,14 +884,15 @@
             <!-- Main Content -->
             <main class="cv-main">
                 <section class="main-section">
-                    <h2 class="main-section-title" contenteditable="true" data-lang-en="Professional Summary" data-lang-vi="Tóm Tắt Chuyên Môn">Professional Summary</h2>
+                    <h2 class="main-section-title" contenteditable="true" data-lang-key="professional_summary">Professional Summary</h2>
                     <p class="about-text" contenteditable="true" data-placeholder="Write a brief summary about yourself, your career goals, and what makes you unique..."></p>
                 </section>
 
                 <section class="main-section">
-                    <h2 class="main-section-title" contenteditable="true" data-lang-en="Work Experience" data-lang-vi="Kinh Nghiệm Làm Việc">Work Experience</h2>
+                    <h2 class="main-section-title" contenteditable="true" data-lang-key="work_experience">Work Experience</h2>
                     <div id="experienceContainer">
                         <div class="timeline-item">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                             <div class="timeline-date" contenteditable="true" data-placeholder="Jan 2020 - Present"></div>
                             <h3 class="timeline-title" contenteditable="true" data-placeholder="Job Title"></h3>
                             <p class="timeline-subtitle" contenteditable="true" data-placeholder="Company Name, Location"></p>
@@ -711,14 +900,15 @@
                         </div>
                     </div>
                     <button class="add-item-btn" onclick="addExperience()">
-                        <span data-lang-en="+ Add Experience" data-lang-vi="+ Thêm Kinh Nghiệm">+ Add Experience</span>
+                        <span data-lang-key="add_experience">+ Add Experience</span>
                     </button>
                 </section>
 
                 <section class="main-section">
-                    <h2 class="main-section-title" contenteditable="true" data-lang-en="Education" data-lang-vi="Học Vấn">Education</h2>
+                    <h2 class="main-section-title" contenteditable="true" data-lang-key="education">Education</h2>
                     <div id="educationContainer">
                         <div class="timeline-item">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                             <div class="timeline-date" contenteditable="true" data-placeholder="2016 - 2020"></div>
                             <h3 class="timeline-title" contenteditable="true" data-placeholder="Degree Name"></h3>
                             <p class="timeline-subtitle" contenteditable="true" data-placeholder="University Name, Location"></p>
@@ -726,21 +916,22 @@
                         </div>
                     </div>
                     <button class="add-item-btn" onclick="addEducation()">
-                        <span data-lang-en="+ Add Education" data-lang-vi="+ Thêm Học Vấn">+ Add Education</span>
+                        <span data-lang-key="add_education">+ Add Education</span>
                     </button>
                 </section>
 
                 <section class="main-section">
-                    <h2 class="main-section-title" contenteditable="true" data-lang-en="Projects" data-lang-vi="Dự Án">Projects</h2>
+                    <h2 class="main-section-title" contenteditable="true" data-lang-key="projects">Projects</h2>
                     <div id="projectsContainer">
                         <div class="timeline-item">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                             <div class="timeline-date" contenteditable="true" data-placeholder="2023"></div>
                             <h3 class="timeline-title" contenteditable="true" data-placeholder="Project Name"></h3>
                             <div class="timeline-description" contenteditable="true" data-placeholder="Describe the project, technologies used, and your role..."></div>
                         </div>
                     </div>
                     <button class="add-item-btn" onclick="addProject()">
-                        <span data-lang-en="+ Add Project" data-lang-vi="+ Thêm Dự Án">+ Add Project</span>
+                        <span data-lang-key="add_project">+ Add Project</span>
                     </button>
                 </section>
             </main>
@@ -748,9 +939,162 @@
     </div>
 
     <script>
-        let currentLanguage = 'en';
+        // Multi-language support
+        const translations = {
+            en: {
+                customize_cv: 'Customize CV',
+                supabase_config: 'Supabase Configuration',
+                connect: 'Connect',
+                cv_management: 'CV Management',
+                save: 'Save',
+                load: 'Load',
+                my_cvs: 'My CVs',
+                close: 'Close',
+                select_element: 'Select Element',
+                opt_name: 'Name',
+                opt_job_title: 'Job Title',
+                opt_section_title: 'Section Titles',
+                opt_main_section_title: 'Main Section Titles',
+                opt_timeline_title: 'Experience/Education Titles',
+                opt_timeline_subtitle: 'Companies/Schools',
+                opt_timeline_date: 'Dates',
+                opt_about_text: 'About Text',
+                opt_timeline_description: 'Descriptions',
+                text_color: 'Text Color',
+                choose_color: 'Choose color',
+                font_size: 'Font Size',
+                font_weight: 'Font Weight',
+                print: 'Print',
+                click_add_photo: 'Click to add photo',
+                skills: 'Skills',
+                add_skill: '+ Add Skill',
+                languages: 'Languages',
+                add_language: '+ Add Language',
+                certifications: 'Certifications',
+                add_certification: '+ Add Certification',
+                other: 'Other',
+                add_item: '+ Add Item',
+                professional_summary: 'Professional Summary',
+                work_experience: 'Work Experience',
+                add_experience: '+ Add Experience',
+                education: 'Education',
+                add_education: '+ Add Education',
+                projects: 'Projects',
+                add_project: '+ Add Project',
+                saved_successfully: 'CV saved successfully!',
+                loaded_successfully: 'CV loaded successfully!',
+                deleted_successfully: 'CV deleted successfully!',
+                connection_success: 'Connected to Supabase successfully!',
+                connection_error: 'Failed to connect to Supabase',
+                save_error: 'Failed to save CV',
+                load_error: 'Failed to load CV',
+                delete_error: 'Failed to delete CV'
+            },
+            vi: {
+                customize_cv: 'Tùy Chỉnh CV',
+                supabase_config: 'Cấu Hình Supabase',
+                connect: 'Kết Nối',
+                cv_management: 'Quản Lý CV',
+                save: 'Lưu',
+                load: 'Tải',
+                my_cvs: 'CV Của Tôi',
+                close: 'Đóng',
+                select_element: 'Chọn Phần Tử',
+                opt_name: 'Họ Tên',
+                opt_job_title: 'Chức Danh',
+                opt_section_title: 'Tiêu Đề Phần',
+                opt_main_section_title: 'Tiêu Đề Chính',
+                opt_timeline_title: 'Tiêu Đề Kinh Nghiệm',
+                opt_timeline_subtitle: 'Công Ty/Trường',
+                opt_timeline_date: 'Ngày Tháng',
+                opt_about_text: 'Văn Bản Giới Thiệu',
+                opt_timeline_description: 'Mô Tả',
+                text_color: 'Màu Chữ',
+                choose_color: 'Chọn màu',
+                font_size: 'Cỡ Chữ',
+                font_weight: 'Độ Đậm',
+                print: 'In',
+                click_add_photo: 'Nhấp để thêm ảnh',
+                skills: 'Kỹ Năng',
+                add_skill: '+ Thêm Kỹ Năng',
+                languages: 'Ngôn Ngữ',
+                add_language: '+ Thêm Ngôn Ngữ',
+                certifications: 'Chứng Chỉ',
+                add_certification: '+ Thêm Chứng Chỉ',
+                other: 'Khác',
+                add_item: '+ Thêm Mục',
+                professional_summary: 'Tóm Tắt Chuyên Môn',
+                work_experience: 'Kinh Nghiệm Làm Việc',
+                add_experience: '+ Thêm Kinh Nghiệm',
+                education: 'Học Vấn',
+                add_education: '+ Thêm Học Vấn',
+                projects: 'Dự Án',
+                add_project: '+ Thêm Dự Án',
+                saved_successfully: 'Lưu CV thành công!',
+                loaded_successfully: 'Tải CV thành công!',
+                deleted_successfully: 'Xóa CV thành công!',
+                connection_success: 'Kết nối Supabase thành công!',
+                connection_error: 'Kết nối Supabase thất bại',
+                save_error: 'Lưu CV thất bại',
+                load_error: 'Tải CV thất bại',
+                delete_error: 'Xóa CV thất bại'
+            },
+            zh: {
+                customize_cv: '自定义简历',
+                supabase_config: 'Supabase配置',
+                connect: '连接',
+                cv_management: '简历管理',
+                save: '保存',
+                load: '加载',
+                my_cvs: '我的简历',
+                close: '关闭',
+                select_element: '选择元素',
+                opt_name: '姓名',
+                opt_job_title: '职位',
+                opt_section_title: '部分标题',
+                opt_main_section_title: '主要标题',
+                opt_timeline_title: '经验/教育标题',
+                opt_timeline_subtitle: '公司/学校',
+                opt_timeline_date: '日期',
+                opt_about_text: '关于文本',
+                opt_timeline_description: '描述',
+                text_color: '文字颜色',
+                choose_color: '选择颜色',
+                font_size: '字体大小',
+                font_weight: '字体粗细',
+                print: '打印',
+                click_add_photo: '点击添加照片',
+                skills: '技能',
+                add_skill: '+ 添加技能',
+                languages: '语言',
+                add_language: '+ 添加语言',
+                certifications: '证书',
+                add_certification: '+ 添加证书',
+                other: '其他',
+                add_item: '+ 添加项目',
+                professional_summary: '专业总结',
+                work_experience: '工作经验',
+                add_experience: '+ 添加经验',
+                education: '教育背景',
+                add_education: '+ 添加教育',
+                projects: '项目经历',
+                add_project: '+ 添加项目',
+                saved_successfully: '简历保存成功！',
+                loaded_successfully: '简历加载成功！',
+                deleted_successfully: '简历删除成功！',
+                connection_success: 'Supabase连接成功！',
+                connection_error: 'Supabase连接失败',
+                save_error: '保存简历失败',
+                load_error: '加载简历失败',
+                delete_error: '删除简历失败'
+            }
+        };
 
-        // Customization
+        let currentLanguage = 'en';
+        let supabaseClient = null;
+        let isConnected = false;
+
+        // Initialize
         const elementSelector = document.getElementById('elementSelector');
         const textColorPicker = document.getElementById('textColorPicker');
         const fontSizeRange = document.getElementById('fontSizeRange');
@@ -758,6 +1102,7 @@
         const fontSizeDisplay = document.getElementById('fontSizeDisplay');
         const fontWeightDisplay = document.getElementById('fontWeightDisplay');
 
+        // Event listeners
         fontSizeRange.addEventListener('input', function() {
             fontSizeDisplay.textContent = this.value;
             applyStyles();
@@ -839,12 +1184,20 @@
             });
         }
 
+        // Delete element
+        function deleteElement(element) {
+            if (confirm(translations[currentLanguage].delete_error || 'Are you sure you want to delete this item?')) {
+                element.remove();
+            }
+        }
+
         // Add functions
         function addSkill() {
             const container = document.getElementById('skillsContainer');
             const div = document.createElement('div');
             div.className = 'skill-item';
             div.innerHTML = `
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                 <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
                 <div class="skill-bar-container">
                     <div class="skill-bar" style="width: 85%"></div>
@@ -878,6 +1231,7 @@
             div.className = 'info-item';
             div.setAttribute('contenteditable', 'true');
             div.setAttribute('data-placeholder', placeholder);
+            div.innerHTML = `<button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>`;
             container.appendChild(div);
         }
 
@@ -894,6 +1248,7 @@
             const div = document.createElement('div');
             div.className = 'timeline-item';
             div.innerHTML = `
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                 <div class="timeline-date" contenteditable="true" data-placeholder="2023"></div>
                 <h3 class="timeline-title" contenteditable="true" data-placeholder="Project Name"></h3>
                 <div class="timeline-description" contenteditable="true" data-placeholder="Describe the project, technologies used, and your role..."></div>
@@ -906,6 +1261,7 @@
             const div = document.createElement('div');
             div.className = 'timeline-item';
             div.innerHTML = `
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                 <div class="timeline-date" contenteditable="true" data-placeholder="${date}"></div>
                 <h3 class="timeline-title" contenteditable="true" data-placeholder="${title}"></h3>
                 <p class="timeline-subtitle" contenteditable="true" data-placeholder="${subtitle}"></p>
@@ -916,16 +1272,18 @@
 
         // Language toggle
         function toggleLanguage() {
-            currentLanguage = currentLanguage === 'en' ? 'vi' : 'en';
-            
-            document.querySelectorAll('[data-lang-en]').forEach(el => {
-                if (!el.hasAttribute('contenteditable') || el.classList.contains('section-title') || el.classList.contains('main-section-title')) {
-                    el.textContent = el.getAttribute(`data-lang-${currentLanguage}`);
-                }
-            });
+            const languages = ['en', 'vi', 'zh'];
+            const currentIndex = languages.indexOf(currentLanguage);
+            currentLanguage = languages[(currentIndex + 1) % languages.length];
+            updateLanguage();
+        }
 
-            document.querySelectorAll('option[data-lang-en]').forEach(option => {
-                option.textContent = option.getAttribute(`data-lang-${currentLanguage}`);
+        function updateLanguage() {
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[currentLanguage][key]) {
+                    el.textContent = translations[currentLanguage][key];
+                }
             });
         }
 
@@ -934,8 +1292,240 @@
             window.print();
         }
 
-        // Initialize
-        loadStyles();
+        // Supabase functions
+        async function connectSupabase() {
+            const url = document.getElementById('supabaseUrl').value.trim();
+            const key = document.getElementById('supabaseKey').value.trim();
+            
+            if (!url || !key) {
+                showStatus('Please enter both Supabase URL and Key', 'error');
+                return;
+            }
+            
+            try {
+                supabaseClient = supabase.createClient(url, key);
+                
+                // Test connection by trying to fetch data
+                const { data, error } = await supabaseClient.from('cvs').select('count', { count: 'exact', head: true });
+                
+                if (error && error.code !== 'PGRST116') {
+                    // Table doesn't exist, try to create it
+                    await createTable();
+                }
+                
+                isConnected = true;
+                showStatus(translations[currentLanguage].connection_success, 'success');
+                
+                // Save credentials to localStorage
+                localStorage.setItem('supabaseUrl', url);
+                localStorage.setItem('supabaseKey', key);
+            } catch (error) {
+                console.error('Connection error:', error);
+                showStatus(translations[currentLanguage].connection_error, 'error');
+            }
+        }
+
+        async function createTable() {
+            // Note: This requires admin permissions
+            // In production, you should create the table manually in Supabase dashboard
+            const { error } = await supabaseClient.rpc('exec_sql', {
+                sql: `
+                    CREATE TABLE IF NOT EXISTS cvs (
+                        id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+                        name TEXT NOT NULL,
+                        data JSONB NOT NULL,
+                        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                    );
+                `
+            });
+            
+            if (error) {
+                console.warn('Could not create table automatically. Please create it manually in Supabase dashboard.');
+            }
+        }
+
+        function getCVData() {
+            const cvWrapper = document.querySelector('.cv-wrapper');
+            
+            return {
+                html: cvWrapper.innerHTML,
+                name: document.querySelector('.name').textContent,
+                jobTitle: document.querySelector('.job-title').textContent,
+                styles: {
+                    headerGradient: getComputedStyle(document.querySelector('.cv-header')).background,
+                }
+            };
+        }
+
+        function setCVData(data) {
+            if (data.html) {
+                document.querySelector('.cv-wrapper').innerHTML = data.html;
+                
+                // Re-attach event listeners for new elements
+                attachEventListeners();
+            }
+        }
+
+        function attachEventListeners() {
+            // Re-attach photo upload listener
+            const photoElement = document.querySelector('.profile-photo');
+            if (photoElement && !photoElement.hasAttribute('data-listener')) {
+                photoElement.setAttribute('data-listener', 'true');
+                photoElement.onclick = function() { uploadPhoto(this); };
+            }
+        }
+
+        async function saveCV() {
+            if (!isConnected) {
+                showStatus('Please connect to Supabase first', 'error');
+                return;
+            }
+            
+            const cvName = document.getElementById('cvName').value.trim();
+            if (!cvName) {
+                showStatus('Please enter a CV name', 'error');
+                return;
+            }
+            
+            try {
+                const cvData = getCVData();
+                
+                const { data, error } = await supabaseClient
+                    .from('cvs')
+                    .insert([
+                        {
+                            name: cvName,
+                            data: cvData,
+                            updated_at: new Date().toISOString()
+                        }
+                    ])
+                    .select();
+                
+                if (error) throw error;
+                
+                showStatus(translations[currentLanguage].saved_successfully, 'success');
+                document.getElementById('cvName').value = '';
+            } catch (error) {
+                console.error('Save error:', error);
+                showStatus(translations[currentLanguage].save_error, 'error');
+            }
+        }
+
+        async function showCVList() {
+            if (!isConnected) {
+                showStatus('Please connect to Supabase first', 'error');
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('cvs')
+                    .select('*')
+                    .order('updated_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                const container = document.getElementById('cvListContainer');
+                container.innerHTML = '';
+                
+                if (data.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #6c757d;">No saved CVs found</p>';
+                } else {
+                    data.forEach(cv => {
+                        const item = document.createElement('div');
+                        item.className = 'cv-list-item';
+                        item.innerHTML = `
+                            <div class="cv-list-info">
+                                <div class="cv-list-name">${cv.name}</div>
+                                <div class="cv-list-date">${new Date(cv.updated_at).toLocaleDateString()}</div>
+                            </div>
+                            <div class="cv-list-actions">
+                                <button class="cv-list-btn load" onclick="loadCV('${cv.id}')">Load</button>
+                                <button class="cv-list-btn delete" onclick="deleteCV('${cv.id}')">Delete</button>
+                            </div>
+                        `;
+                        container.appendChild(item);
+                    });
+                }
+                
+                document.getElementById('cvListModal').classList.add('show');
+            } catch (error) {
+                console.error('Load list error:', error);
+                showStatus(translations[currentLanguage].load_error, 'error');
+            }
+        }
+
+        function closeCVList() {
+            document.getElementById('cvListModal').classList.remove('show');
+        }
+
+        async function loadCV(id) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('cvs')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+                
+                if (error) throw error;
+                
+                setCVData(data.data);
+                closeCVList();
+                showStatus(translations[currentLanguage].loaded_successfully, 'success');
+            } catch (error) {
+                console.error('Load error:', error);
+                showStatus(translations[currentLanguage].load_error, 'error');
+            }
+        }
+
+        async function deleteCV(id) {
+            if (!confirm('Are you sure you want to delete this CV?')) {
+                return;
+            }
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('cvs')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                showStatus(translations[currentLanguage].deleted_successfully, 'success');
+                showCVList(); // Refresh the list
+            } catch (error) {
+                console.error('Delete error:', error);
+                showStatus(translations[currentLanguage].delete_error, 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message ${type} show`;
+            
+            setTimeout(() => {
+                statusEl.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            loadStyles();
+            
+            // Load saved credentials
+            const savedUrl = localStorage.getItem('https://mlcqsdjkydevtixcjeqf.supabase.co');
+            const savedKey = localStorage.getItem('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1sY3FzZGpreWRldnRpeGNqZXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyOTUyODUsImV4cCI6MjA3OTg3MTI4NX0.QiXkFZ5VReRMqIZKLLXecP0-Nt4WOo66AS__LIpWXl8');
+            
+            if (savedUrl) document.getElementById('https://mlcqsdjkydevtixcjeqf.supabase.co').value = savedUrl;
+            if (savedKey) document.getElementById('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1sY3FzZGpreWRldnRpeGNqZXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyOTUyODUsImV4cCI6MjA3OTg3MTI4NX0.QiXkFZ5VReRMqIZKLLXecP0-Nt4WOo66AS__LIpWXl8').value = savedKey;
+            
+            // Auto-connect if credentials exist
+            if (savedUrl && savedKey) {
+                connectSupabase();
+            }
+        });
     </script>
 </body>
 </html>

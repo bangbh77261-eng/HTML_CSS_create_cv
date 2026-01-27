@@ -70,6 +70,10 @@
         }
         
         .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
             font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -87,10 +91,10 @@
         }
         
        .contact-icon {
-            width: 34px;
-            height: 34px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #00d4ff, #00fff7);
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -100,7 +104,7 @@
         }
 
         .contact-icon i {
-            font-size: 16px;
+            font-size: 14px;
             color: #1e3c72;
         }
         
@@ -168,7 +172,7 @@
         }
         
         .header {
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             position: relative;
             padding-bottom: 20px;
         }
@@ -203,7 +207,7 @@
         .profession {
             font-size: 18px;
             color: #6c757d;
-            margin-bottom: 20px;
+            margin-bottom: 0px;
             min-height: 25px;
             font-weight: 500;
             letter-spacing: 0.5px;
@@ -212,7 +216,7 @@
         .divider {
             height: px;
             background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, transparent 100%);
-            margin-bottom: 20px;
+            margin-bottom: 1px;
             border-radius: 2px;
         }
         
@@ -607,8 +611,15 @@
                 <span data-lang-en="Add Photo" data-lang-vi="Thêm Ảnh">Add Photo</span>
             </div>
             
-            <div class="contact-info">
-                <h3 class="section-title" contenteditable="true" data-lang-en="Personal Information" data-lang-vi="Thông Tin Cá Nhân">Personal Information</h3>
+             <div class="contact-info" >
+                <h3 class="section-title">
+                <i class="bi bi-person-circle" style="font-size: 32px;"></i>
+                <span contenteditable="true"
+                        data-lang-en="Personal Information"
+                        data-lang-vi="Thông Tin Cá Nhân">
+                    Personal Information
+                </span>
+                </h3>
                 <div class="contact-item">
                     <div class="contact-icon"><i class="bi bi-phone"></i></div>
                     <div contenteditable="true" data-placeholder="Phone number"></div>
@@ -628,10 +639,22 @@
                     <div class="contact-icon"><i class="bi bi-geo-alt"></i></div>
                     <div contenteditable="true" data-placeholder="Address"></div>
                 </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-github"></i></div>
+                    <div contenteditable="true" data-placeholder="GitHub"></div>
+                </div>
             </div>
             
             <div class="skills-section">
-                <h3 class="section-title" contenteditable="true" data-lang-en="Skills" data-lang-vi="Kỹ Năng">Skills</h3>
+                <h3 class="section-title">
+                <i class="bi bi-diamond-fill" style="font-size: 14px;"></i>
+                <span contenteditable="true"
+                        data-lang-en="Personal Information"
+                        data-lang-vi="Thông Tin Cá Nhân">
+                    Personal Information
+                </span>
+                </h3>
                 <div id="skills-container">
                     <div class="skill-item">
                         <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
@@ -653,7 +676,14 @@
             </div>
             
             <div class="languages-section">
-                <h3 class="section-title" contenteditable="true" data-lang-en="Languages" data-lang-vi="Ngôn Ngữ">Languages</h3>
+                <h3 class="section-title">
+                <i class="bi bi-diamond-fill" style="font-size: 14px;"></i>
+                <span contenteditable="true"
+                        data-lang-en="Languages"
+                        data-lang-vi="Ngoại ngữ">
+                    Personal Information
+                </span>
+                </h3>
                 <div id="languages-container">
                     <div class="language-item" contenteditable="true" data-placeholder="Language & proficiency"></div>
                 </div>
@@ -663,7 +693,14 @@
             </div>
             
             <div class="skills-section">
-                <h3 class="section-title" contenteditable="true" data-lang-en="Other" data-lang-vi="Khác">Other</h3>
+                <h3 class="section-title">
+                <i class="bi bi-diamond-fill" style="font-size: 14px;"></i>
+                <span contenteditable="true"
+                        data-lang-en="Other skills"
+                        data-lang-vi="Kỹ năng khác">
+                    Personal Information
+                </span>
+                </h3>
                 <div id="other-container">
                     <div class="language-item" contenteditable="true" data-placeholder="Other skills or tools"></div>
                 </div>
@@ -681,12 +718,26 @@
             </div>
             
             <div class="about-section">
-                <h2 class="right-section-title" contenteditable="true" data-lang-en="Career Objective" data-lang-vi="Mục Tiêu Nghề Nghiệp">Career Objective</h2>
+                 <h2 class="right-section-title">
+                    <i class="bi bi-lightbulb"></i>
+                    <span contenteditable="true"
+                        data-lang-en="Career Objective"
+                        data-lang-vi="Mục Tiêu Nghề Nghiệp">
+                        Career Objective
+                    </span>
+                </h2>
                 <div class="about-me" contenteditable="true" data-placeholder="Your career objectives and goals..."></div>
             </div>
             
             <div class="education-section">
-                <h2 class="right-section-title" contenteditable="true" data-lang-en="Education" data-lang-vi="Học Vấn">Education</h2>
+                <h2 class="right-section-title">
+                    <i class="bi bi-mortarboard"></i>
+                    <span contenteditable="true"
+                        data-lang-en="Education"
+                        data-lang-vi="Học Vấn">
+                        Education
+                    </span>
+                </h2>
                 <div id="education-container">
                     <div class="education-item">
                         <div class="date" contenteditable="true" data-placeholder="Year - Year"></div>
@@ -701,7 +752,14 @@
             </div>
             
             <div class="experience-section">
-                <h2 class="right-section-title" contenteditable="true" data-lang-en="Work Experience" data-lang-vi="Kinh Nghiệm Làm Việc">Work Experience</h2>
+                <h2 class="right-section-title">
+                    <i class="bi bi-briefcase"></i>
+                    <span contenteditable="true"
+                        data-lang-en="Work Experience"
+                        data-lang-vi="Kinh Nghiệm Làm Việc">
+                        Work Experience
+                    </span>
+                </h2>
                 <div id="experience-container">
                     <div class="experience-item">
                         <div class="date" contenteditable="true" data-placeholder="Start Date - End Date"></div>
@@ -716,7 +774,14 @@
             </div>
             
             <div class="certifications-section">
-                <h2 class="right-section-title" contenteditable="true" data-lang-en="Projects / Certifications" data-lang-vi="Dự Án / Chứng Chỉ">Projects / Certifications</h2>
+                <h2 class="right-section-title">
+                    <i class="bi bi-bookmark"></i>
+                    <span contenteditable="true"
+                        data-lang-en="Projects"
+                        data-lang-vi="Dự Án">
+                        Projects
+                    </span>
+                </h2>
                 <div id="certifications-container">
                     <div class="education-item">
                         <div class="date" contenteditable="true" data-placeholder="Year"></div>

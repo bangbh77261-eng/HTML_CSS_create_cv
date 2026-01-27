@@ -1,311 +1,1300 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional CV Builder - Lê Võ Anh Quân Style</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Professional CV - Modern Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --sage-green: #4a5d4e;
-            --sand-beige: #e5ddd3;
-            --text-dark: #333333;
-            --border-color: #d1c7bc;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-
+        
         body {
-            background-color: #f0f0f0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--text-dark);
-            padding: 20px 0;
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-
-        /* Khổ giấy A4 */
-        .a4-page {
+        
+        .cv-container {
             width: 210mm;
             min-height: 297mm;
-            margin: 0 auto;
-            background: white;
+            background-color: white;
+            box-shadow: 0 25px 75px rgba(0, 0, 0, 0.15), 0 10px 40px rgba(0, 0, 0, 0.1);
             display: flex;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            overflow: visible;
+            border-radius: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cv-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            border-radius: 16px 16px 0 0;
+            z-index: 2;
+        }
+        
+        .left-section {
+            width: 38%;
+            background: linear-gradient(180deg, #1a2980 0%, #2d268d 100%);
+            color: white;
+            padding: 40px 25px;
+            border-radius: 16px 0 0 16px;
+            box-shadow: inset -1px 0 0 rgba(255,255,255,0.1);
             position: relative;
             overflow: hidden;
         }
-
-        /* Cột trái */
-        .sidebar {
-            width: 35%;
-            background-color: var(--sand-beige);
-            padding: 40px 25px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Cột phải */
-        .main-content {
-            width: 65%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Profile Image */
-        .profile-container {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 30px;
-            border-radius: 50%;
-            border: 5px solid white;
-            overflow: hidden;
-            cursor: pointer;
-            background: #ccc;
-        }
-        .profile-container img {
+        
+        .left-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z" fill="%23000" opacity=".05"/></g></svg>');
+            opacity: 0.05;
+            z-index: 0;
         }
-
-        /* Header (Green Area) */
-        .header-section {
-            background-color: var(--sage-green);
+        
+        .profile-image-container {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            margin: 0 auto 30px;
+            z-index: 1;
+        }
+        
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             color: white;
-            padding: 40px;
-            min-height: 250px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.4s;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
         }
-
-        .name-title { font-size: 36px; font-weight: 700; margin-bottom: 5px; }
-        .job-title { font-size: 18px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
-        .summary-text { font-size: 13px; line-height: 1.6; text-align: justify; }
-
-        /* Section Styling */
-        .sidebar-section { margin-bottom: 35px; }
-        .sidebar-title { font-size: 20px; font-weight: 700; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; margin-bottom: 15px; }
         
-        .main-section { padding: 40px; }
-        .main-title { font-size: 22px; font-weight: 700; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 25px; }
-
-        /* Item blocks */
-        .item-block { position: relative; margin-bottom: 20px; padding: 5px; transition: 0.3s; }
-        .item-block:hover { background-color: rgba(0,0,0,0.02); outline: 1px dashed #ccc; }
+        .profile-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
         
-        .delete-btn {
-            position: absolute; right: -10px; top: -10px;
-            background: #ff4757; color: white; border: none; border-radius: 50%;
-            width: 24px; height: 24px; display: none; cursor: pointer; z-index: 10;
+        .profile-image-container::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            z-index: 1;
+            animation: pulse 2s infinite;
         }
-        .item-block:hover .delete-btn { display: block; }
-
-        .contact-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 13px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
-        .contact-icon { width: 30px; height: 30px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-
-        .skill-item { font-size: 13px; margin-bottom: 10px; display: flex; align-items: start; gap: 10px; }
-        .skill-item i { margin-top: 4px; font-size: 10px; }
-
-        /* Timeline style for work experience */
-        .exp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .exp-company { font-weight: 700; font-size: 15px; }
-        .exp-date { background: #555; color: white; padding: 2px 12px; border-radius: 15px; font-size: 12px; }
-        .exp-role { color: var(--sage-green); font-weight: 600; text-transform: uppercase; font-size: 13px; margin-bottom: 10px; }
-        .exp-desc { font-size: 13px; padding-left: 15px; border-left: 1px solid #ddd; }
-
-        /* Floating Controls */
-        .controls {
-            position: fixed; top: 20px; right: 20px;
-            background: white; padding: 20px; border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 1000;
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 0.9; }
+            100% { opacity: 0.6; }
+        }
+        
+        .contact-info, .skills-section, .languages-section, .other-section {
+            margin-bottom: 35px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title {
+            font-size: 17px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255,255,255,0.4);
+            color: #fff;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+        
+        .contact-item {
+            display: flex;
+            margin-bottom: 16px;
+            font-size: 14px;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        
+        .contact-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .contact-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        [contenteditable="true"]:focus { outline: 2px solid var(--sage-green); background: white; }
+        .contact-icon i {
+            font-size: 18px;
+            color: white;
+        }
+        
+        .skill-item {
+            margin-bottom: 24px;
+        }
+        
+        .skill-name {
+            font-size: 15px;
+            margin-bottom: 10px;
+            min-height: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .skill-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff 0%, #00fff7 100%);
+            border-radius: 10px;
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+        
+        .skill-level-editor {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+        
+        .level-btn {
+            width: 18%;
+            height: 14px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .level-btn:hover {
+            background-color: rgba(0, 212, 255, 0.7);
+            transform: translateY(-2px);
+        }
+        
+        .level-btn.active {
+            background: linear-gradient(90deg, #00d4ff 0%, #00fff7 100%);
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.8);
+        }
+        
+        .language-item, .other-item {
+            margin-bottom: 12px;
+            font-size: 15px;
+            min-height: 22px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .language-item::before, .other-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d4ff 0%, #00fff7 100%);
+        }
+        
+        .right-section {
+            width: 62%;
+            padding: 40px 35px;
+            background-color: white;
+            min-height: 100%;
+            border-radius: 0 16px 16px 0;
+            position: relative;
+        }
+        
+        .header {
+            margin-bottom: 35px;
+            position: relative;
+            padding-bottom: 25px;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 120px;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+        }
+        
+        .name {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            min-height: 45px;
+            letter-spacing: -0.5px;
+        }
+        
+        .profession {
+            font-size: 20px;
+            color: #5a67d8;
+            margin-bottom: 25px;
+            min-height: 28px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .profession::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #5a67d8;
+        }
+        
+        .right-section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a2980;
+            padding-left: 22px;
+            position: relative;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
 
+        .right-section-title::before {
+            content: "";
+            width: 8px;
+            height: 24px;
+            background: linear-gradient(180deg, #1a2980, #26d0ce);
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 4px;
+        }
+        
+        .right-section-title i {
+            margin-left: 12px;
+            font-size: 18px;
+            color: #5a67d8;
+        }
+        
+        .about-section, .experience-section, .education-section, .certifications-section {
+            margin-bottom: 35px;
+        }
+        
+        .about-me {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #4a5568;
+            min-height: 80px;
+            padding: 15px;
+            background-color: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        
+        .experience-item, .education-item {
+            margin-bottom: 25px;
+            position: relative;
+            padding-left: 25px;
+            padding-top: 5px;
+        }
+        
+        .experience-item::before, .education-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 1;
+        }
+        
+        .experience-item::after, .education-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 22px;
+            width: 2px;
+            height: calc(100% - 10px);
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+        }
+        
+        .date {
+            font-size: 14px;
+            color: #5a67d8;
+            margin-bottom: 8px;
+            font-weight: 700;
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(102, 126, 234, 0.12);
+            border-radius: 20px;
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.15);
+        }
+        
+        .role, .degree {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 6px;
+        }
+        
+        .company, .school {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .company i, .school i {
+            margin-right: 8px;
+            color: #667eea;
+            font-size: 14px;
+        }
+        
+        .description {
+            font-size: 15px;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 5px;
+            padding: 12px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid #cbd5e0;
+        }
+        
+        [contentEditable="true"] {
+            outline: none;
+            transition: all 0.3s;
+            cursor: text;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+        
+        [contentEditable="true"]:hover {
+            background-color: rgba(102, 126, 234, 0.08);
+        }
+        
+        [contentEditable="true"]:focus {
+            background-color: rgba(102, 126, 234, 0.15);
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+        }
+        
+        [contentEditable="true"]:empty:before {
+            content: attr(data-placeholder);
+            color: #a0aec0;
+            font-style: italic;
+        }
+        
+        .control-panel {
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+            padding: 22px;
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            border-radius: 16px;
+            z-index: 1000;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+            max-width: 320px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .panel-section {
+            margin-bottom: 18px;
+        }
+        
+        .panel-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            color: #00fff7;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .panel-label i {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        
+        .color-picker-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .color-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(255, 255, 255, 0.12);
+            padding: 10px 14px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .color-input-wrapper:hover {
+            background-color: rgba(255, 255, 255, 0.18);
+            border-color: #00fff7;
+            transform: translateY(-2px);
+        }
+        
+        .color-input-wrapper label {
+            font-size: 13px;
+            color: white;
+            flex: 1;
+            font-weight: 600;
+        }
+        
+        .color-input-wrapper input[type="color"] {
+            width: 44px;
+            height: 34px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .color-input-wrapper input[type="color"]:hover {
+            border-color: #00fff7;
+            transform: scale(1.08);
+        }
+        
+        .size-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .size-controls input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .size-controls input[type="range"]::-webkit-slider-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d4ff 0%, #00fff7 100%);
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.7);
+            -webkit-appearance: none;
+        }
+        
+        .size-controls input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d4ff 0%, #00fff7 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.7);
+        }
+        
+        .size-value {
+            font-size: 13px;
+            color: #00fff7;
+            min-width: 40px;
+            text-align: right;
+            font-weight: 800;
+        }
+        
+        .section-selector {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 14px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .section-selector:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: #00fff7;
+        }
+        
+        .section-selector:focus {
+            outline: none;
+            border-color: #00fff7;
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.3);
+        }
+        
+        .section-selector option {
+            background-color: #1a2980;
+            color: white;
+            padding: 12px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #00d4ff 0%, #00fff7 100%);
+            color: #1a2980;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.3s;
+            flex: 1;
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.6);
+        }
+        
+        .control-btn.secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .control-btn.secondary:hover {
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .instructions {
+            font-size: 13px;
+            line-height: 1.6;
+            border-top: 1px solid rgba(255, 255, 255, 0.25);
+            padding-top: 15px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .instructions p {
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .instructions i {
+            margin-right: 8px;
+            font-size: 12px;
+            color: #00fff7;
+        }
+        
+        .add-item-btn {
+            background-color: transparent;
+            color: #5a67d8;
+            border: 2px dashed #5a67d8;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 12px;
+            transition: all 0.3s;
+            width: 100%;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .add-item-btn:hover {
+            background-color: rgba(90, 103, 216, 0.1);
+            border-style: solid;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(90, 103, 216, 0.2);
+        }
+        
+        .theme-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .theme-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .theme-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .theme-btn.active {
+            background: linear-gradient(135deg, #00d4ff 0%, #00fff7 100%);
+            color: #1a2980;
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
+        }
+        
         @media print {
-            body { padding: 0; background: white; }
-            .controls, .delete-btn, .add-btn { display: none !important; }
-            .a4-page { box-shadow: none; margin: 0; }
-            .item-block:hover { outline: none; background: none; }
+            body {
+                width: 210mm;
+                padding: 0;
+                margin: 0;
+                background: white;
+            }
+            
+            .cv-container {
+                box-shadow: none;
+                min-height: auto;
+                border-radius: 0;
+            }
+            
+            .cv-container::before {
+                height: 5px;
+                border-radius: 0;
+            }
+            
+            .control-panel {
+                display: none !important;
+            }
+            
+            .skill-level-editor {
+                display: none !important;
+            }
+            
+            .add-item-btn {
+                display: none !important;
+            }
+            
+            .profile-image-container::after {
+                display: none;
+            }
+            
+            /* Page break control */
+            .experience-item, .education-item {
+                page-break-inside: avoid;
+            }
+        }
+    
+        @media (max-width: 1200px) {
+            body {
+                padding: 15px;
+            }
+            
+            .cv-container {
+                width: 100%;
+                max-width: 210mm;
+            }
+            
+            .control-panel {
+                position: relative;
+                top: auto;
+                right: auto;
+                max-width: 100%;
+                margin-bottom: 30px;
+                border-radius: 16px;
+            }
         }
     </style>
 </head>
 <body>
-
-    <div class="controls no-print">
-        <h6 class="mb-3">Công cụ CV</h6>
-        <button class="btn btn-primary btn-sm w-100 mb-2" onclick="window.print()">
-            <i class="fa-solid fa-file-pdf me-2"></i> Xuất PDF / In
-        </button>
-        <button class="btn btn-outline-secondary btn-sm w-100 mb-2" onclick="toggleLanguage()">
-            <i class="fa-solid fa-language me-2"></i> Chuyển EN/VI
-        </button>
-        <hr>
-        <div class="small text-muted">Mẹo: Nhấn vào văn bản để sửa nội dung.</div>
-    </div>
-
-    <div class="a4-page" id="cv-content">
-        <div class="sidebar">
-            <div class="profile-container" onclick="document.getElementById('fileInput').click()">
-                <img id="profilePic" src="https://via.placeholder.com/180" alt="Avatar">
-                <input type="file" id="fileInput" hidden accept="image/*" onchange="previewImage(event)">
+    <div class="control-panel">
+        <div class="panel-section">
+            <div class="panel-label"><i class="fas fa-palette"></i> <span data-lang-en="Theme" data-lang-vi="Giao Diện">Theme</span></div>
+            <div class="theme-selector">
+                <div class="theme-btn active" onclick="changeTheme('blue')">Blue</div>
+                <div class="theme-btn" onclick="changeTheme('purple')">Purple</div>
+                <div class="theme-btn" onclick="changeTheme('dark')">Dark</div>
+                <div class="theme-btn" onclick="changeTheme('red')">Red</div>
+                <div class="theme-btn" onclick="changeTheme('green')">Green</div>
             </div>
-
-            <div class="sidebar-section">
-            <h3 class="sidebar-title" data-vi="Liên hệ" data-en="Contact">Liên hệ</h3>
-            <div id="contact-list">
-                <div class="contact-item item-block">
-                    <div class="contact-icon"><i class="fa-solid fa-calendar-days"></i></div>
-                    <div class="contact-text">
-                        <small class="contact-label" data-vi="Ngày sinh" data-en="Birthday">Ngày sinh</small>
-                        <div contenteditable="true">24/08/1996</div>
-                    </div>
-                </div>
-
-                <div class="contact-item item-block">
-                    <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
-                    <div class="contact-text">
-                        <small class="contact-label" data-vi="Số điện thoại" data-en="Phone Number">Số điện thoại</small>
-                        <div contenteditable="true">(024) 6680 5588</div>
-                    </div>
-                </div>
-
-                <div class="contact-item item-block">
-                    <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
-                    <div class="contact-text">
-                        <small class="contact-label" data-vi="Email" data-en="Email">Email</small>
-                        <div contenteditable="true">hotro@topcv.vn</div>
-                    </div>
-                </div>
-
-                <div class="contact-item item-block">
-                    <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
-                    <div class="contact-text">
-                        <small class="contact-label" data-vi="Địa chỉ" data-en="Address">Địa chỉ</small>
-                        <div contenteditable="true">Số 10, Ngọc Hà, Ba Đình, Hà Nội</div>
-                    </div>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label"><i class="fas fa-sliders-h"></i> <span data-lang-en="Customize Section" data-lang-vi="Tùy Chỉnh Phần">Customize Section</span></div>
+            <select class="section-selector" id="sectionSelector">
+                <option value="name" data-lang-en="Name" data-lang-vi="Họ Tên">Name</option>
+                <option value="profession" data-lang-en="Job Title" data-lang-vi="Chức Danh">Job Title</option>
+                <option value="section-title" data-lang-en="Left Section Titles" data-lang-vi="Tiêu Đề Trái">Left Section Titles</option>
+                <option value="right-section-title" data-lang-en="Right Section Titles" data-lang-vi="Tiêu Đề Phải">Right Section Titles</option>
+                <option value="contact-item" data-lang-en="Contact Info" data-lang-vi="Thông Tin Liên Hệ">Contact Info</option>
+                <option value="skill-name" data-lang-en="Skill Names" data-lang-vi="Tên Kỹ Năng">Skill Names</option>
+                <option value="about-me" data-lang-en="Career Objective" data-lang-vi="Mục Tiêu">Career Objective</option>
+                <option value="date" data-lang-en="Dates" data-lang-vi="Ngày Tháng">Dates</option>
+                <option value="role" data-lang-en="Job Titles/Roles" data-lang-vi="Chức Danh/Vai Trò">Job Titles/Roles</option>
+                <option value="company" data-lang-en="Companies/Schools" data-lang-vi="Công Ty/Trường">Companies/Schools</option>
+                <option value="description" data-lang-en="Descriptions" data-lang-vi="Mô Tả">Descriptions</option>
+            </select>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label"><i class="fas fa-fill-drip"></i> <span data-lang-en="Text Color" data-lang-vi="Màu Chữ">Text Color</span></div>
+            <div class="color-input-wrapper">
+                <label data-lang-en="Color" data-lang-vi="Màu">Color</label>
+                <input type="color" id="textColor" value="#2c3e50">
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label"><i class="fas fa-text-height"></i> <span data-lang-en="Font Size" data-lang-vi="Cỡ Chữ">Font Size</span></div>
+            <div class="size-controls">
+                <input type="range" id="fontSize" min="10" max="40" value="14">
+                <span class="size-value"><span id="fontSizeValue">14</span>px</span>
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label"><i class="fas fa-bold"></i> <span data-lang-en="Font Weight" data-lang-vi="Độ Đậm">Font Weight</span></div>
+            <div class="size-controls">
+                <input type="range" id="fontWeight" min="300" max="800" step="100" value="400">
+                <span class="size-value" id="fontWeightValue">400</span>
+            </div>
+        </div>
+        
+        <div class="btn-group">
+            <button class="control-btn" onclick="printCV()"><i class="fas fa-print"></i> <span data-lang-en="Print" data-lang-vi="In">Print</span></button>
+            <button class="control-btn secondary" onclick="toggleLanguage()"><i class="fas fa-globe"></i> <span data-lang-en="EN/VI" data-lang-vi="VI/EN">EN/VI</span></button>
+        </div>
+        
+        <div class="instructions">
+            <p><i class="fas fa-mouse-pointer"></i> <span data-lang-en="Select section above to customize" data-lang-vi="Chọn phần ở trên để tùy chỉnh">Select section above to customize</span></p>
+            <p><i class="fas fa-sync-alt"></i> <span data-lang-en="Changes apply to all similar items" data-lang-vi="Thay đổi áp dụng cho tất cả">Changes apply to all similar items</span></p>
+            <p><i class="fas fa-edit"></i> <span data-lang-en="Click on any text to edit" data-lang-vi="Nhấp vào bất kỳ văn bản để chỉnh sửa">Click on any text to edit</span></p>
+        </div>
+    </div>
+    
+    <div class="cv-container theme-blue">
+        <div class="left-section">
+            <div class="profile-image-container">
+                <div class="profile-image" onclick="changeProfilePic(this)" title="Click to upload photo">
+                    <span data-lang-en="Add Photo" data-lang-vi="Thêm Ảnh">Add Photo</span>
                 </div>
             </div>
             
-            <button class="btn btn-sm btn-link p-0 add-btn text-dark no-print" onclick="addContact()">+ Thêm thông tin khác</button>
-        </div>
-
-            <div class="sidebar-section">
-                <h3 class="sidebar-title" data-vi="Kỹ năng" data-en="Skills">Kỹ năng</h3>
-                <div id="skill-list">
-                    <div class="skill-item item-block">
-                        <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
-                        <i class="fa-solid fa-sparkles text-muted"></i>
-                        <div contenteditable="true">Kỹ năng xây dựng chiến lược truyền thông</div>
-                    </div>
+            <div class="contact-info">
+                <h3 class="section-title"><i class="fas fa-user-circle" style="font-size: 32px;"></i> <span contenteditable="true" data-lang-en="Personal Information" data-lang-vi="Thông Tin Cá Nhân">Personal Information</span></h3>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-phone"></i></div>
+                    <div contenteditable="true" data-placeholder="Phone number"></div>
                 </div>
-                <button class="btn btn-sm btn-link p-0 add-btn text-dark" onclick="addSkill()">+ Thêm</button>
-            </div>
 
-            <div class="sidebar-section">
-                <h3 class="sidebar-title" data-vi="Chứng chỉ" data-en="Certifications">Chứng chỉ</h3>
-                <div id="cert-list">
-                    <div class="item-block">
-                        <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
-                        <div class="fw-bold" contenteditable="true">2022</div>
-                        <div contenteditable="true">Digital Marketing Specialization</div>
-                    </div>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-calendar"></i></div>
+                    <div contenteditable="true" data-placeholder="Date of birth"></div>
                 </div>
-                <button class="btn btn-sm btn-link p-0 add-btn text-dark" onclick="addCert()">+ Thêm</button>
-            </div>
-        </div>
 
-        <div class="main-content">
-            <div class="header-section">
-                <h1 class="name-title" contenteditable="true">Lê Võ Anh Quân</h1>
-                <div class="job-title" contenteditable="true" data-vi="TRƯỞNG PHÒNG TRUYỀN THÔNG" data-en="COMMUNICATIONS MANAGER">TRƯỞNG PHÒNG TRUYỀN THÔNG</div>
-                <div class="summary-text" contenteditable="true">
-                    Với 7 năm kinh nghiệm trong lĩnh vực truyền thông, từng đảm nhiệm vai trò xây dựng thương hiệu và triển khai chiến dịch truyền thông cho các doanh nghiệp...
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-envelope"></i></div>
+                    <div contenteditable="true" data-placeholder="Email"></div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-geo-alt"></i></div>
+                    <div contenteditable="true" data-placeholder="Address"></div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-github"></i></div>
+                    <div contenteditable="true" data-placeholder="GitHub"></div>
                 </div>
             </div>
-
-            <div class="main-section">
-                <h3 class="main-title" data-vi="Kinh nghiệm làm việc" data-en="Work Experience">Kinh nghiệm làm việc</h3>
-                <div id="experience-list">
-                    <div class="item-block mb-4">
-                        <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
-                        <div class="exp-header">
-                            <div class="exp-company" contenteditable="true">KMG EcoStyle</div>
-                            <div class="exp-date" contenteditable="true">2021 - Nay</div>
+            
+            <div class="skills-section">
+                <h3 class="section-title"><i class="bi bi-tools"></i> <span contenteditable="true" data-lang-en="Professional Skills" data-lang-vi="Kỹ Năng Chuyên Môn">Professional Skills</span></h3>
+                <div id="skills-container">
+                    <div class="skill-item">
+                        <div class="skill-name">
+                            <span contenteditable="true" data-placeholder="Skill name">Web Development</span>
+                            <span class="skill-percentage">80%</span>
                         </div>
-                        <div class="exp-role" contenteditable="true">TRƯỞNG NHÓM TRUYỀN THÔNG</div>
-                        <div class="exp-desc" contenteditable="true">
-                            • Xây dựng và triển khai chiến lược truyền thông tích hợp trên các kênh: social media, PR...<br>
-                            • Quản lý ngân sách truyền thông, đo lường hiệu quả...
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 80%"></div>
+                        </div>
+                        <div class="skill-level-editor">
+                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 20)"></div>
+                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 40)"></div>
+                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 60)"></div>
+                            <div class="level-btn active" onclick="setSkillLevel(this.parentNode, 80)"></div>
+                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 100)"></div>
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-outline-secondary btn-sm w-100 add-btn" onclick="addExperience()">
-                    <i class="fa-solid fa-plus me-2"></i> Thêm kinh nghiệm
+                <button class="add-item-btn" onclick="addSkill()">
+                    <i class="fas fa-plus-circle"></i> <span data-lang-en="+ Add Skill" data-lang-vi="+ Thêm Kỹ Năng">+ Add Skill</span>
+                </button>
+            </div>
+            
+            <div class="languages-section">
+                <h3 class="section-title"><i class="fas fa-language"></i> <span contenteditable="true" data-lang-en="Languages" data-lang-vi="Ngôn Ngữ">Languages</span></h3>
+                <div id="languages-container">
+                    <div class="language-item" contenteditable="true" data-placeholder="Language & proficiency">English (Fluent)</div>
+                </div>
+                <button class="add-item-btn" onclick="addLanguage()">
+                    <i class="fas fa-plus-circle"></i> <span data-lang-en="+ Add Language" data-lang-vi="+ Thêm Ngôn Ngữ">+ Add Language</span>
+                </button>
+            </div>
+            
+            <div class="other-section">
+                <h3 class="section-title"><i class="fas fa-certificate"></i> <span contenteditable="true" data-lang-en="Other Skills" data-lang-vi="Kỹ Năng Khác">Other Skills</span></h3>
+                <div id="other-container">
+                    <div class="other-item" contenteditable="true" data-placeholder="Other skills or tools">Project Management</div>
+                </div>
+                <button class="add-item-btn" onclick="addOther()">
+                    <i class="fas fa-plus-circle"></i> <span data-lang-en="+ Add Item" data-lang-vi="+ Thêm Mục">+ Add Item</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="right-section">
+            <div class="header">
+                <div class="name" contenteditable="true" data-placeholder="Full Name">Johnathan Doe</div>
+                <div class="profession" contenteditable="true" data-placeholder="Job Title">Senior Web Developer</div>
+                <div class="divider"></div>
+            </div>
+            
+            <div class="about-section">
+                <h2 class="right-section-title"><i class="fas fa-bullseye"></i> <span contenteditable="true" data-lang-en="Career Objective" data-lang-vi="Mục Tiêu Nghề Nghiệp">Career Objective</span></h2>
+                <div class="about-me" contenteditable="true" data-placeholder="Your career objectives and goals...">Highly motivated and results-driven web developer with 5+ years of experience creating responsive and user-friendly websites. Seeking to leverage my expertise in front-end and back-end development to contribute to innovative projects at a forward-thinking company.</div>
+            </div>
+            
+            <div class="experience-section">
+                <h2 class="right-section-title"><i class="fas fa-briefcase"></i> <span contenteditable="true" data-lang-en="Work Experience" data-lang-vi="Kinh Nghiệm Làm Việc">Work Experience</span></h2>
+                <div id="experience-container">
+                    <div class="experience-item">
+                        <div class="date" contenteditable="true" data-placeholder="Start Date - End Date">2020 - Present</div>
+                        <div class="role" contenteditable="true" data-placeholder="Job Title">Senior Web Developer</div>
+                        <div class="company"><i class="fas fa-building"></i> <span contenteditable="true" data-placeholder="Company Name">Tech Innovations Inc.</span></div>
+                        <div class="description" contenteditable="true" data-placeholder="Job responsibilities and achievements...">Led development of responsive web applications using React.js and Node.js. Implemented RESTful APIs that improved data processing speed by 40%. Mentored 3 junior developers and improved team productivity by 25%.</div>
+                    </div>
+                </div>
+                <button class="add-item-btn" onclick="addExperience()">
+                    <i class="fas fa-plus-circle"></i> <span data-lang-en="+ Add Experience" data-lang-vi="+ Thêm Kinh Nghiệm">+ Add Experience</span>
+                </button>
+            </div>
+            
+            <div class="education-section">
+                <h2 class="right-section-title"><i class="fas fa-graduation-cap"></i> <span contenteditable="true" data-lang-en="Education" data-lang-vi="Học Vấn">Education</span></h2>
+                <div id="education-container">
+                    <div class="education-item">
+                        <div class="date" contenteditable="true" data-placeholder="Year - Year">2015 - 2019</div>
+                        <div class="degree" contenteditable="true" data-placeholder="Degree / Major">Bachelor of Computer Science</div>
+                        <div class="school"><i class="fas fa-university"></i> <span contenteditable="true" data-placeholder="School / University">University of Technology</span></div>
+                        <div class="description" contenteditable="true" data-placeholder="Description, GPA, achievements...">Graduated Magna Cum Laude with a 3.8 GPA. Specialized in Web Technologies and Human-Computer Interaction. President of Computer Science Club.</div>
+                    </div>
+                </div>
+                <button class="add-item-btn" onclick="addEducation()">
+                    <i class="fas fa-plus-circle"></i> <span data-lang-en="+ Add Education" data-lang-vi="+ Thêm Học Vấn">+ Add Education</span>
+                </button>
+            </div>
+            
+            <div class="certifications-section">
+                <h2 class="right-section-title"><i class="fas fa-certificate"></i> <span contenteditable="true" data-lang-en="Certifications & Projects" data-lang-vi="Chứng Chỉ & Dự Án">Certifications & Projects</span></h2>
+                <div id="certifications-container">
+                    <div class="education-item">
+                        <div class="date" contenteditable="true" data-placeholder="Year">2022</div>
+                        <div class="degree" contenteditable="true" data-placeholder="Project / Certificate Name">AWS Certified Developer</div>
+                        <div class="description" contenteditable="true" data-placeholder="Description...">Certified in developing and maintaining applications on the AWS platform. Specialized in serverless architectures and cloud security.</div>
+                    </div>
+                </div>
+                <button class="add-item-btn" onclick="addCertification()">
+                    <i class="fas fa-plus-circle"></i> <span data-lang-en="+ Add Item" data-lang-vi="+ Thêm Mục">+ Add Item</span>
                 </button>
             </div>
         </div>
     </div>
-
+    
     <script>
-        let currentLang = 'vi';
-
-        // Thay đổi ngôn ngữ
-        function toggleLanguage() {
-            currentLang = currentLang === 'vi' ? 'en' : 'vi';
-            document.querySelectorAll('[data-vi]').forEach(el => {
-                el.innerText = el.getAttribute(`data-${currentLang}`);
+        let currentLanguage = 'en';
+        let currentTheme = 'blue';
+        
+        // Customization functionality
+        const sectionSelector = document.getElementById('sectionSelector');
+        const textColor = document.getElementById('textColor');
+        const fontSize = document.getElementById('fontSize');
+        const fontWeight = document.getElementById('fontWeight');
+        const fontSizeValue = document.getElementById('fontSizeValue');
+        const fontWeightValue = document.getElementById('fontWeightValue');
+        
+        // Update display values
+        fontSize.addEventListener('input', function() {
+            fontSizeValue.textContent = this.value;
+            applyCustomization();
+        });
+        
+        fontWeight.addEventListener('input', function() {
+            fontWeightValue.textContent = this.value;
+            applyCustomization();
+        });
+        
+        textColor.addEventListener('input', applyCustomization);
+        sectionSelector.addEventListener('change', loadCurrentStyles);
+        
+        function loadCurrentStyles() {
+            const selectedClass = sectionSelector.value;
+            let element;
+            
+            if (selectedClass === 'name') {
+                element = document.querySelector('.name');
+            } else if (selectedClass === 'profession') {
+                element = document.querySelector('.profession');
+            } else {
+                element = document.querySelector('.' + selectedClass);
+            }
+            
+            if (element) {
+                const styles = window.getComputedStyle(element);
+                textColor.value = rgbToHex(styles.color);
+                fontSize.value = parseInt(styles.fontSize);
+                fontSizeValue.textContent = parseInt(styles.fontSize);
+                fontWeight.value = styles.fontWeight;
+                fontWeightValue.textContent = styles.fontWeight;
+            }
+        }
+        
+        function rgbToHex(rgb) {
+            const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (!match) return '#2c3e50';
+            
+            function hex(x) {
+                return ("0" + parseInt(x).toString(16)).slice(-2);
+            }
+            return "#" + hex(match[1]) + hex(match[2]) + hex(match[3]);
+        }
+        
+        function applyCustomization() {
+            const selectedClass = sectionSelector.value;
+            const elements = document.querySelectorAll('.' + selectedClass);
+            
+            elements.forEach(element => {
+                element.style.color = textColor.value;
+                element.style.fontSize = fontSize.value + 'px';
+                element.style.fontWeight = fontWeight.value;
             });
         }
-
-        // Preview ảnh đại diện
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                document.getElementById('profilePic').src = reader.result;
+        
+        // Initialize with name styles
+        loadCurrentStyles();
+        
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'vi' : 'en';
+            const elements = document.querySelectorAll('[data-lang-en]');
+            
+            elements.forEach(el => {
+                if (!el.hasAttribute('contenteditable') || el.classList.contains('section-title') || el.classList.contains('right-section-title')) {
+                    if (el.classList.contains('section-title') || el.classList.contains('right-section-title')) {
+                        el.textContent = el.getAttribute(`data-lang-${currentLanguage}`);
+                    } else if (!el.hasAttribute('contenteditable')) {
+                        el.textContent = el.getAttribute(`data-lang-${currentLanguage}`);
+                    }
+                }
+            });
+            
+            // Update option texts
+            const options = document.querySelectorAll('option[data-lang-en]');
+            options.forEach(option => {
+                option.textContent = option.getAttribute(`data-lang-${currentLanguage}`);
+            });
+            
+            // Update placeholders
+            const editableElements = document.querySelectorAll('[contenteditable="true"][data-placeholder]');
+            editableElements.forEach(el => {
+                const placeholders = {
+                    en: {
+                        'Phone number': 'Phone number',
+                        'Date of birth': 'Date of birth',
+                        'Email': 'Email',
+                        'Address': 'Address',
+                        'LinkedIn': 'LinkedIn',
+                        'Skill name': 'Skill name',
+                        'Language & proficiency': 'Language & proficiency',
+                        'Other skills or tools': 'Other skills or tools',
+                        'Full Name': 'Full Name',
+                        'Job Title': 'Job Title',
+                        'Your career objectives and goals...': 'Your career objectives and goals...',
+                        'Year - Year': 'Year - Year',
+                        'Degree / Major': 'Degree / Major',
+                        'School / University': 'School / University',
+                        'Description, GPA, achievements...': 'Description, GPA, achievements...',
+                        'Start Date - End Date': 'Start Date - End Date',
+                        'Job Title': 'Job Title',
+                        'Company Name': 'Company Name',
+                        'Job responsibilities and achievements...': 'Job responsibilities and achievements...',
+                        'Year': 'Year',
+                        'Project / Certificate Name': 'Project / Certificate Name',
+                        'Description...': 'Description...'
+                    },
+                    vi: {
+                        'Phone number': 'Số điện thoại',
+                        'Date of birth': 'Ngày sinh',
+                        'Email': 'Email',
+                        'Address': 'Địa chỉ',
+                        'LinkedIn': 'LinkedIn',
+                        'Skill name': 'Tên kỹ năng',
+                        'Language & proficiency': 'Ngôn ngữ & trình độ',
+                        'Other skills or tools': 'Kỹ năng hoặc công cụ khác',
+                        'Full Name': 'Họ và Tên',
+                        'Job Title': 'Chức Danh',
+                        'Your career objectives and goals...': 'Mục tiêu nghề nghiệp của bạn...',
+                        'Year - Year': 'Năm - Năm',
+                        'Degree / Major': 'Bằng cấp / Chuyên ngành',
+                        'School / University': 'Trường học / Đại học',
+                        'Description, GPA, achievements...': 'Mô tả, GPA, thành tích...',
+                        'Start Date - End Date': 'Ngày Bắt Đầu - Ngày Kết Thúc',
+                        'Job Title': 'Chức Danh',
+                        'Company Name': 'Tên Công Ty',
+                        'Job responsibilities and achievements...': 'Trách nhiệm và thành tích công việc...',
+                        'Year': 'Năm',
+                        'Project / Certificate Name': 'Tên Dự Án / Chứng Chỉ',
+                        'Description...': 'Mô tả...'
+                    }
+                };
+                
+                const currentPlaceholder = el.getAttribute('data-placeholder');
+                const newPlaceholder = placeholders[currentLanguage][currentPlaceholder] || currentPlaceholder;
+                el.setAttribute('data-placeholder', newPlaceholder);
+            });
+        }
+        
+        function setSkillLevel(parentElement, percentage) {
+            const skillBar = parentElement.previousElementSibling;
+            const progressBar = skillBar.querySelector('.skill-progress');
+            progressBar.style.width = percentage + '%';
+            
+            const skillName = parentElement.parentElement.querySelector('.skill-name');
+            const percentageSpan = skillName.querySelector('.skill-percentage');
+            if (percentageSpan) {
+                percentageSpan.textContent = percentage + '%';
             }
-            reader.readAsDataURL(event.target.files[0]);
+            
+            const levelButtons = parentElement.querySelectorAll('.level-btn');
+            levelButtons.forEach((btn, index) => {
+                const btnPercentage = (index + 1) * 20;
+                btn.classList.toggle('active', btnPercentage <= percentage);
+            });
         }
-
-        // Thêm các thành phần
-        function addContact() {
-            const html = `
-                <div class="contact-item item-block">
-                    <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
-                    <div class="contact-icon"><i class="fa-solid fa-link"></i></div>
-                    <div contenteditable="true">Thông tin mới</div>
-                </div>`;
-            document.getElementById('contact-list').insertAdjacentHTML('beforeend', html);
+        
+        function changeProfilePic(element) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        element.innerHTML = '';
+                        element.style.backgroundImage = `url(${event.target.result})`;
+                        element.style.backgroundSize = 'cover';
+                        element.style.backgroundPosition = 'center';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            
+            input.click();
         }
-
+        
         function addSkill() {
-            const html = `
-                <div class="skill-item item-block">
-                    <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
-                    <i class="fa-solid fa-sparkles text-muted"></i>
-                    <div contenteditable="true">Kỹ năng mới</div>
-                </div>`;
-            document.getElementById('skill-list').insertAdjacentHTML('beforeend', html);
+            const container = document.getElementById('skills-container');
+            const skillItem = document.createElement('div');
+            skillItem.className = 'skill-item';
+            skillItem.innerHTML = `
+                <div class="skill-name">
+                    <span contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Skill name' : 'Tên kỹ năng'}"></span>
+                    <span class="skill-percentage">80%</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-progress" style="width: 80%"></div>
+                </div>
+                <div class="skill-level-editor">
+                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 20)"></div>
+                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 40)"></div>
+                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 60)"></div>
+                    <div class="level-btn active" onclick="setSkillLevel(this.parentNode, 80)"></div>
+                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 100)"></div>
+                </div>
+            `;
+            container.appendChild(skillItem);
         }
-
-        function addCert() {
-            const html = `
-                <div class="item-block">
-                    <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
-                    <div class="fw-bold" contenteditable="true">Năm</div>
-                    <div contenteditable="true">Tên chứng chỉ</div>
-                </div>`;
-            document.getElementById('cert-list').insertAdjacentHTML('beforeend', html);
+        
+        function addLanguage() {
+            const container = document.getElementById('languages-container');
+            const item = document.createElement('div');
+            item.className = 'language-item';
+            item.setAttribute('contenteditable', 'true');
+            item.setAttribute('data-placeholder', currentLanguage === 'en' ? 'Language & proficiency' : 'Ngôn ngữ & trình độ');
+            container.appendChild(item);
         }
-
+        
+        function addOther() {
+            const container = document.getElementById('other-container');
+            const item = document.createElement('div');
+            item.className = 'other-item';
+            item.setAttribute('contenteditable', 'true');
+            item.setAttribute('data-placeholder', currentLanguage === 'en' ? 'Other skills or tools' : 'Kỹ năng hoặc công cụ khác');
+            container.appendChild(item);
+        }
+        
+        function addEducation() {
+            const container = document.getElementById('education-container');
+            const item = document.createElement('div');
+            item.className = 'education-item';
+            item.innerHTML = `
+                <div class="date" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Year - Year' : 'Năm - Năm'}"></div>
+                <div class="degree" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Degree / Major' : 'Bằng cấp / Chuyên ngành'}"></div>
+                <div class="school"><i class="fas fa-university"></i> <span contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'School / University' : 'Trường học / Đại học'}"></span></div>
+                <div class="description" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Description, GPA, achievements...' : 'Mô tả, GPA, thành tích...'}"></div>
+            `;
+            container.appendChild(item);
+        }
+        
         function addExperience() {
-            const html = `
-                <div class="item-block mb-4">
-                    <button class="delete-btn" onclick="this.parentElement.remove()">&times;</button>
-                    <div class="exp-header">
-                        <div class="exp-company" contenteditable="true">Tên Công Ty</div>
-                        <div class="exp-date" contenteditable="true">Thời gian</div>
-                    </div>
-                    <div class="exp-role" contenteditable="true">Chức danh</div>
-                    <div class="exp-desc" contenteditable="true">• Mô tả công việc...</div>
-                </div>`;
-            document.getElementById('experience-list').insertAdjacentHTML('beforeend', html);
+            const container = document.getElementById('experience-container');
+            const item = document.createElement('div');
+            item.className = 'experience-item';
+            item.innerHTML = `
+                <div class="date" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Start Date - End Date' : 'Ngày Bắt Đầu - Ngày Kết Thúc'}"></div>
+                <div class="role" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Job Title' : 'Chức Danh'}"></div>
+                <div class="company"><i class="fas fa-building"></i> <span contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Company Name' : 'Tên Công Ty'}"></span></div>
+                <div class="description" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Job responsibilities and achievements...' : 'Trách nhiệm và thành tích công việc...'}"></div>
+            `;
+            container.appendChild(item);
+        }
+        
+        function addCertification() {
+            const container = document.getElementById('certifications-container');
+            const item = document.createElement('div');
+            item.className = 'education-item';
+            item.innerHTML = `
+                <div class="date" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Year' : 'Năm'}"></div>
+                <div class="degree" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Project / Certificate Name' : 'Tên Dự Án / Chứng Chỉ'}"></div>
+                <div class="description" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Description...' : 'Mô tả...'}"></div>
+            `;
+            container.appendChild(item);
+        }
+        
+        function changeTheme(theme) {
+            const cvContainer = document.querySelector('.cv-container');
+            cvContainer.classList.remove('theme-blue', 'theme-purple', 'theme-dark', 'theme-red', 'theme-green');
+            cvContainer.classList.add('theme-' + theme);
+            
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            themeButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            currentTheme = theme;
+        }
+        
+        function printCV() {
+            const editors = document.querySelectorAll('.skill-level-editor, .add-item-btn');
+            editors.forEach(editor => {
+                editor.setAttribute('data-original-display', editor.style.display);
+                editor.style.display = 'none';
+            });
+            
+            const controlPanel = document.querySelector('.control-panel');
+            controlPanel.setAttribute('data-original-display', controlPanel.style.display);
+            controlPanel.style.display = 'none';
+            
+            window.print();
+            
+            setTimeout(function() {
+                editors.forEach(editor => {
+                    editor.style.display = editor.getAttribute('data-original-display') || '';
+                });
+                controlPanel.style.display = controlPanel.getAttribute('data-original-display') || '';
+            }, 500);
         }
     </script>
 </body>

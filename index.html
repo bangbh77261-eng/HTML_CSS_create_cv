@@ -119,6 +119,7 @@
         .left-section {
             padding: 20px 30px 15px;
             border-top: 3px solid #d4cdc0;
+            position: relative;
         }
         
         .left-section-title {
@@ -218,6 +219,7 @@
         
         .content-section {
             padding: 30px 60px 20px;
+            position: relative;
         }
         
         .section-title {
@@ -356,22 +358,29 @@
         .section-delete-btn {
             position: absolute;
             right: 30px;
-            top: 30px;
+            top: 20px;
             background: #dc3545;
             color: white;
             border: none;
             border-radius: 4px;
-            padding: 5px 10px;
+            padding: 6px 12px;
             font-size: 11px;
+            font-weight: 600;
             cursor: pointer;
-            display: none;
+            opacity: 0;
             transition: all 0.2s;
             z-index: 100;
+            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+        }
+        
+        .section-delete-btn:hover {
+            background: #c82333;
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
         }
         
         .left-section:hover .section-delete-btn,
         .content-section:hover .section-delete-btn {
-            display: block;
+            opacity: 1;
         }
         
         /* Add buttons */
@@ -744,7 +753,7 @@
             </div>
             
             <div class="left-section">
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
                 <h3 class="left-section-title" contenteditable="true">Kỹ năng</h3>
                 <div id="skillsContainer">
                     <div class="skill-item">
@@ -759,7 +768,7 @@
             </div>
             
             <div class="left-section">
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
                 <h3 class="left-section-title" contenteditable="true">Chứng chỉ</h3>
                 <div id="certificatesContainer">
                     <div class="cert-item">
@@ -772,7 +781,7 @@
             </div>
             
             <div class="left-section">
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
                 <h3 class="left-section-title" contenteditable="true">Giải thưởng</h3>
                 <div id="awardsContainer">
                     <div class="award-item">
@@ -796,7 +805,7 @@
             </div>
             
             <div class="content-section">
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
                 <h2 class="section-title" contenteditable="true">Kinh nghiệm làm việc</h2>
                 <div id="experienceContainer">
                     <div class="experience-item">
@@ -921,7 +930,13 @@
         
         // Delete element
         function deleteElement(element) {
-            if (confirm('Bạn có chắc muốn xóa mục này?')) {
+            const isSection = element.classList.contains('left-section') || 
+                            element.classList.contains('content-section');
+            const message = isSection ? 
+                'Bạn có chắc muốn xóa toàn bộ phần này?' : 
+                'Bạn có chắc muốn xóa mục này?';
+            
+            if (confirm(message)) {
                 element.remove();
             }
         }
@@ -1010,7 +1025,7 @@
             section.className = 'left-section';
             const containerId = 'section-' + Date.now();
             section.innerHTML = `
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
                 <h3 class="left-section-title" contenteditable="true">Phần Mới</h3>
                 <div id="${containerId}">
                     <div class="cert-item">
@@ -1032,7 +1047,7 @@
             section.className = 'content-section';
             const containerId = 'content-' + Date.now();
             section.innerHTML = `
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
                 <h2 class="section-title" contenteditable="true">Phần Mới</h2>
                 <div id="${containerId}">
                     <div class="experience-item">

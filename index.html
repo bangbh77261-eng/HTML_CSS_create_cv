@@ -1,963 +1,906 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional CV</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <title>CV Editor - Professional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
         body {
-            width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto;
-            padding: 20px 10px 50px 10px;
+            font-family: 'Inter', sans-serif;
+            background: #f0f0f0;
+            padding: 30px;
+            line-height: 1.6;
+            font-size: 16px;
         }
         
         .cv-container {
-            width: 100%;
-            min-height: 297mm;
-            background-color: white;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.15);
             display: flex;
-            overflow: visible;
-            border-radius: 8px;
-        }
-        
-       .left-section {
-            width: 35%;
-            background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px 20px;
-            border-radius: 8px 0 0 8px;
-            box-shadow: inset -1px 0 0 rgba(255,255,255,0.1);
-        }
-        
-        .profile-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 5px solid #00d4ff;
-            margin: 0 auto 20px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            cursor: pointer;
+            min-height: 1400px;
             font-size: 14px;
-            transition: all 0.3s;
-            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
         }
         
-        .profile-image:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(0, 212, 255, 0.5);
-            border-color: #00fff7;
+        /* Left Sidebar */
+        .cv-left {
+            width: 355px;
+            background: #f5f1eb;
+            padding: 0;
+            position: relative;
         }
         
-        .contact-info, .skills-section, .languages-section {
-            margin-bottom: 30px;
+        .profile-section {
+            text-align: center;
+            padding: 30px 30px 20px;
+            background: #e8e1d5;
         }
         
-        .section-title {
+        .profile-photo {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            background: #d4cdc0;
             display: flex;
             align-items: center;
-            gap: 10px;
-
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid rgba(255,255,255,0.4);
-            color: #eaf6ff;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .profile-photo:hover {
+            transform: scale(1.05);
+        }
+        
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-photo-placeholder {
+            color: #8a8478;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .contact-info {
+            padding: 0 30px 15px;
+            background: #e8e1d5;
         }
         
         .contact-item {
             display: flex;
-            margin-bottom: 10px;
-            font-size: 14px;
-            align-items: flex-start;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #d4cdc0;
+            position: relative;
+            padding-right: 30px;
         }
         
-       .contact-icon {
-            width: 22px;
-            height: 22px;
+        .contact-icon {
+            width: 35px;
+            height: 35px;
+            background: #5f6652;
             border-radius: 50%;
-            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
-            box-shadow: 0 6px 16px rgba(0, 212, 255, 0.4);
+            color: white;
+            font-size: 15px;
             flex-shrink: 0;
         }
-
+        
         .contact-icon i {
-            font-size: 14px;
-            color: #1e3c72;
+            line-height: 1;
+        }
+        
+        .contact-text {
+            flex: 1;
+            font-size: 1em;
+            color: #2c2c2c;
+            min-height: 20px;
+        }
+        
+        .left-section {
+            padding: 20px 30px 15px;
+            border-top: 3px solid #d4cdc0;
+        }
+        
+        .left-section-title {
+            font-size: 1.43em;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 12px;
+            text-transform: none;
         }
         
         .skill-item {
-            margin-bottom: 20px;
-        }
-        
-        .skill-name {
-            font-size: 14px;
-            margin-bottom: 8px;
-            min-height: 20px;
-        }
-        
-        .skill-bar {
-            height: 8px;
-            background: rgba(255,255,255,0.25);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        
-        .skill-progress {
-            height: 100%;
-            background: linear-gradient(90deg, #00d4ff 0%, #00fff7 100%);
-            border-radius: 4px;
-            transition: width 0.3s;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-        
-        .skill-level-editor {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 5px;
-        }
-        
-        .level-btn {
-            width: 18%;
-            height: 12px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .level-btn:hover {
-            background-color: rgba(0, 212, 255, 0.6);
-        }
-        
-        .level-btn.active {
-            background: linear-gradient(90deg, #00d4ff 0%, #00fff7 100%);
-            box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
-        }
-        
-        .language-item {
-            margin-bottom: 8px;
-            font-size: 14px;
-            min-height: 20px;
-        }
-        
-        .right-section {
-            width: 65%;
-            padding: 30px;
-            background-color: white;
-            min-height: 100%;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .header {
             margin-bottom: 10px;
             position: relative;
-            padding-bottom: 20px;
+            padding-right: 30px;
         }
         
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            border-radius: 2px;
+        .skill-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         
-        .header {
-            margin-bottom: 30px;
+        .skill-icon {
+            color: #5f6652;
+            font-size: 16px;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        
+        .skill-text {
+            flex: 1;
+            font-size: 1em;
+            color: #2c2c2c;
+            line-height: 1.5;
+            min-height: 20px;
+        }
+        
+        .cert-item, .award-item {
+            margin-bottom: 12px;
+            position: relative;
+            padding-right: 30px;
+        }
+        
+        .cert-year, .award-year {
+            font-size: 1.07em;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 2px;
+            min-height: 20px;
+        }
+        
+        .cert-title, .award-title {
+            font-size: 1em;
+            color: #2c2c2c;
+            line-height: 1.5;
+            min-height: 20px;
+        }
+        
+        /* Right Content */
+        .cv-right {
+            flex: 1;
+            padding: 0;
+        }
+        
+        .header-section {
+            background: #5f6652;
+            padding: 35px 60px;
+            color: white;
         }
         
         .name {
-            font-size: 36px;
-            font-weight: 700;
+            font-size: 3.43em;
+            font-weight: 800;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            min-height: 40px;
-            letter-spacing: -0.5px;
+            min-height: 55px;
+            letter-spacing: 1px;
         }
         
-        .profession {
-            font-size: 18px;
-            color: #6c757d;
-            margin-bottom: 0px;
-            min-height: 25px;
+        .job-title {
+            font-size: 1.29em;
             font-weight: 500;
-            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            margin-bottom: 18px;
+            min-height: 25px;
         }
         
-        .divider {
-            height: px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, transparent 100%);
-            margin-bottom: 1px;
-            border-radius: 2px;
-        }
-        
-        .right-section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #2c3e50;
-            padding-left: 18px;
-            position: relative;
-        }
-
-        .right-section-title::before {
-            content: "";
-            width: 6px;
-            height: 100%;
-            background: linear-gradient(180deg, #667eea, #764ba2);
-            position: absolute;
-            left: 0;
-            top: 0;
-            border-radius: 4px;
-        }
-        
-        .about-section, .experience-section, .education-section, .certifications-section {
-            margin-bottom: 30px;
-        }
-        
-        .about-me {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #555;
+        .summary {
+            font-size: 1em;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.95);
+            text-align: justify;
             min-height: 60px;
         }
         
-        .experience-item, .education-item {
+        .content-section {
+            padding: 30px 60px 20px;
+        }
+        
+        .section-title {
+            font-size: 1.71em;
+            font-weight: 800;
+            color: #2c2c2c;
+            margin-bottom: 18px;
+            position: relative;
+            padding-bottom: 8px;
+        }
+        
+        .experience-item {
             margin-bottom: 20px;
             position: relative;
+            padding-right: 30px;
         }
         
-        .date {
-            font-size: 14px;
-            color: #667eea;
-            margin-bottom: 5px;
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+        
+        .exp-company {
+            font-size: 1.14em;
+            font-weight: 700;
+            color: #2c2c2c;
+            min-height: 22px;
+        }
+        
+        .exp-date {
+            background: #5f6652;
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.86em;
             font-weight: 600;
-            display: inline-block;
-            padding: 3px 10px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 4px;
+            white-space: nowrap;
+            min-width: 120px;
+            text-align: center;
         }
         
-        .role, .degree {
-            font-size: 16px;
+        .exp-position {
+            font-size: 1em;
+            font-weight: 600;
+            color: #2c2c2c;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            min-height: 20px;
+        }
+        
+        .exp-description {
+            font-size: 1em;
+            color: #4a4a4a;
+            line-height: 1.7;
+            padding-left: 0;
+        }
+        
+        .exp-description ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .exp-description li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .exp-description li:before {
+            content: "•";
+            position: absolute;
+            left: 5px;
+            color: #5f6652;
             font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 5px;
         }
         
-        .company, .school {
-            font-size: 15px;
-            color: #7f8c8d;
-            margin-bottom: 10px;
-        }
-        
-        .description {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.5;
-            margin-bottom: 5px;
-        }
-        
-        [contentEditable="true"] {
+        /* Editable styles */
+        [contenteditable="true"] {
             outline: none;
-            transition: background-color 0.3s;
             cursor: text;
-        }
-        
-        [contentEditable="true"]:hover {
-            background-color: rgba(102, 126, 234, 0.08);
+            transition: all 0.2s;
             border-radius: 3px;
+            padding: 2px 4px;
         }
         
-        [contentEditable="true"]:focus {
-            background-color: rgba(102, 126, 234, 0.15);
-            border-radius: 3px;
+        [contenteditable="true"]:hover {
+            background-color: rgba(95, 102, 82, 0.05);
         }
         
-        [contentEditable="true"]:empty:before {
+        [contenteditable="true"]:focus {
+            background-color: rgba(95, 102, 82, 0.1);
+        }
+        
+        [contenteditable="true"]:empty:before {
             content: attr(data-placeholder);
-            color: #95a5a6;
+            color: #aaa;
             font-style: italic;
         }
         
-        .control-panel {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        /* Delete buttons */
+        .delete-btn {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #dc3545;
             color: white;
-            padding: 18px;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            border-radius: 12px;
-            z-index: 1000;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            max-width: 300px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 14px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 10;
         }
         
-        .panel-section {
-            margin-bottom: 15px;
+        .delete-btn:hover {
+            background: #c82333;
+            transform: translateY(-50%) scale(1.1);
         }
         
-        .panel-label {
+        .contact-item:hover .delete-btn,
+        .skill-item:hover .delete-btn,
+        .cert-item:hover .delete-btn,
+        .award-item:hover .delete-btn,
+        .experience-item:hover .delete-btn {
+            display: flex;
+        }
+        
+        .section-delete-btn {
+            position: absolute;
+            right: 30px;
+            top: 30px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
             font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            color: #00d4ff;
-            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            transition: all 0.2s;
+            z-index: 100;
         }
         
-        .color-picker-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .left-section:hover .section-delete-btn,
+        .content-section:hover .section-delete-btn {
+            display: block;
+        }
+        
+        /* Add buttons */
+        .add-item-btn {
+            width: 100%;
+            padding: 8px;
+            background: transparent;
+            border: 2px dashed #5f6652;
+            border-radius: 6px;
+            color: #5f6652;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .add-item-btn:hover {
+            background: rgba(95, 102, 82, 0.1);
+            border-style: solid;
+        }
+        
+        .add-section-btn {
+            width: calc(100% - 60px);
+            margin: 0 30px 15px;
+            padding: 10px;
+            background: #5f6652;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .add-section-btn:hover {
+            background: #4a5240;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(95, 102, 82, 0.3);
+        }
+        
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
             gap: 8px;
-            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background: #5f6652;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #4a5240;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(95, 102, 82, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+        
+        /* Color Customizer */
+        .color-panel {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 20px;
+            width: 300px;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        
+        .color-panel-header {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2c2c2c;
+        }
+        
+        .color-option {
+            margin-bottom: 12px;
+        }
+        
+        .color-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 6px;
+            display: block;
         }
         
         .color-input-wrapper {
             display: flex;
+            gap: 10px;
             align-items: center;
-            gap: 8px;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 8px 12px;
-            border-radius: 6px;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .color-input-wrapper:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-            border-color: #00d4ff;
-        }
-        
-        .color-input-wrapper label {
-            font-size: 12px;
-            color: white;
-            flex: 1;
-            font-weight: 500;
         }
         
         .color-input-wrapper input[type="color"] {
-            width: 40px;
-            height: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
+            width: 50px;
+            height: 35px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
         }
         
-        .color-input-wrapper input[type="color"]:hover {
-            border-color: #00d4ff;
-            transform: scale(1.05);
+        .color-input-wrapper span {
+            flex: 1;
+            font-size: 12px;
+            color: #495057;
         }
         
-        .size-controls {
+        .range-control {
             display: flex;
-            gap: 5px;
             align-items: center;
+            gap: 10px;
         }
         
-        .size-controls input[type="range"] {
+        .range-control input[type="range"] {
             flex: 1;
             height: 6px;
             border-radius: 3px;
-            background: rgba(255, 255, 255, 0.2);
+            background: #e9ecef;
             outline: none;
+            cursor: pointer;
         }
         
-        .size-controls input[type="range"]::-webkit-slider-thumb {
+        .range-control input[type="range"]::-webkit-slider-thumb {
             width: 16px;
             height: 16px;
+            background: #5f6652;
             border-radius: 50%;
-            background: linear-gradient(135deg, #00d4ff 0%, #00fff7 100%);
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            -webkit-appearance: none;
         }
         
-        .size-controls input[type="range"]::-moz-range-thumb {
+        .range-control input[type="range"]::-moz-range-thumb {
             width: 16px;
             height: 16px;
+            background: #5f6652;
             border-radius: 50%;
-            background: linear-gradient(135deg, #00d4ff 0%, #00fff7 100%);
             cursor: pointer;
             border: none;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
         }
         
-        .size-value {
-            font-size: 12px;
-            color: #00d4ff;
-            min-width: 35px;
-            text-align: right;
-            font-weight: 700;
-        }
-        
-        .section-selector {
-            width: 100%;
-            padding: 10px 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 13px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-        
-        .section-selector:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-            border-color: #00d4ff;
-        }
-        
-        .section-selector:focus {
-            outline: none;
-            border-color: #00d4ff;
-            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
-        }
-        
-        .section-selector option {
-            background-color: #1e3c72;
-            color: white;
-            padding: 10px;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .control-btn {
-            background: linear-gradient(135deg, #00d4ff 0%, #00fff7 100%);
-            color: #1e3c72;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
+        .range-value {
+            font-size: 11px;
             font-weight: 600;
-            transition: all 0.3s;
-            flex: 1;
-            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+            color: #5f6652;
+            min-width: 45px;
+            text-align: right;
         }
         
-        .control-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.5);
-        }
-        
-        .control-btn.secondary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-        
-        .control-btn.secondary:hover {
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-        }
-        
-        .instructions {
-            font-size: 12px;
-            line-height: 1.6;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 12px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .instructions p {
-            margin-bottom: 5px;
-        }
-        
-        .add-item-btn {
-            background-color: transparent;
-            color: #667eea;
-            border: 2px dashed #667eea;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            margin-top: 10px;
-            transition: all 0.3s;
+        .panel-select {
             width: 100%;
-            font-weight: 500;
+            padding: 8px 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+            color: #495057;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
         }
         
-        .add-item-btn:hover {
-            background-color: rgba(102, 126, 234, 0.1);
-            border-style: solid;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        .panel-select:focus {
+            outline: none;
+            border-color: #5f6652;
         }
         
+        .divider-small {
+            height: 1px;
+            background: #e9ecef;
+            margin: 15px 0;
+        }
+        
+        /* Print styles */
         @media print {
             body {
-                width: 210mm;
+                background: white;
                 padding: 0;
-                margin: 0;
             }
             
             .cv-container {
                 box-shadow: none;
-                min-height: auto;
+                max-width: 100%;
             }
             
-            .control-panel {
+            .control-panel,
+            .color-panel,
+            .add-item-btn,
+            .add-section-btn,
+            .delete-btn,
+            .section-delete-btn {
                 display: none !important;
             }
             
-            .skill-level-editor {
-                display: none !important;
-            }
-            
-            .add-item-btn {
-                display: none !important;
-            }
-            
-            /* Page break control */
-            .experience-item, .education-item {
+            .experience-item {
                 page-break-inside: avoid;
             }
         }
     </style>
 </head>
 <body>
-    <div class="control-panel">
-        <div class="panel-section">
-            <div class="panel-label">🎨 <span data-lang-en="Customize Section" data-lang-vi="Tùy Chỉnh Phần">Customize Section</span></div>
-            <select class="section-selector" id="sectionSelector">
-                <option value="name" data-lang-en="Name" data-lang-vi="Họ Tên">Name</option>
-                <option value="profession" data-lang-en="Job Title" data-lang-vi="Chức Danh">Job Title</option>
-                <option value="section-title" data-lang-en="Left Section Titles" data-lang-vi="Tiêu Đề Trái">Left Section Titles</option>
-                <option value="right-section-title" data-lang-en="Right Section Titles" data-lang-vi="Tiêu Đề Phải">Right Section Titles</option>
-                <option value="contact-item" data-lang-en="Contact Info" data-lang-vi="Thông Tin Liên Hệ">Contact Info</option>
-                <option value="skill-name" data-lang-en="Skill Names" data-lang-vi="Tên Kỹ Năng">Skill Names</option>
-                <option value="about-me" data-lang-en="Career Objective" data-lang-vi="Mục Tiêu">Career Objective</option>
-                <option value="date" data-lang-en="Dates" data-lang-vi="Ngày Tháng">Dates</option>
-                <option value="role" data-lang-en="Job Titles/Roles" data-lang-vi="Chức Danh/Vai Trò">Job Titles/Roles</option>
-                <option value="company" data-lang-en="Companies/Schools" data-lang-vi="Công Ty/Trường">Companies/Schools</option>
-                <option value="description" data-lang-en="Descriptions" data-lang-vi="Mô Tả">Descriptions</option>
+    <!-- Color Customizer Panel -->
+    <div class="color-panel">
+        <div class="color-panel-header">Tùy Chỉnh Màu Sắc & Layout</div>
+        
+        <div class="color-option">
+            <label class="color-label">Chiều Rộng Sidebar</label>
+            <div class="range-control">
+                <input type="range" id="sidebarWidth" min="250" max="450" value="355" step="5">
+                <span class="range-value"><span id="sidebarWidthDisplay">355</span>px</span>
+            </div>
+        </div>
+        
+        <div class="divider-small"></div>
+        
+        <div class="color-option">
+            <label class="color-label">Font Chữ</label>
+            <select class="panel-select" id="fontFamily">
+                <option value="'Inter', sans-serif">Inter (Default)</option>
+                <option value="'Times New Roman', Times, serif">Times New Roman</option>
+                <option value="'Arial', sans-serif">Arial</option>
+                <option value="'Georgia', serif">Georgia</option>
+                <option value="'Helvetica', sans-serif">Helvetica</option>
+                <option value="'Courier New', monospace">Courier New</option>
+                <option value="'Verdana', sans-serif">Verdana</option>
+                <option value="'Garamond', serif">Garamond</option>
+                <option value="'Poppins', sans-serif">Poppins</option>
             </select>
         </div>
         
-        <div class="panel-section">
-            <div class="panel-label"><span data-lang-en="Text Color" data-lang-vi="Màu Chữ">Text Color</span></div>
+        <div class="color-option">
+            <label class="color-label">Cỡ Chữ Toàn Trang</label>
+            <div class="range-control">
+                <input type="range" id="baseFontSize" min="12" max="18" value="14" step="0.5">
+                <span class="range-value"><span id="baseFontSizeDisplay">14</span>px</span>
+            </div>
+        </div>
+        
+        <div class="color-option">
+            <label class="color-label">Độ Đậm Chữ</label>
+            <div class="range-control">
+                <input type="range" id="baseFontWeight" min="300" max="700" step="100" value="400">
+                <span class="range-value" id="baseFontWeightDisplay">400</span>
+            </div>
+        </div>
+        
+        <div class="divider-small"></div>
+        
+        <div class="color-option">
+            <label class="color-label">Màu Header</label>
             <div class="color-input-wrapper">
-                <label data-lang-en="Color" data-lang-vi="Màu">Color</label>
-                <input type="color" id="textColor" value="#2c3e50">
+                <input type="color" id="headerColor" value="#5f6652">
+                <span>Header background</span>
             </div>
         </div>
         
-        <div class="panel-section">
-            <div class="panel-label"><span data-lang-en="Font Size" data-lang-vi="Cỡ Chữ">Font Size</span></div>
-            <div class="size-controls">
-                <input type="range" id="fontSize" min="10" max="40" value="14">
-                <span class="size-value"><span id="fontSizeValue">14</span>px</span>
+        <div class="color-option">
+            <label class="color-label">Màu Phần Trên Sidebar</label>
+            <div class="color-input-wrapper">
+                <input type="color" id="sidebarColor" value="#e8e1d5">
+                <span>Profile & contact area</span>
             </div>
         </div>
         
-        <div class="panel-section">
-            <div class="panel-label"><span data-lang-en="Font Weight" data-lang-vi="Độ Đậm">Font Weight</span></div>
-            <div class="size-controls">
-                <input type="range" id="fontWeight" min="300" max="700" step="100" value="400">
-                <span class="size-value" id="fontWeightValue">400</span>
+        <div class="color-option">
+            <label class="color-label">Màu Icons</label>
+            <div class="color-input-wrapper">
+                <input type="color" id="iconColor" value="#5f6652">
+                <span>Icons & accents</span>
             </div>
         </div>
         
-        <div class="btn-group">
-            <button class="control-btn" onclick="printCV()">🖨️ <span data-lang-en="Print" data-lang-vi="In">Print</span></button>
-            <button class="control-btn secondary" onclick="toggleLanguage()">🌐 <span data-lang-en="EN/VI" data-lang-vi="VI/EN">EN/VI</span></button>
+        <div class="color-option">
+            <label class="color-label">Màu Date Badge</label>
+            <div class="color-input-wrapper">
+                <input type="color" id="badgeColor" value="#5f6652">
+                <span>Date badges</span>
+            </div>
         </div>
         
-        <div class="instructions">
-            <p data-lang-en="• Select section above to customize" data-lang-vi="• Chọn phần ở trên để tùy chỉnh">• Select section above to customize</p>
-            <p data-lang-en="• Changes apply to all similar items" data-lang-vi="• Thay đổi áp dụng cho tất cả">• Changes apply to all similar items</p>
+        <div class="color-option">
+            <label class="color-label">Màu Border Sidebar</label>
+            <div class="color-input-wrapper">
+                <input type="color" id="borderColor" value="#d4cdc0">
+                <span>Section borders</span>
+            </div>
+        </div>
+        
+        <div class="color-option">
+            <label class="color-label">Màu Phần Dưới Sidebar</label>
+            <div class="color-input-wrapper">
+                <input type="color" id="sidebarBottomColor" value="#f5f1eb">
+                <span>Lower sidebar sections</span>
+            </div>
         </div>
     </div>
-    
+
+    <!-- CV Container -->
     <div class="cv-container">
-        <div class="left-section">
-            <div class="profile-image" onclick="changeProfilePic(this)" title="Click to upload photo">
-                <span data-lang-en="Add Photo" data-lang-vi="Thêm Ảnh">Add Photo</span>
-            </div>
-            
-             <div class="contact-info" >
-                <h3 class="section-title">
-                <i class="bi bi-person-circle" style="font-size: 32px;"></i>
-                <span contenteditable="true"
-                        data-lang-en="Personal Information"
-                        data-lang-vi="Thông Tin Cá Nhân">
-                    Personal Information
-                </span>
-                </h3>
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="bi bi-phone"></i></div>
-                    <div contenteditable="true" data-placeholder="Phone number"></div>
-                </div>
-
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="bi bi-calendar"></i></div>
-                    <div contenteditable="true" data-placeholder="Date of birth"></div>
-                </div>
-
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="bi bi-envelope"></i></div>
-                    <div contenteditable="true" data-placeholder="Email"></div>
-                </div>
-
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="bi bi-geo-alt"></i></div>
-                    <div contenteditable="true" data-placeholder="Address"></div>
-                </div>
-                
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="bi bi-github"></i></div>
-                    <div contenteditable="true" data-placeholder="GitHub"></div>
+        <!-- Left Sidebar -->
+        <aside class="cv-left">
+            <div class="profile-section">
+                <div class="profile-photo" onclick="uploadPhoto(this)">
+                    <div class="profile-photo-placeholder">Click để thêm ảnh</div>
                 </div>
             </div>
             
-            <div class="skills-section">
-                <h3 class="section-title">
-                <i class="bi bi-diamond-fill" style="font-size: 14px;"></i>
-                <span contenteditable="true"
-                        data-lang-en="Personal Information"
-                        data-lang-vi="Thông Tin Cá Nhân">
-                    Personal Information
-                </span>
-                </h3>
-                <div id="skills-container">
+            <div class="contact-info" id="contactContainer">
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
+                    <div class="contact-text" contenteditable="true" data-placeholder="Số điện thoại"></div>
+                    <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
+                    <div class="contact-text" contenteditable="true" data-placeholder="Email"></div>
+                    <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-globe"></i></div>
+                    <div class="contact-text" contenteditable="true" data-placeholder="Website"></div>
+                    <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                    <div class="contact-text" contenteditable="true" data-placeholder="Địa chỉ"></div>
+                    <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="bi bi-calendar-event"></i></div>
+                    <div class="contact-text" contenteditable="true" data-placeholder="Ngày sinh"></div>
+                    <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                </div>
+                <button class="add-item-btn" onclick="addContact()">+ Thêm Liên Hệ</button>
+            </div>
+            
+            <div class="left-section">
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <h3 class="left-section-title" contenteditable="true">Kỹ năng</h3>
+                <div id="skillsContainer">
                     <div class="skill-item">
-                        <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: 80%"></div>
+                        <div class="skill-content">
+                            <i class="bi bi-gear-fill skill-icon"></i>
+                            <div class="skill-text" contenteditable="true" data-placeholder="Mô tả kỹ năng"></div>
                         </div>
-                        <div class="skill-level-editor">
-                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 20)"></div>
-                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 40)"></div>
-                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 60)"></div>
-                            <div class="level-btn active" onclick="setSkillLevel(this.parentNode, 80)"></div>
-                            <div class="level-btn" onclick="setSkillLevel(this.parentNode, 100)"></div>
-                        </div>
+                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                     </div>
                 </div>
-                <button class="add-item-btn" onclick="addSkill()">
-                    <span data-lang-en="+ Add Skill" data-lang-vi="+ Thêm Kỹ Năng">+ Add Skill</span>
-                </button>
+                <button class="add-item-btn" onclick="addSkill()">+ Thêm Kỹ Năng</button>
             </div>
             
-            <div class="languages-section">
-                <h3 class="section-title">
-                <i class="bi bi-diamond-fill" style="font-size: 14px;"></i>
-                <span contenteditable="true"
-                        data-lang-en="Languages"
-                        data-lang-vi="Ngoại ngữ">
-                    Personal Information
-                </span>
-                </h3>
-                <div id="languages-container">
-                    <div class="language-item" contenteditable="true" data-placeholder="Language & proficiency"></div>
+            <div class="left-section">
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <h3 class="left-section-title" contenteditable="true">Chứng chỉ</h3>
+                <div id="certificatesContainer">
+                    <div class="cert-item">
+                        <div class="cert-year" contenteditable="true" data-placeholder="Năm"></div>
+                        <div class="cert-title" contenteditable="true" data-placeholder="Tên chứng chỉ"></div>
+                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                    </div>
                 </div>
-                <button class="add-item-btn" onclick="addLanguage()">
-                    <span data-lang-en="+ Add Language" data-lang-vi="+ Thêm Ngôn Ngữ">+ Add Language</span>
-                </button>
+                <button class="add-item-btn" onclick="addCertificate()">+ Thêm Chứng Chỉ</button>
             </div>
             
-            <div class="skills-section">
-                <h3 class="section-title">
-                <i class="bi bi-diamond-fill" style="font-size: 14px;"></i>
-                <span contenteditable="true"
-                        data-lang-en="Other skills"
-                        data-lang-vi="Kỹ năng khác">
-                    Personal Information
-                </span>
-                </h3>
-                <div id="other-container">
-                    <div class="language-item" contenteditable="true" data-placeholder="Other skills or tools"></div>
+            <div class="left-section">
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <h3 class="left-section-title" contenteditable="true">Giải thưởng</h3>
+                <div id="awardsContainer">
+                    <div class="award-item">
+                        <div class="award-year" contenteditable="true" data-placeholder="Năm"></div>
+                        <div class="award-title" contenteditable="true" data-placeholder="Tên giải thưởng"></div>
+                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                    </div>
                 </div>
-                <button class="add-item-btn" onclick="addOther()">
-                    <span data-lang-en="+ Add Item" data-lang-vi="+ Thêm Mục">+ Add Item</span>
-                </button>
+                <button class="add-item-btn" onclick="addAward()">+ Thêm Giải Thưởng</button>
             </div>
-        </div>
+            
+            <button class="add-section-btn" onclick="addLeftSection()">+ Thêm Phần Mới</button>
+        </aside>
         
-        <div class="right-section">
-            <div class="header">
-                <div class="name" contenteditable="true" data-placeholder="Full Name"></div>
-                <div class="profession" contenteditable="true" data-placeholder="Job Title"></div>
-                <div class="divider"></div>
+        <!-- Right Content -->
+        <main class="cv-right">
+            <div class="header-section">
+                <h1 class="name" contenteditable="true" data-placeholder="Họ và Tên"></h1>
+                <div class="job-title" contenteditable="true" data-placeholder="Chức Danh"></div>
+                <div class="summary" contenteditable="true" data-placeholder="Viết giới thiệu ngắn gọn về bản thân, kinh nghiệm và mục tiêu nghề nghiệp của bạn..."></div>
             </div>
             
-            <div class="about-section">
-                 <h2 class="right-section-title">
-                    <i class="bi bi-lightbulb"></i>
-                    <span contenteditable="true"
-                        data-lang-en="Career Objective"
-                        data-lang-vi="Mục Tiêu Nghề Nghiệp">
-                        Career Objective
-                    </span>
-                </h2>
-                <div class="about-me" contenteditable="true" data-placeholder="Your career objectives and goals..."></div>
-            </div>
-            
-            <div class="education-section">
-                <h2 class="right-section-title">
-                    <i class="bi bi-mortarboard"></i>
-                    <span contenteditable="true"
-                        data-lang-en="Education"
-                        data-lang-vi="Học Vấn">
-                        Education
-                    </span>
-                </h2>
-                <div id="education-container">
-                    <div class="education-item">
-                        <div class="date" contenteditable="true" data-placeholder="Year - Year"></div>
-                        <div class="degree" contenteditable="true" data-placeholder="Degree / Major"></div>
-                        <div class="school" contenteditable="true" data-placeholder="School / University"></div>
-                        <div class="description" contenteditable="true" data-placeholder="Description, GPA, achievements..."></div>
-                    </div>
-                </div>
-                <button class="add-item-btn" onclick="addEducation()">
-                    <span data-lang-en="+ Add Education" data-lang-vi="+ Thêm Học Vấn">+ Add Education</span>
-                </button>
-            </div>
-            
-            <div class="experience-section">
-                <h2 class="right-section-title">
-                    <i class="bi bi-briefcase"></i>
-                    <span contenteditable="true"
-                        data-lang-en="Work Experience"
-                        data-lang-vi="Kinh Nghiệm Làm Việc">
-                        Work Experience
-                    </span>
-                </h2>
-                <div id="experience-container">
+            <div class="content-section">
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <h2 class="section-title" contenteditable="true">Kinh nghiệm làm việc</h2>
+                <div id="experienceContainer">
                     <div class="experience-item">
-                        <div class="date" contenteditable="true" data-placeholder="Start Date - End Date"></div>
-                        <div class="role" contenteditable="true" data-placeholder="Job Title"></div>
-                        <div class="company" contenteditable="true" data-placeholder="Company Name"></div>
-                        <div class="description" contenteditable="true" data-placeholder="Job responsibilities and achievements..."></div>
+                        <div class="exp-header">
+                            <div class="exp-company" contenteditable="true" data-placeholder="Tên Công Ty"></div>
+                            <div class="exp-date" contenteditable="true" data-placeholder="2021 - Nay"></div>
+                        </div>
+                        <div class="exp-position" contenteditable="true" data-placeholder="Vị trí công việc"></div>
+                        <div class="exp-description" contenteditable="true" data-placeholder="Mô tả công việc và thành tích...">
+                            <ul>
+                                <li contenteditable="true">Trách nhiệm và thành tích thứ nhất</li>
+                                <li contenteditable="true">Trách nhiệm và thành tích thứ hai</li>
+                            </ul>
+                        </div>
+                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                     </div>
                 </div>
-                <button class="add-item-btn" onclick="addExperience()">
-                    <span data-lang-en="+ Add Experience" data-lang-vi="+ Thêm Kinh Nghiệm">+ Add Experience</span>
-                </button>
+                <button class="add-item-btn" onclick="addExperience()">+ Thêm Kinh Nghiệm</button>
             </div>
             
-            <div class="certifications-section">
-                <h2 class="right-section-title">
-                    <i class="bi bi-bookmark"></i>
-                    <span contenteditable="true"
-                        data-lang-en="Projects"
-                        data-lang-vi="Dự Án">
-                        Projects
-                    </span>
-                </h2>
-                <div id="certifications-container">
-                    <div class="education-item">
-                        <div class="date" contenteditable="true" data-placeholder="Year"></div>
-                        <div class="degree" contenteditable="true" data-placeholder="Project / Certificate Name"></div>
-                        <div class="description" contenteditable="true" data-placeholder="Description..."></div>
-                    </div>
-                </div>
-                <button class="add-item-btn" onclick="addCertification()">
-                    <span data-lang-en="+ Add Item" data-lang-vi="+ Thêm Mục">+ Add Item</span>
-                </button>
-            </div>
-        </div>
+            <button class="add-section-btn" onclick="addRightSection()">+ Thêm Phần Mới</button>
+        </main>
     </div>
-    
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <button class="control-btn btn-primary" onclick="printCV()">
+            <i class="bi bi-printer-fill"></i> In CV
+        </button>
+        <button class="control-btn btn-secondary" onclick="resetCV()">
+            <i class="bi bi-arrow-clockwise"></i> Reset
+        </button>
+    </div>
+
     <script>
-        let currentLanguage = 'en';
+        // Sidebar width control
+        const sidebarWidthInput = document.getElementById('sidebarWidth');
+        const sidebarWidthDisplay = document.getElementById('sidebarWidthDisplay');
         
-        // Customization functionality
-        const sectionSelector = document.getElementById('sectionSelector');
-        const textColor = document.getElementById('textColor');
-        const fontSize = document.getElementById('fontSize');
-        const fontWeight = document.getElementById('fontWeight');
-        const fontSizeValue = document.getElementById('fontSizeValue');
-        const fontWeightValue = document.getElementById('fontWeightValue');
-        
-        // Update display values
-        fontSize.addEventListener('input', function() {
-            fontSizeValue.textContent = this.value;
-            applyCustomization();
+        sidebarWidthInput.addEventListener('input', function() {
+            const width = this.value;
+            sidebarWidthDisplay.textContent = width;
+            document.querySelector('.cv-left').style.width = width + 'px';
         });
         
-        fontWeight.addEventListener('input', function() {
-            fontWeightValue.textContent = this.value;
-            applyCustomization();
+        // Font family control
+        document.getElementById('fontFamily').addEventListener('change', function() {
+            document.querySelector('.cv-container').style.fontFamily = this.value;
         });
         
-        textColor.addEventListener('input', applyCustomization);
-        sectionSelector.addEventListener('change', loadCurrentStyles);
+        // Base font size control
+        const baseFontSizeInput = document.getElementById('baseFontSize');
+        const baseFontSizeDisplay = document.getElementById('baseFontSizeDisplay');
         
-        function loadCurrentStyles() {
-            const selectedClass = sectionSelector.value;
-            let element;
-            
-            if (selectedClass === 'name') {
-                element = document.querySelector('.name');
-            } else if (selectedClass === 'profession') {
-                element = document.querySelector('.profession');
-            } else {
-                element = document.querySelector('.' + selectedClass);
-            }
-            
-            if (element) {
-                const styles = window.getComputedStyle(element);
-                textColor.value = rgbToHex(styles.color);
-                fontSize.value = parseInt(styles.fontSize);
-                fontSizeValue.textContent = parseInt(styles.fontSize);
-                fontWeight.value = styles.fontWeight;
-                fontWeightValue.textContent = styles.fontWeight;
-            }
-        }
+        baseFontSizeInput.addEventListener('input', function() {
+            const size = this.value;
+            baseFontSizeDisplay.textContent = size;
+            document.querySelector('.cv-container').style.fontSize = size + 'px';
+        });
         
-        function rgbToHex(rgb) {
-            const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            if (!match) return '#2c3e50';
-            
-            function hex(x) {
-                return ("0" + parseInt(x).toString(16)).slice(-2);
-            }
-            return "#" + hex(match[1]) + hex(match[2]) + hex(match[3]);
-        }
+        // Base font weight control
+        const baseFontWeightInput = document.getElementById('baseFontWeight');
+        const baseFontWeightDisplay = document.getElementById('baseFontWeightDisplay');
         
-        function applyCustomization() {
-            const selectedClass = sectionSelector.value;
-            const elements = document.querySelectorAll('.' + selectedClass);
-            
-            elements.forEach(element => {
-                element.style.color = textColor.value;
-                element.style.fontSize = fontSize.value + 'px';
-                element.style.fontWeight = fontWeight.value;
+        baseFontWeightInput.addEventListener('input', function() {
+            const weight = this.value;
+            baseFontWeightDisplay.textContent = weight;
+            document.querySelector('.cv-container').style.fontWeight = weight;
+        });
+        
+        // Color customization
+        document.getElementById('headerColor').addEventListener('input', function() {
+            document.querySelector('.header-section').style.background = this.value;
+        });
+        
+        document.getElementById('sidebarColor').addEventListener('input', function() {
+            document.querySelector('.profile-section').style.background = this.value;
+            document.querySelector('.contact-info').style.background = this.value;
+        });
+        
+        document.getElementById('iconColor').addEventListener('input', function() {
+            const icons = document.querySelectorAll('.contact-icon');
+            icons.forEach(icon => icon.style.background = this.value);
+            document.querySelectorAll('.skill-icon').forEach(icon => icon.style.color = this.value);
+            document.querySelectorAll('.exp-description li:before').forEach(bullet => {
+                bullet.parentElement.style.setProperty('--bullet-color', this.value);
             });
-        }
+        });
         
-        // Initialize with name styles
-        loadCurrentStyles();
+        document.getElementById('badgeColor').addEventListener('input', function() {
+            document.querySelectorAll('.exp-date').forEach(badge => badge.style.background = this.value);
+        });
         
-        function toggleLanguage() {
-            currentLanguage = currentLanguage === 'en' ? 'vi' : 'en';
-            const elements = document.querySelectorAll('[data-lang-en]');
-            
-            elements.forEach(el => {
-                if (!el.hasAttribute('contenteditable') || el.classList.contains('section-title') || el.classList.contains('right-section-title')) {
-                    if (el.classList.contains('section-title') || el.classList.contains('right-section-title')) {
-                        el.textContent = el.getAttribute(`data-lang-${currentLanguage}`);
-                    } else if (!el.hasAttribute('contenteditable')) {
-                        el.textContent = el.getAttribute(`data-lang-${currentLanguage}`);
-                    }
-                }
-            });
-            
-            // Update option texts
-            const options = document.querySelectorAll('option[data-lang-en]');
-            options.forEach(option => {
-                option.textContent = option.getAttribute(`data-lang-${currentLanguage}`);
-            });
-            
-            // Update placeholders
-            const editableElements = document.querySelectorAll('[contenteditable="true"][data-placeholder]');
-            editableElements.forEach(el => {
-                const placeholders = {
-                    en: {
-                        'Phone number': 'Phone number',
-                        'Date of birth': 'Date of birth',
-                        'Email': 'Email',
-                        'Address': 'Address',
-                        'Skill name': 'Skill name',
-                        'Language & proficiency': 'Language & proficiency',
-                        'Other skills or tools': 'Other skills or tools',
-                        'Full Name': 'Full Name',
-                        'Job Title': 'Job Title',
-                        'Your career objectives and goals...': 'Your career objectives and goals...',
-                        'Year - Year': 'Year - Year',
-                        'Degree / Major': 'Degree / Major',
-                        'School / University': 'School / University',
-                        'Description, GPA, achievements...': 'Description, GPA, achievements...',
-                        'Start Date - End Date': 'Start Date - End Date',
-                        'Job Title': 'Job Title',
-                        'Company Name': 'Company Name',
-                        'Job responsibilities and achievements...': 'Job responsibilities and achievements...',
-                        'Year': 'Year',
-                        'Project / Certificate Name': 'Project / Certificate Name',
-                        'Description...': 'Description...'
-                    },
-                    vi: {
-                        'Phone number': 'Số điện thoại',
-                        'Date of birth': 'Ngày sinh',
-                        'Email': 'Email',
-                        'Address': 'Địa chỉ',
-                        'Skill name': 'Tên kỹ năng',
-                        'Language & proficiency': 'Ngôn ngữ & trình độ',
-                        'Other skills or tools': 'Kỹ năng hoặc công cụ khác',
-                        'Full Name': 'Họ và Tên',
-                        'Job Title': 'Chức Danh',
-                        'Your career objectives and goals...': 'Mục tiêu nghề nghiệp của bạn...',
-                        'Year - Year': 'Năm - Năm',
-                        'Degree / Major': 'Bằng cấp / Chuyên ngành',
-                        'School / University': 'Trường học / Đại học',
-                        'Description, GPA, achievements...': 'Mô tả, GPA, thành tích...',
-                        'Start Date - End Date': 'Ngày Bắt Đầu - Ngày Kết Thúc',
-                        'Job Title': 'Chức Danh',
-                        'Company Name': 'Tên Công Ty',
-                        'Job responsibilities and achievements...': 'Trách nhiệm và thành tích công việc...',
-                        'Year': 'Năm',
-                        'Project / Certificate Name': 'Tên Dự Án / Chứng Chỉ',
-                        'Description...': 'Mô tả...'
-                    }
-                };
-                
-                const currentPlaceholder = el.getAttribute('data-placeholder');
-                const newPlaceholder = placeholders[currentLanguage][currentPlaceholder] || currentPlaceholder;
-                el.setAttribute('data-placeholder', newPlaceholder);
-            });
-        }
+        document.getElementById('borderColor').addEventListener('input', function() {
+            document.querySelectorAll('.contact-item').forEach(item => item.style.borderBottomColor = this.value);
+            document.querySelectorAll('.left-section').forEach(section => section.style.borderTopColor = this.value);
+        });
         
-        function setSkillLevel(parentElement, percentage) {
-            const skillBar = parentElement.previousElementSibling;
-            const progressBar = skillBar.querySelector('.skill-progress');
-            progressBar.style.width = percentage + '%';
-            
-            const levelButtons = parentElement.querySelectorAll('.level-btn');
-            levelButtons.forEach((btn, index) => {
-                const btnPercentage = (index + 1) * 20;
-                btn.classList.toggle('active', btnPercentage <= percentage);
-            });
-        }
+        document.getElementById('sidebarBottomColor').addEventListener('input', function() {
+            document.querySelector('.cv-left').style.background = this.value;
+        });
         
-        function changeProfilePic(element) {
+        // Photo upload
+        function uploadPhoto(element) {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
@@ -967,10 +910,7 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(event) {
-                        element.innerHTML = '';
-                        element.style.backgroundImage = `url(${event.target.result})`;
-                        element.style.backgroundSize = 'cover';
-                        element.style.backgroundPosition = 'center';
+                        element.innerHTML = `<img src="${event.target.result}" alt="Profile Photo">`;
                     };
                     reader.readAsDataURL(file);
                 }
@@ -979,101 +919,147 @@
             input.click();
         }
         
+        // Delete element
+        function deleteElement(element) {
+            if (confirm('Bạn có chắc muốn xóa mục này?')) {
+                element.remove();
+            }
+        }
+        
+        // Add contact
+        function addContact() {
+            const container = document.getElementById('contactContainer');
+            const lastBtn = container.querySelector('.add-item-btn');
+            const div = document.createElement('div');
+            div.className = 'contact-item';
+            div.innerHTML = `
+                <div class="contact-icon"><i class="bi bi-link-45deg"></i></div>
+                <div class="contact-text" contenteditable="true" data-placeholder="Thông tin liên hệ"></div>
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+            `;
+            container.insertBefore(div, lastBtn);
+        }
+        
+        // Add skill
         function addSkill() {
-            const container = document.getElementById('skills-container');
-            const skillItem = document.createElement('div');
-            skillItem.className = 'skill-item';
-            skillItem.innerHTML = `
-                <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
-                <div class="skill-bar">
-                    <div class="skill-progress" style="width: 80%"></div>
+            const container = document.getElementById('skillsContainer');
+            const div = document.createElement('div');
+            div.className = 'skill-item';
+            div.innerHTML = `
+                <div class="skill-content">
+                    <i class="bi bi-gear-fill skill-icon"></i>
+                    <div class="skill-text" contenteditable="true" data-placeholder="Mô tả kỹ năng"></div>
                 </div>
-                <div class="skill-level-editor">
-                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 20)"></div>
-                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 40)"></div>
-                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 60)"></div>
-                    <div class="level-btn active" onclick="setSkillLevel(this.parentNode, 80)"></div>
-                    <div class="level-btn" onclick="setSkillLevel(this.parentNode, 100)"></div>
-                </div>
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
             `;
-            container.appendChild(skillItem);
+            container.appendChild(div);
         }
         
-        function addLanguage() {
-            const container = document.getElementById('languages-container');
-            const item = document.createElement('div');
-            item.className = 'language-item';
-            item.setAttribute('contenteditable', 'true');
-            item.setAttribute('data-placeholder', currentLanguage === 'en' ? 'Language & proficiency' : 'Ngôn ngữ & trình độ');
-            container.appendChild(item);
-        }
-        
-        function addOther() {
-            const container = document.getElementById('other-container');
-            const item = document.createElement('div');
-            item.className = 'language-item';
-            item.setAttribute('contenteditable', 'true');
-            item.setAttribute('data-placeholder', currentLanguage === 'en' ? 'Other skills or tools' : 'Kỹ năng hoặc công cụ khác');
-            container.appendChild(item);
-        }
-        
-        function addEducation() {
-            const container = document.getElementById('education-container');
-            const item = document.createElement('div');
-            item.className = 'education-item';
-            item.innerHTML = `
-                <div class="date" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Year - Year' : 'Năm - Năm'}"></div>
-                <div class="degree" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Degree / Major' : 'Bằng cấp / Chuyên ngành'}"></div>
-                <div class="school" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'School / University' : 'Trường học / Đại học'}"></div>
-                <div class="description" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Description, GPA, achievements...' : 'Mô tả, GPA, thành tích...'}"></div>
+        // Add certificate
+        function addCertificate() {
+            const container = document.getElementById('certificatesContainer');
+            const div = document.createElement('div');
+            div.className = 'cert-item';
+            div.innerHTML = `
+                <div class="cert-year" contenteditable="true" data-placeholder="Năm"></div>
+                <div class="cert-title" contenteditable="true" data-placeholder="Tên chứng chỉ"></div>
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
             `;
-            container.appendChild(item);
+            container.appendChild(div);
         }
         
+        // Add award
+        function addAward() {
+            const container = document.getElementById('awardsContainer');
+            const div = document.createElement('div');
+            div.className = 'award-item';
+            div.innerHTML = `
+                <div class="award-year" contenteditable="true" data-placeholder="Năm"></div>
+                <div class="award-title" contenteditable="true" data-placeholder="Tên giải thưởng"></div>
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+            `;
+            container.appendChild(div);
+        }
+        
+        // Add experience
         function addExperience() {
-            const container = document.getElementById('experience-container');
-            const item = document.createElement('div');
-            item.className = 'experience-item';
-            item.innerHTML = `
-                <div class="date" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Start Date - End Date' : 'Ngày Bắt Đầu - Ngày Kết Thúc'}"></div>
-                <div class="role" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Job Title' : 'Chức Danh'}"></div>
-                <div class="company" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Company Name' : 'Tên Công Ty'}"></div>
-                <div class="description" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Job responsibilities and achievements...' : 'Trách nhiệm và thành tích công việc...'}"></div>
+            const container = document.getElementById('experienceContainer');
+            const div = document.createElement('div');
+            div.className = 'experience-item';
+            div.innerHTML = `
+                <div class="exp-header">
+                    <div class="exp-company" contenteditable="true" data-placeholder="Tên Công Ty"></div>
+                    <div class="exp-date" contenteditable="true" data-placeholder="2021 - Nay"></div>
+                </div>
+                <div class="exp-position" contenteditable="true" data-placeholder="Vị trí công việc"></div>
+                <div class="exp-description" contenteditable="true" data-placeholder="Mô tả công việc và thành tích...">
+                    <ul>
+                        <li contenteditable="true">Trách nhiệm và thành tích</li>
+                    </ul>
+                </div>
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
             `;
-            container.appendChild(item);
+            container.appendChild(div);
         }
         
-        function addCertification() {
-            const container = document.getElementById('certifications-container');
-            const item = document.createElement('div');
-            item.className = 'education-item';
-            item.innerHTML = `
-                <div class="date" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Year' : 'Năm'}"></div>
-                <div class="degree" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Project / Certificate Name' : 'Tên Dự Án / Chứng Chỉ'}"></div>
-                <div class="description" contenteditable="true" data-placeholder="${currentLanguage === 'en' ? 'Description...' : 'Mô tả...'}"></div>
+        // Add left section
+        function addLeftSection() {
+            const sidebar = document.querySelector('.cv-left');
+            const lastBtn = sidebar.querySelector('.add-section-btn');
+            const section = document.createElement('div');
+            section.className = 'left-section';
+            const containerId = 'section-' + Date.now();
+            section.innerHTML = `
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <h3 class="left-section-title" contenteditable="true">Phần Mới</h3>
+                <div id="${containerId}">
+                    <div class="cert-item">
+                        <div class="cert-year" contenteditable="true" data-placeholder="Năm"></div>
+                        <div class="cert-title" contenteditable="true" data-placeholder="Nội dung"></div>
+                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                    </div>
+                </div>
+                <button class="add-item-btn" onclick="addCertificate()">+ Thêm Mục</button>
             `;
-            container.appendChild(item);
+            sidebar.insertBefore(section, lastBtn);
         }
         
+        // Add right section
+        function addRightSection() {
+            const main = document.querySelector('.cv-right');
+            const lastBtn = main.querySelector('.add-section-btn');
+            const section = document.createElement('div');
+            section.className = 'content-section';
+            const containerId = 'content-' + Date.now();
+            section.innerHTML = `
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Xóa</button>
+                <h2 class="section-title" contenteditable="true">Phần Mới</h2>
+                <div id="${containerId}">
+                    <div class="experience-item">
+                        <div class="exp-header">
+                            <div class="exp-company" contenteditable="true" data-placeholder="Tiêu đề"></div>
+                            <div class="exp-date" contenteditable="true" data-placeholder="Thời gian"></div>
+                        </div>
+                        <div class="exp-position" contenteditable="true" data-placeholder="Phụ đề"></div>
+                        <div class="exp-description" contenteditable="true" data-placeholder="Mô tả..."></div>
+                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                    </div>
+                </div>
+                <button class="add-item-btn" onclick="addExperience()">+ Thêm Mục</button>
+            `;
+            main.insertBefore(section, lastBtn);
+        }
+        
+        // Print CV
         function printCV() {
-            const editors = document.querySelectorAll('.skill-level-editor, .add-item-btn');
-            editors.forEach(editor => {
-                editor.setAttribute('data-original-display', editor.style.display);
-                editor.style.display = 'none';
-            });
-            
-            const controlPanel = document.querySelector('.control-panel');
-            controlPanel.setAttribute('data-original-display', controlPanel.style.display);
-            controlPanel.style.display = 'none';
-            
             window.print();
-            
-            setTimeout(function() {
-                editors.forEach(editor => {
-                    editor.style.display = editor.getAttribute('data-original-display') || '';
-                });
-                controlPanel.style.display = controlPanel.getAttribute('data-original-display') || '';
-            }, 500);
+        }
+        
+        // Reset CV
+        function resetCV() {
+            if (confirm('Bạn có chắc muốn xóa toàn bộ nội dung và bắt đầu lại?')) {
+                location.reload();
+            }
         }
     </script>
 </body>

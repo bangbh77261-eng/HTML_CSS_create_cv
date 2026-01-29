@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional CV</title>
+    <title>Professional CV Editor</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         * {
@@ -113,14 +112,48 @@
             align-items: center;
             gap: 8px;
             color: rgba(255,255,255,0.85);
+            position: relative;
+            padding-right: 25px;
         }
         
-        .contact-item::before {
-            content: attr(data-icon);
+        .contact-item i {
             font-size: 16px;
         }
         
-        /* Main Content */
+        .delete-btn {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(220, 53, 69, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .contact-item:hover .delete-btn,
+        .skill-item:hover .delete-btn,
+        .info-item-wrapper:hover .delete-btn,
+        .timeline-item:hover .delete-btn,
+        .sidebar-section:hover > .section-delete-btn,
+        .main-section:hover > .section-delete-btn {
+            display: flex;
+        }
+        
+        .delete-btn:hover {
+            background: rgba(220, 53, 69, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        /* CV Body */
         .cv-body {
             display: flex;
         }
@@ -129,12 +162,34 @@
         .cv-sidebar {
             width: 300px;
             background: #f8f9fa;
-            padding: 40px 30px;
+            padding: 30px 25px;
             border-right: 1px solid #e9ecef;
         }
         
         .sidebar-section {
-            margin-bottom: 35px;
+            margin-bottom: 25px;
+            position: relative;
+            padding-top: 10px;
+        }
+        
+        .section-delete-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: rgba(220, 53, 69, 0.8);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            display: none;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .section-delete-btn:hover {
+            background: rgba(220, 53, 69, 1);
         }
         
         .section-title {
@@ -143,22 +198,29 @@
             font-weight: 600;
             color: #2d3561;
             text-transform: uppercase;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
             border-bottom: 3px solid #2d3561;
             letter-spacing: 0.5px;
             cursor: text;
         }
         
         .skill-item {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            padding-right: 25px;
+        }
+        
+        .skill-item .delete-btn {
+            right: 0;
+            top: 0;
         }
         
         .skill-name {
             font-size: 14px;
             font-weight: 500;
             color: #343a40;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             min-height: 20px;
         }
         
@@ -178,18 +240,10 @@
             position: relative;
         }
         
-        .skill-percentage {
-            font-size: 11px;
-            font-weight: 600;
-            color: #6c757d;
-            margin-top: 4px;
-            display: none;
-        }
-        
         .skill-level-editor {
             display: flex;
             gap: 4px;
-            margin-top: 8px;
+            margin-top: 6px;
         }
         
         .level-dot {
@@ -212,20 +266,37 @@
         
         .info-item {
             font-size: 14px;
-            color: #495057;
-            margin-bottom: 12px;
+            color: #000000;
+            margin-bottom: 0;
             line-height: 1.6;
             min-height: 20px;
+        }
+        
+        .info-item-wrapper {
+            position: relative;
+            padding-right: 25px;
+            margin-bottom: 8px;
+        }
+        
+        .info-item-wrapper .delete-btn {
+            right: 0;
+            top: 0;
+        }
+        
+        .info-item-wrapper:hover .delete-btn {
+            display: flex;
         }
         
         /* Main Content Area */
         .cv-main {
             flex: 1;
-            padding: 40px 50px;
+            padding: 30px 40px;
         }
         
         .main-section {
-            margin-bottom: 35px;
+            margin-bottom: 25px;
+            position: relative;
+            padding-top: 10px;
         }
         
         .main-section-title {
@@ -234,8 +305,8 @@
             font-weight: 700;
             color: #2d3561;
             text-transform: uppercase;
-            margin-bottom: 25px;
-            padding-bottom: 12px;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
             border-bottom: 3px solid #2d3561;
             letter-spacing: 0.5px;
             position: relative;
@@ -257,14 +328,15 @@
             color: #495057;
             line-height: 1.8;
             text-align: justify;
-            min-height: 60px;
+            min-height: 40px;
         }
         
         .timeline-item {
             position: relative;
             padding-left: 30px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             border-left: 2px solid #e9ecef;
+            padding-right: 25px;
         }
         
         .timeline-item::before {
@@ -280,11 +352,16 @@
             box-shadow: 0 0 0 2px #e9ecef;
         }
         
+        .timeline-item .delete-btn {
+            right: 0;
+            top: 5px;
+        }
+        
         .timeline-date {
             font-size: 13px;
             font-weight: 600;
             color: #4a5899;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: inline-block;
         }
         
@@ -292,14 +369,14 @@
             font-size: 18px;
             font-weight: 600;
             color: #212529;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             min-height: 24px;
         }
         
         .timeline-subtitle {
             font-size: 15px;
             color: #6c757d;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-style: italic;
             min-height: 20px;
         }
@@ -308,16 +385,7 @@
             font-size: 14px;
             color: #495057;
             line-height: 1.7;
-            margin-bottom: 8px;
-        }
-        
-        .timeline-description ul {
-            margin-left: 20px;
-            margin-top: 8px;
-        }
-        
-        .timeline-description li {
-            margin-bottom: 5px;
+            margin-bottom: 0;
         }
         
         /* Editable styles */
@@ -351,7 +419,9 @@
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             padding: 20px;
-            width: 320px;
+            width: 340px;
+            max-height: 90vh;
+            overflow-y: auto;
             z-index: 1000;
             border: 1px solid #e9ecef;
         }
@@ -507,7 +577,7 @@
         
         .add-item-btn {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             background: transparent;
             border: 2px dashed #dee2e6;
             border-radius: 6px;
@@ -515,7 +585,7 @@
             font-size: 13px;
             font-weight: 500;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 12px;
             transition: all 0.3s;
         }
         
@@ -523,6 +593,31 @@
             border-color: #4a5899;
             color: #4a5899;
             border-style: solid;
+        }
+        
+        .add-section-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .add-section-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .divider {
+            height: 1px;
+            background: #e9ecef;
+            margin: 20px 0;
         }
         
         /* Print styles */
@@ -545,7 +640,10 @@
                 display: none !important;
             }
             
-            .add-item-btn {
+            .add-item-btn,
+            .add-section-btn,
+            .delete-btn,
+            .section-delete-btn {
                 display: none !important;
             }
             
@@ -561,11 +659,48 @@
             <span data-lang-en="Customize CV" data-lang-vi="Tùy Chỉnh CV">Customize CV</span>
         </div>
         
+        <!-- Global Background Colors -->
+        <div class="panel-section">
+            <div class="panel-label" data-lang-en="Page Background" data-lang-vi="Nền Trang">Page Background</div>
+            <div class="color-picker-wrapper">
+                <input type="color" id="pageBackgroundPicker" value="#f8f9fa">
+                <label data-lang-en="Page color" data-lang-vi="Màu trang">Page color</label>
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label" data-lang-en="CV Background" data-lang-vi="Nền CV">CV Background</div>
+            <div class="color-picker-wrapper">
+                <input type="color" id="cvBackgroundPicker" value="#ffffff">
+                <label data-lang-en="CV color" data-lang-vi="Màu CV">CV color</label>
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label" data-lang-en="Header Background" data-lang-vi="Nền Header">Header Background</div>
+            <div class="color-picker-wrapper">
+                <input type="color" id="headerBackgroundPicker" value="#2d3561">
+                <label data-lang-en="Header color" data-lang-vi="Màu header">Header color</label>
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <div class="panel-label" data-lang-en="Sidebar Background" data-lang-vi="Nền Sidebar">Sidebar Background</div>
+            <div class="color-picker-wrapper">
+                <input type="color" id="sidebarBackgroundPicker" value="#f8f9fa">
+                <label data-lang-en="Sidebar color" data-lang-vi="Màu sidebar">Sidebar color</label>
+            </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <!-- Element Styling -->
         <div class="panel-section">
             <div class="panel-label" data-lang-en="Select Element" data-lang-vi="Chọn Phần Tử">Select Element</div>
             <select class="panel-select" id="elementSelector">
                 <option value="name" data-lang-en="Name" data-lang-vi="Họ Tên">Name</option>
                 <option value="job-title" data-lang-en="Job Title" data-lang-vi="Chức Danh">Job Title</option>
+                <option value="contact-item" data-lang-en="Contact Info" data-lang-vi="Thông Tin Liên Hệ">Contact Info</option>
                 <option value="section-title" data-lang-en="Section Titles" data-lang-vi="Tiêu Đề Phần">Section Titles</option>
                 <option value="main-section-title" data-lang-en="Main Section Titles" data-lang-vi="Tiêu Đề Chính">Main Section Titles</option>
                 <option value="timeline-title" data-lang-en="Experience/Education Titles" data-lang-vi="Tiêu Đề Kinh Nghiệm">Experience/Education Titles</option>
@@ -573,6 +708,8 @@
                 <option value="timeline-date" data-lang-en="Dates" data-lang-vi="Ngày Tháng">Dates</option>
                 <option value="about-text" data-lang-en="About Text" data-lang-vi="Văn Bản Giới Thiệu">About Text</option>
                 <option value="timeline-description" data-lang-en="Descriptions" data-lang-vi="Mô Tả">Descriptions</option>
+                <option value="skill-name" data-lang-en="Skill Names" data-lang-vi="Tên Kỹ Năng">Skill Names</option>
+                <option value="info-item" data-lang-en="Info Items" data-lang-vi="Mục Thông Tin">Info Items</option>
             </select>
         </div>
         
@@ -600,6 +737,8 @@
             </div>
         </div>
         
+        <div class="divider"></div>
+        
         <div class="btn-group">
             <button class="control-btn btn-primary" onclick="printCV()">
                 🖨️ <span data-lang-en="Print" data-lang-vi="In">Print</span>
@@ -620,27 +759,31 @@
                 <div class="header-info">
                     <h1 class="name" contenteditable="true" data-placeholder="Your Full Name"></h1>
                     <p class="job-title" contenteditable="true" data-placeholder="Your Job Title"></p>
-                    <div class="contact-row">
+                    <div class="contact-row" id="contactContainer">
                         <div class="contact-item">
                             <i class="bi bi-envelope"></i>
                             <span contenteditable="true" data-placeholder="email@example.com"></span>
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                         </div>
-
                         <div class="contact-item">
                             <i class="bi bi-phone"></i>
                             <span contenteditable="true" data-placeholder="+1 234 567 890"></span>
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                         </div>
-
                         <div class="contact-item">
                             <i class="bi bi-geo-alt"></i>
                             <span contenteditable="true" data-placeholder="City, Country"></span>
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                         </div>
-
                         <div class="contact-item">
                             <i class="bi bi-github"></i>
                             <span contenteditable="true" data-placeholder="your github"></span>
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                         </div>
                     </div>
+                    <button class="add-item-btn" onclick="addContact()" style="margin-top: 10px;">
+                        <span data-lang-en="+ Add Contact" data-lang-vi="+ Thêm Liên Hệ">+ Add Contact</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -648,11 +791,13 @@
         <!-- Body -->
         <div class="cv-body">
             <!-- Sidebar -->
-            <aside class="cv-sidebar">
+            <aside class="cv-sidebar" id="sidebar">
                 <div class="sidebar-section">
+                    <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Delete Section</button>
                     <h3 class="section-title" contenteditable="true" data-lang-en="Skills" data-lang-vi="Kỹ Năng">Skills</h3>
                     <div id="skillsContainer">
                         <div class="skill-item">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                             <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
                             <div class="skill-bar-container">
                                 <div class="skill-bar" style="width: 85%"></div>
@@ -672,9 +817,13 @@
                 </div>
 
                 <div class="sidebar-section">
+                    <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Delete Section</button>
                     <h3 class="section-title" contenteditable="true" data-lang-en="Languages" data-lang-vi="Ngôn Ngữ">Languages</h3>
                     <div id="languagesContainer">
-                        <div class="info-item" contenteditable="true" data-placeholder="Language - Proficiency"></div>
+                        <div class="info-item-wrapper">
+                            <div class="info-item" contenteditable="true" data-placeholder="Language - Proficiency"></div>
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                        </div>
                     </div>
                     <button class="add-item-btn" onclick="addLanguage()">
                         <span data-lang-en="+ Add Language" data-lang-vi="+ Thêm Ngôn Ngữ">+ Add Language</span>
@@ -682,37 +831,38 @@
                 </div>
 
                 <div class="sidebar-section">
+                    <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Delete Section</button>
                     <h3 class="section-title" contenteditable="true" data-lang-en="Certifications" data-lang-vi="Chứng Chỉ">Certifications</h3>
                     <div id="certificationsContainer">
-                        <div class="info-item" contenteditable="true" data-placeholder="Certification name"></div>
+                        <div class="info-item-wrapper">
+                            <div class="info-item" contenteditable="true" data-placeholder="Certification name"></div>
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                        </div>
                     </div>
                     <button class="add-item-btn" onclick="addCertification()">
                         <span data-lang-en="+ Add Certification" data-lang-vi="+ Thêm Chứng Chỉ">+ Add Certification</span>
                     </button>
                 </div>
 
-                <div class="sidebar-section">
-                    <h3 class="section-title" contenteditable="true" data-lang-en="Other" data-lang-vi="Khác">Other</h3>
-                    <div id="otherContainer">
-                        <div class="info-item" contenteditable="true" data-placeholder="Other information"></div>
-                    </div>
-                    <button class="add-item-btn" onclick="addOther()">
-                        <span data-lang-en="+ Add Item" data-lang-vi="+ Thêm Mục">+ Add Item</span>
-                    </button>
-                </div>
+                <button class="add-section-btn" onclick="addSidebarSection()">
+                    <span data-lang-en="+ Add Sidebar Section" data-lang-vi="+ Thêm Phần Sidebar">+ Add Sidebar Section</span>
+                </button>
             </aside>
 
             <!-- Main Content -->
-            <main class="cv-main">
+            <main class="cv-main" id="mainContent">
                 <section class="main-section">
+                    <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Delete Section</button>
                     <h2 class="main-section-title" contenteditable="true" data-lang-en="Professional Summary" data-lang-vi="Tóm Tắt Chuyên Môn">Professional Summary</h2>
                     <p class="about-text" contenteditable="true" data-placeholder="Write a brief summary about yourself, your career goals, and what makes you unique..."></p>
                 </section>
 
                 <section class="main-section">
+                    <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Delete Section</button>
                     <h2 class="main-section-title" contenteditable="true" data-lang-en="Work Experience" data-lang-vi="Kinh Nghiệm Làm Việc">Work Experience</h2>
                     <div id="experienceContainer">
                         <div class="timeline-item">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                             <div class="timeline-date" contenteditable="true" data-placeholder="Jan 2020 - Present"></div>
                             <h3 class="timeline-title" contenteditable="true" data-placeholder="Job Title"></h3>
                             <p class="timeline-subtitle" contenteditable="true" data-placeholder="Company Name, Location"></p>
@@ -725,9 +875,11 @@
                 </section>
 
                 <section class="main-section">
+                    <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Delete Section</button>
                     <h2 class="main-section-title" contenteditable="true" data-lang-en="Education" data-lang-vi="Học Vấn">Education</h2>
                     <div id="educationContainer">
                         <div class="timeline-item">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                             <div class="timeline-date" contenteditable="true" data-placeholder="2016 - 2020"></div>
                             <h3 class="timeline-title" contenteditable="true" data-placeholder="Degree Name"></h3>
                             <p class="timeline-subtitle" contenteditable="true" data-placeholder="University Name, Location"></p>
@@ -740,9 +892,11 @@
                 </section>
 
                 <section class="main-section">
+                    <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Delete Section</button>
                     <h2 class="main-section-title" contenteditable="true" data-lang-en="Projects" data-lang-vi="Dự Án">Projects</h2>
                     <div id="projectsContainer">
                         <div class="timeline-item">
+                            <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                             <div class="timeline-date" contenteditable="true" data-placeholder="2023"></div>
                             <h3 class="timeline-title" contenteditable="true" data-placeholder="Project Name"></h3>
                             <div class="timeline-description" contenteditable="true" data-placeholder="Describe the project, technologies used, and your role..."></div>
@@ -752,6 +906,10 @@
                         <span data-lang-en="+ Add Project" data-lang-vi="+ Thêm Dự Án">+ Add Project</span>
                     </button>
                 </section>
+
+                <button class="add-section-btn" onclick="addMainSection()">
+                    <span data-lang-en="+ Add Main Section" data-lang-vi="+ Thêm Phần Chính">+ Add Main Section</span>
+                </button>
             </main>
         </div>
     </div>
@@ -759,7 +917,30 @@
     <script>
         let currentLanguage = 'en';
 
-        // Customization
+        // Background Color Controls
+        const pageBackgroundPicker = document.getElementById('pageBackgroundPicker');
+        const cvBackgroundPicker = document.getElementById('cvBackgroundPicker');
+        const headerBackgroundPicker = document.getElementById('headerBackgroundPicker');
+        const sidebarBackgroundPicker = document.getElementById('sidebarBackgroundPicker');
+
+        pageBackgroundPicker.addEventListener('input', function() {
+            document.body.style.background = this.value;
+        });
+
+        cvBackgroundPicker.addEventListener('input', function() {
+            document.querySelector('.cv-wrapper').style.background = this.value;
+        });
+
+        headerBackgroundPicker.addEventListener('input', function() {
+            const header = document.querySelector('.cv-header');
+            header.style.background = this.value;
+        });
+
+        sidebarBackgroundPicker.addEventListener('input', function() {
+            document.querySelector('.cv-sidebar').style.background = this.value;
+        });
+
+        // Element Styling
         const elementSelector = document.getElementById('elementSelector');
         const textColorPicker = document.getElementById('textColorPicker');
         const fontSizeRange = document.getElementById('fontSizeRange');
@@ -812,6 +993,13 @@
             });
         }
 
+        // Delete Element
+        function deleteElement(element) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                element.remove();
+            }
+        }
+
         // Photo upload
         function uploadPhoto(element) {
             const input = document.createElement('input');
@@ -848,12 +1036,26 @@
             });
         }
 
-        // Add functions
+        // Add Contact
+        function addContact() {
+            const container = document.getElementById('contactContainer');
+            const div = document.createElement('div');
+            div.className = 'contact-item';
+            div.innerHTML = `
+                <i class="bi bi-link-45deg"></i>
+                <span contenteditable="true" data-placeholder="Contact info"></span>
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Add Skill
         function addSkill() {
             const container = document.getElementById('skillsContainer');
             const div = document.createElement('div');
             div.className = 'skill-item';
             div.innerHTML = `
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                 <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
                 <div class="skill-bar-container">
                     <div class="skill-bar" style="width: 85%"></div>
@@ -869,6 +1071,7 @@
             container.appendChild(div);
         }
 
+        // Add simple items
         function addLanguage() {
             addSimpleItem('languagesContainer', 'Language - Proficiency');
         }
@@ -877,19 +1080,18 @@
             addSimpleItem('certificationsContainer', 'Certification name');
         }
 
-        function addOther() {
-            addSimpleItem('otherContainer', 'Other information');
-        }
-
         function addSimpleItem(containerId, placeholder) {
             const container = document.getElementById(containerId);
-            const div = document.createElement('div');
-            div.className = 'info-item';
-            div.setAttribute('contenteditable', 'true');
-            div.setAttribute('data-placeholder', placeholder);
-            container.appendChild(div);
+            const wrapper = document.createElement('div');
+            wrapper.className = 'info-item-wrapper';
+            wrapper.innerHTML = `
+                <div class="info-item" contenteditable="true" data-placeholder="${placeholder}"></div>
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+            `;
+            container.appendChild(wrapper);
         }
 
+        // Add timeline items
         function addExperience() {
             addTimelineItem('experienceContainer', 'Jan 2020 - Present', 'Job Title', 'Company Name, Location', 'Describe your responsibilities and achievements...');
         }
@@ -903,6 +1105,7 @@
             const div = document.createElement('div');
             div.className = 'timeline-item';
             div.innerHTML = `
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                 <div class="timeline-date" contenteditable="true" data-placeholder="2023"></div>
                 <h3 class="timeline-title" contenteditable="true" data-placeholder="Project Name"></h3>
                 <div class="timeline-description" contenteditable="true" data-placeholder="Describe the project, technologies used, and your role..."></div>
@@ -915,10 +1118,69 @@
             const div = document.createElement('div');
             div.className = 'timeline-item';
             div.innerHTML = `
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                 <div class="timeline-date" contenteditable="true" data-placeholder="${date}"></div>
                 <h3 class="timeline-title" contenteditable="true" data-placeholder="${title}"></h3>
                 <p class="timeline-subtitle" contenteditable="true" data-placeholder="${subtitle}"></p>
                 <div class="timeline-description" contenteditable="true" data-placeholder="${description}"></div>
+            `;
+            container.appendChild(div);
+        }
+
+        // Add Sections
+        function addSidebarSection() {
+            const sidebar = document.getElementById('sidebar');
+            const section = document.createElement('div');
+            section.className = 'sidebar-section';
+            const sectionId = 'section-' + Date.now();
+            section.innerHTML = `
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Delete Section</button>
+                <h3 class="section-title" contenteditable="true" data-placeholder="Section Title">New Section</h3>
+                <div id="${sectionId}">
+                    <div class="info-item-wrapper">
+                        <div class="info-item" contenteditable="true" data-placeholder="Add content..."></div>
+                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                    </div>
+                </div>
+                <button class="add-item-btn" onclick="addSimpleItem('${sectionId}', 'Add content...')">
+                    + Add Item
+                </button>
+            `;
+            sidebar.insertBefore(section, sidebar.lastElementChild);
+        }
+
+        function addMainSection() {
+            const main = document.getElementById('mainContent');
+            const section = document.createElement('section');
+            section.className = 'main-section';
+            const sectionId = 'main-section-' + Date.now();
+            section.innerHTML = `
+                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">Delete Section</button>
+                <h2 class="main-section-title" contenteditable="true" data-placeholder="Section Title">New Section</h2>
+                <div id="${sectionId}">
+                    <div class="timeline-item">
+                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                        <div class="timeline-date" contenteditable="true" data-placeholder="Date"></div>
+                        <h3 class="timeline-title" contenteditable="true" data-placeholder="Title"></h3>
+                        <div class="timeline-description" contenteditable="true" data-placeholder="Description..."></div>
+                    </div>
+                </div>
+                <button class="add-item-btn" onclick="addCustomTimelineItem('${sectionId}')">
+                    + Add Item
+                </button>
+            `;
+            main.insertBefore(section, main.lastElementChild);
+        }
+
+        function addCustomTimelineItem(containerId) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = 'timeline-item';
+            div.innerHTML = `
+                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
+                <div class="timeline-date" contenteditable="true" data-placeholder="Date"></div>
+                <h3 class="timeline-title" contenteditable="true" data-placeholder="Title"></h3>
+                <div class="timeline-description" contenteditable="true" data-placeholder="Description..."></div>
             `;
             container.appendChild(div);
         }

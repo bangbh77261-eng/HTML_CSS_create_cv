@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CV Editor - Professional</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&family=Open+Sans:wght@300;400;600;700;800&family=Lato:wght@300;400;700;900&family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&family=Nunito:wght@300;400;600;700;800&family=Work+Sans:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@300;400;600;700;800&family=Raleway:wght@300;400;500;600;700;800&family=Ubuntu:wght@300;400;500;700&family=Quicksand:wght@300;400;500;600;700&family=Rubik:wght@300;400;500;600;700;800&family=Mulish:wght@300;400;600;700;800&family=Barlow:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         * {
@@ -12,14 +14,12 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
         body {
             background: #f0f0f0;
             padding: 30px;
             line-height: 1.6;
             font-size: 16px;
         }
-        
         .cv-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -28,8 +28,8 @@
             display: flex;
             min-height: 1400px;
             font-size: 14px;
-        }
-        
+            font-family: 'Inter', sans-serif;
+        }  
         /* Left Sidebar */
         .cv-left {
             width: 355px;
@@ -37,13 +37,11 @@
             padding: 0;
             position: relative;
         }
-        
         .profile-section {
             text-align: center;
             padding: 30px 30px 20px;
             background: #e8e1d5;
         }
-        
         .profile-photo {
             width: 60%;
             height: 60%;
@@ -58,11 +56,9 @@
             transition: all 0.3s;
             position: relative;
         }
-        
         .profile-photo:hover {
             transform: scale(1.05);
         }
-        
         .profile-photo img {
             width: 100%;
             height: 100%;
@@ -477,7 +473,7 @@
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             padding: 20px;
-            width: 300px;
+            width: 320px;
             max-height: 85vh;
             overflow-y: auto;
             z-index: 1000;
@@ -585,6 +581,25 @@
             margin: 15px 0;
         }
         
+        .font-preview {
+            margin-top: 8px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .font-preview-text {
+            font-size: 14px;
+            color: #2c2c2c;
+            margin-bottom: 4px;
+        }
+        
+        .font-preview-vietnamese {
+            font-size: 12px;
+            color: #666;
+        }
+        
         /* Print styles */
         @media print {
             body {
@@ -620,7 +635,7 @@
         <div class="color-option">
             <label class="color-label">Chiều Rộng Sidebar</label>
             <div class="range-control">
-                <input type="range" id="sidebarWidth" min="250" max="450" value="250" step="5">
+                <input type="range" id="sidebarWidth" min="250" max="450" value="355" step="5">
                 <span class="range-value"><span id="sidebarWidthDisplay">355</span>px</span>
             </div>
         </div>
@@ -628,18 +643,34 @@
         <div class="divider-small"></div>
         
         <div class="color-option">
-            <label class="color-label">Font Chữ</label>
+            <label class="color-label">Font Chữ (Tối ưu cho Tiếng Việt)</label>
             <select class="panel-select" id="fontFamily">
-                <option value="'Inter', sans-serif">Inter (Default)</option>
-                <option value="'Times New Roman', Times, serif">Times New Roman</option>
-                <option value="'Arial', sans-serif">Arial</option>
-                <option value="'Georgia', serif">Georgia</option>
-                <option value="'Helvetica', sans-serif">Helvetica</option>
-                <option value="'Courier New', monospace">Courier New</option>
-                <option value="'Verdana', sans-serif">Verdana</option>
-                <option value="'Garamond', serif">Garamond</option>
-                <option value="'Poppins', sans-serif">Poppins</option>
+                <optgroup label="🌟 Được Khuyên Dùng">
+                    <option value="'Inter', sans-serif">Inter - Hiện đại, rõ ràng</option>
+                    <option value="'Roboto', sans-serif">Roboto - Chuyên nghiệp</option>
+                    <option value="'Open Sans', sans-serif">Open Sans - Dễ đọc</option>
+                    <option value="'Lato', sans-serif">Lato - Thanh lịch</option>
+                    <option value="'Poppins', sans-serif">Poppins - Năng động</option>
+                </optgroup>
+                <optgroup label="✨ Phong Cách Độc Đáo">
+                    <option value="'Montserrat', sans-serif">Montserrat - Mạnh mẽ</option>
+                    <option value="'Nunito', sans-serif">Nunito - Thân thiện</option>
+                    <option value="'Work Sans', sans-serif">Work Sans - Hiện đại</option>
+                    <option value="'Source Sans 3', sans-serif">Source Sans 3 - Cân đối</option>
+                    <option value="'Raleway', sans-serif">Raleway - Thanh thoát</option>
+                </optgroup>
+                <optgroup label="💼 Phong Cách Kinh Doanh">
+                    <option value="'Ubuntu', sans-serif">Ubuntu - Công nghệ</option>
+                    <option value="'Quicksand', sans-serif">Quicksand - Nhẹ nhàng</option>
+                    <option value="'Rubik', sans-serif">Rubik - Bo tròn</option>
+                    <option value="'Mulish', sans-serif">Mulish - Truyền thống</option>
+                    <option value="'Barlow', sans-serif">Barlow - Đơn giản</option>
+                </optgroup>
             </select>
+            <div class="font-preview">
+                <div class="font-preview-text" id="fontPreviewText">Ví dụ: Nguyễn Văn A</div>
+                <div class="font-preview-vietnamese">Chuyên viên phát triển phần mềm</div>
+            </div>
         </div>
         
         <div class="color-option">
@@ -715,7 +746,7 @@
         <aside class="cv-left">
             <div class="profile-section">
                 <div class="profile-photo" onclick="uploadPhoto(this)">
-                    <div class="profile-photo-placeholder"></div>
+                    <div class="profile-photo-placeholder">Nhấp để thêm ảnh</div>
                 </div>
             </div>
             
@@ -830,6 +861,15 @@
     </div>
 
     <script>
+        // Update font preview
+        function updateFontPreview() {
+            const fontFamily = document.getElementById('fontFamily').value;
+            const previewText = document.getElementById('fontPreviewText');
+            const previewVietnamese = document.querySelector('.font-preview-vietnamese');
+            previewText.style.fontFamily = fontFamily;
+            previewVietnamese.style.fontFamily = fontFamily;
+        }
+        
         // Sidebar width control
         const sidebarWidthInput = document.getElementById('sidebarWidth');
         const sidebarWidthDisplay = document.getElementById('sidebarWidthDisplay');
@@ -843,6 +883,7 @@
         // Font family control
         document.getElementById('fontFamily').addEventListener('change', function() {
             document.querySelector('.cv-container').style.fontFamily = this.value;
+            updateFontPreview();
         });
         
         // Base font size control
@@ -1063,6 +1104,9 @@
                 location.reload();
             }
         }
+        
+        // Initialize font preview
+        updateFontPreview();
     </script>
 </body>
 </html>

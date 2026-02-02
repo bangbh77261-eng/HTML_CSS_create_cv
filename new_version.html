@@ -14,9 +14,10 @@
         }
 
         body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #f8f9fa;
-            padding: 20px 30px;
-            line-height: 1.6;
+            padding: 15px 20px;
+            line-height: 1.4;
         }
         
         .cv-wrapper {
@@ -27,10 +28,10 @@
             position: relative;
         }
 
-        /* Header Section */
+        /* Header Section - Reduced padding */
         .cv-header {
             background: linear-gradient(135deg, #2d3561 0%, #4a5899 100%);
-            padding: 20px 20px;
+            padding: 12px 15px;
             position: relative;
             overflow: hidden;
         }
@@ -49,16 +50,16 @@
         .header-content {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             position: relative;
             z-index: 1;
         }
         
         .profile-photo {
-            width: 140px;
-            height: 140px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            border: 5px solid rgba(255,255,255,0.2);
+            border: 4px solid rgba(255,255,255,0.2);
             overflow: hidden;
             background: rgba(255,255,255,0.1);
             cursor: pointer;
@@ -67,7 +68,7 @@
             align-items: center;
             justify-content: center;
             color: rgba(255,255,255,0.6);
-            font-size: 14px;
+            font-size: 11px;
             text-align: center;
             flex-shrink: 0;
         }
@@ -83,39 +84,40 @@
         }
         
         .name {
-            font-size: 42px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             letter-spacing: -0.5px;
-            min-height: 50px;
+            min-height: 38px;
         }
         
         .job-title {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 400;
             color: rgba(255,255,255,0.9);
-            margin-bottom: 10px;
-            min-height: 28px;
+            margin-bottom: 6px;
+            min-height: 20px;
         }
         
         .contact-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            font-size: 16px;
+            gap: 8px;
+            font-size: 13px;
         }
         
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: rgba(255,255,255,0.85);
             position: relative;
-            padding-right: 25px;
+            padding-right: 22px;
         }
         
         .contact-item i {
-            font-size: 16px;
+            font-size: 13px;
         }
         
         .delete-btn {
@@ -127,9 +129,9 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
             cursor: pointer;
             display: none;
             align-items: center;
@@ -156,18 +158,18 @@
             display: flex;
         }
         
-        /* Left Sidebar */
+        /* Left Sidebar - Reduced padding */
         .cv-sidebar {
-            width: 300px;
+            width: 280px;
             background: #f8f9fa;
-            padding: 30px 25px;
+            padding: 15px 12px;
             border-right: 1px solid #e9ecef;
         }
         
         .sidebar-section {
-            margin-bottom: 25px;
+            margin-bottom: 12px;
             position: relative;
-            padding-top: 10px;
+            padding-top: 8px;
         }
         
         .section-delete-btn {
@@ -178,8 +180,8 @@
             color: white;
             border: none;
             border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 11px;
+            padding: 3px 6px;
+            font-size: 10px;
             cursor: pointer;
             display: none;
             transition: all 0.2s;
@@ -191,21 +193,22 @@
         }
         
         .section-title {
-            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
             font-weight: 600;
             color: #2d3561;
             text-transform: uppercase;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 3px solid #2d3561;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2d3561;
             letter-spacing: 0.5px;
             cursor: text;
         }
         
         .skill-item {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             position: relative;
-            padding-right: 25px;
+            padding-right: 22px;
         }
         
         .skill-item .delete-btn {
@@ -214,16 +217,16 @@
         }
         
         .skill-name {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
             color: #343a40;
-            margin-bottom: 6px;
-            min-height: 20px;
+            margin-bottom: 4px;
+            min-height: 16px;
         }
         
         .skill-bar-container {
             background: #e9ecef;
-            height: 8px;
+            height: 6px;
             border-radius: 10px;
             overflow: hidden;
             position: relative;
@@ -239,13 +242,13 @@
         
         .skill-level-editor {
             display: flex;
-            gap: 4px;
-            margin-top: 6px;
+            gap: 3px;
+            margin-top: 4px;
         }
         
         .level-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             background: #dee2e6;
             border-radius: 50%;
             cursor: pointer;
@@ -262,17 +265,17 @@
         }
         
         .info-item {
-            font-size: 14px;
+            font-size: 12px;
             color: #000000;
             margin-bottom: 0;
-            line-height: 1.6;
-            min-height: 20px;
+            line-height: 1.4;
+            min-height: 16px;
         }
         
         .info-item-wrapper {
             position: relative;
-            padding-right: 25px;
-            margin-bottom: 8px;
+            padding-right: 22px;
+            margin-bottom: 5px;
         }
         
         .info-item-wrapper .delete-btn {
@@ -284,26 +287,27 @@
             display: flex;
         }
         
-        /* Main Content Area */
+        /* Main Content Area - Reduced padding */
         .cv-main {
             flex: 1;
-            padding: 30px 40px;
+            padding: 15px 20px;
         }
         
         .main-section {
-            margin-bottom: 25px;
+            margin-bottom: 12px;
             position: relative;
-            padding-top: 10px;
+            padding-top: 8px;
         }
         
         .main-section-title {
-            font-size: 22px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
             font-weight: 700;
             color: #2d3561;
             text-transform: uppercase;
-            margin-bottom: 18px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #2d3561;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #2d3561;
             letter-spacing: 0.5px;
             position: relative;
             cursor: text;
@@ -312,36 +316,36 @@
         .main-section-title::after {
             content: '';
             position: absolute;
-            bottom: -3px;
+            bottom: -2px;
             left: 0;
-            width: 80px;
-            height: 3px;
+            width: 60px;
+            height: 2px;
             background: #6c7ac9;
         }
         
         .about-text {
-            font-size: 15px;
+            font-size: 13px;
             color: #495057;
-            line-height: 1.8;
+            line-height: 1.5;
             text-align: justify;
-            min-height: 40px;
+            min-height: 30px;
         }
         
         .timeline-item {
             position: relative;
-            padding-left: 30px;
-            margin-bottom: 20px;
+            padding-left: 20px;
+            margin-bottom: 10px;
             border-left: 2px solid #e9ecef;
-            padding-right: 25px;
+            padding-right: 22px;
         }
         
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -6px;
-            top: 5px;
-            width: 10px;
-            height: 10px;
+            left: -5px;
+            top: 4px;
+            width: 8px;
+            height: 8px;
             background: #4a5899;
             border-radius: 50%;
             border: 2px solid white;
@@ -350,37 +354,37 @@
         
         .timeline-item .delete-btn {
             right: 0;
-            top: 5px;
+            top: 4px;
         }
         
         .timeline-date {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
             color: #4a5899;
-            margin-bottom: 6px;
+            margin-bottom: 3px;
             display: inline-block;
         }
         
         .timeline-title {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
             color: #212529;
-            margin-bottom: 4px;
-            min-height: 24px;
+            margin-bottom: 2px;
+            min-height: 18px;
         }
         
         .timeline-subtitle {
-            font-size: 15px;
+            font-size: 13px;
             color: #6c757d;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             font-style: italic;
-            min-height: 20px;
+            min-height: 16px;
         }
         
         .timeline-description {
-            font-size: 14px;
+            font-size: 12px;
             color: #495057;
-            line-height: 1.7;
+            line-height: 1.5;
             margin-bottom: 0;
         }
         
@@ -423,6 +427,7 @@
         }
         
         .panel-header {
+            font-family: 'Poppins', sans-serif;
             font-size: 18px;
             font-weight: 600;
             color: #2d3561;
@@ -572,15 +577,15 @@
         
         .add-item-btn {
             width: 100%;
-            padding: 8px;
+            padding: 6px;
             background: transparent;
             border: 2px dashed #dee2e6;
             border-radius: 6px;
             color: #6c757d;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             cursor: pointer;
-            margin-top: 12px;
+            margin-top: 8px;
             transition: all 0.3s;
         }
         
@@ -592,15 +597,15 @@
         
         .add-section-btn {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: linear-gradient(135deg, #28a745, #20c997);
             border: none;
             border-radius: 6px;
             color: white;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 8px;
             transition: all 0.3s;
         }
         
@@ -648,111 +653,143 @@
                 page-break-inside: avoid;
             }
             
-            /* Compact spacing for print */
+            /* Even more compact for print */
             .cv-header {
-                padding: 15px 20px;
+                padding: 10px 12px;
             }
             
             .header-content {
-                gap: 15px;
-            }
-            
-            .profile-photo {
-                width: 120px;
-                height: 120px;
-            }
-            
-            .name {
-                font-size: 36px;
-                margin-bottom: 5px;
-            }
-            
-            .job-title {
-                font-size: 18px;
-                margin-bottom: 8px;
-            }
-            
-            .contact-row {
                 gap: 10px;
             }
             
-            .contact-item {
+            .profile-photo {
+                width: 85px;
+                height: 85px;
+                border-width: 3px;
+            }
+            
+            .name {
+                font-size: 28px;
+                margin-bottom: 3px;
+                min-height: 32px;
+            }
+            
+            .job-title {
                 font-size: 14px;
+                margin-bottom: 4px;
+                min-height: 18px;
+            }
+            
+            .contact-row {
+                gap: 6px;
+                font-size: 11px;
+            }
+            
+            .contact-item {
+                gap: 4px;
+            }
+            
+            .contact-item i {
+                font-size: 11px;
             }
             
             .cv-sidebar {
-                padding: 20px 18px;
+                padding: 12px 10px;
+                width: 260px;
             }
             
             .sidebar-section {
-                margin-bottom: 18px;
+                margin-bottom: 10px;
+                padding-top: 6px;
             }
             
             .section-title {
-                font-size: 14px;
-                margin-bottom: 10px;
-                padding-bottom: 6px;
+                font-size: 12px;
+                margin-bottom: 6px;
+                padding-bottom: 4px;
             }
             
             .skill-item {
-                margin-bottom: 10px;
+                margin-bottom: 6px;
             }
             
             .skill-name {
-                font-size: 13px;
-                margin-bottom: 4px;
+                font-size: 11px;
+                margin-bottom: 3px;
+                min-height: 14px;
+            }
+            
+            .skill-bar-container {
+                height: 5px;
             }
             
             .info-item-wrapper {
-                margin-bottom: 6px;
-            }
-            
-            .info-item {
-                font-size: 13px;
-            }
-            
-            .cv-main {
-                padding: 20px 30px;
-            }
-            
-            .main-section {
-                margin-bottom: 18px;
-            }
-            
-            .main-section-title {
-                font-size: 20px;
-                margin-bottom: 12px;
-                padding-bottom: 8px;
-            }
-            
-            .about-text {
-                font-size: 14px;
-                line-height: 1.6;
-            }
-            
-            .timeline-item {
-                margin-bottom: 14px;
-                padding-left: 25px;
-            }
-            
-            .timeline-date {
-                font-size: 12px;
                 margin-bottom: 4px;
             }
             
-            .timeline-title {
+            .info-item {
+                font-size: 11px;
+                line-height: 1.3;
+                min-height: 14px;
+            }
+            
+            .cv-main {
+                padding: 12px 16px;
+            }
+            
+            .main-section {
+                margin-bottom: 10px;
+                padding-top: 6px;
+            }
+            
+            .main-section-title {
                 font-size: 16px;
-                margin-bottom: 3px;
+                margin-bottom: 6px;
+                padding-bottom: 5px;
+            }
+            
+            .main-section-title::after {
+                width: 50px;
+            }
+            
+            .about-text {
+                font-size: 12px;
+                line-height: 1.4;
+                min-height: 24px;
+            }
+            
+            .timeline-item {
+                margin-bottom: 8px;
+                padding-left: 18px;
+            }
+            
+            .timeline-item::before {
+                width: 7px;
+                height: 7px;
+                left: -4px;
+                top: 3px;
+            }
+            
+            .timeline-date {
+                font-size: 10px;
+                margin-bottom: 2px;
+            }
+            
+            .timeline-title {
+                font-size: 13px;
+                margin-bottom: 2px;
+                min-height: 16px;
             }
             
             .timeline-subtitle {
-                font-size: 14px;
-                margin-bottom: 6px;
+                font-size: 11px;
+                margin-bottom: 3px;
+                min-height: 14px;
             }
             
             .timeline-description {
-                font-size: 13px;
-                line-height: 1.5;
+                font-size: 11px;
+                line-height: 1.4;
             }
         }
     </style>
@@ -802,8 +839,8 @@
         <div class="panel-section">
             <div class="panel-label" data-lang-en="Sidebar Width" data-lang-vi="Độ Rộng Sidebar">Sidebar Width</div>
             <div class="range-control">
-                <input type="range" id="sidebarWidthRange" min="200" max="400" value="300">
-                <span class="range-value"><span id="sidebarWidthDisplay">300</span>px</span>
+                <input type="range" id="sidebarWidthRange" min="200" max="400" value="280">
+                <span class="range-value"><span id="sidebarWidthDisplay">280</span>px</span>
             </div>
         </div>
         
@@ -920,7 +957,7 @@
                             <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
                         </div>
                     </div>
-                    <button class="add-item-btn" onclick="addContact()" style="margin-top: 10px;">
+                    <button class="add-item-btn" onclick="addContact()" style="margin-top: 6px;">
                         <span data-lang-en="+ Add Contact" data-lang-vi="+ Thêm Liên Hệ">+ Add Contact</span>
                     </button>
                 </div>

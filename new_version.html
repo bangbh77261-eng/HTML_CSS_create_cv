@@ -1252,24 +1252,7 @@
 
         // Add Skill
         function addSkill() {
-            const container = document.getElementById('skillsContainer');
-            const div = document.createElement('div');
-            div.className = 'skill-item';
-            div.innerHTML = `
-                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                <div class="skill-name" contenteditable="true" data-placeholder="Skill name"></div>
-                <div class="skill-bar-container">
-                    <div class="skill-bar" style="width: 85%"></div>
-                </div>
-                <div class="skill-level-editor">
-                    <div class="level-dot" onclick="setSkillLevel(this.parentElement, 20)"></div>
-                    <div class="level-dot" onclick="setSkillLevel(this.parentElement, 40)"></div>
-                    <div class="level-dot" onclick="setSkillLevel(this.parentElement, 60)"></div>
-                    <div class="level-dot" onclick="setSkillLevel(this.parentElement, 80)"></div>
-                    <div class="level-dot active" onclick="setSkillLevel(this.parentElement, 100)"></div>
-                </div>
-            `;
-            container.appendChild(div);
+             addSimpleItem('skillsContainer', 'Language - Proficiency');
         }
 
         // Add simple items

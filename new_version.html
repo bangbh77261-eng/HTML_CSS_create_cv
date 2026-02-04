@@ -91,7 +91,7 @@ body {
    ================================================================ */
 .cv-header {
     background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent));
-    padding   : 14px 16px;
+    padding   : 34px 46px;
     position  : relative;
     overflow  : hidden;
 }
@@ -139,7 +139,6 @@ body {
 .header-info { flex:1; color:#fff; min-width:0; }
 
 .name {
-    font-family : var(--font-heading);
     font-size   : var(--sz-name);
     font-weight : var(--w-bold);
     letter-spacing: -0.3px;
@@ -148,7 +147,6 @@ body {
     color       : #fff;
 }
 .job-title {
-    font-family : var(--font-body);
     font-size   : var(--sz-job-title);
     font-weight : var(--w-reg);
     color       : rgba(255,255,255,.85);
@@ -701,16 +699,23 @@ body {
     .timeline-item, .section-title, .main-section-title,
     .desc-bullet { padding-right:0 !important; }
 }
+.btn_hinden_optimize{
+    height: 50px;
+    width: 200px;
+    color: white;
+    background-color: blueviolet;
+    border-radius: 12px;
+    margin: 50px;
+}
 </style>
 </head>
 <body>
-
 <!-- ============================================================
      CONTROL PANEL
      ============================================================ -->
 <div class="control-panel">
+    <button class="btn_hinden_optimize" onclick="toggleControlPanel()">Tắt thanh công cụ</button>
     <div class="panel-header">⚙️ Customize CV</div>
-
     <!-- backgrounds -->
     <div class="panel-section">
         <div class="panel-label">Page Background</div>
@@ -1234,7 +1239,10 @@ function addContact() {
         '<button class="delete-btn" onclick="deleteEl(this.parentElement)">×</button>';
     document.getElementById('contactContainer').appendChild(d);
 }
-
+function toggleControlPanel() {
+    const panel = document.querySelector('.control-panel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
 /* ============================================================
    ADD CUSTOM SECTIONS
    ============================================================ */

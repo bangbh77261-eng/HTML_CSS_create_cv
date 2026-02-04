@@ -310,7 +310,6 @@ body {
       All inner text/lists must NOT extend under the top-right delete btn.
       We add padding-right here so the entire content block stays clear.
     */
-    padding-right : calc(var(--del-btn-w) + 4px);
 }
 .timeline-item::before {
     content  : '';
@@ -363,7 +362,7 @@ body {
     position      : relative;
     margin-bottom : 3px;
     /* room for the two tiny action buttons on the right */
-    padding-right : 48px;
+    padding-right : 0px;
 }
 .desc-bullet::before {
     content     : '';
@@ -715,7 +714,7 @@ body {
      ============================================================ -->
 <div class="control-panel">
     <button class="control-btn" onclick="toggleControlPanel()">Tắt thanh công cụ</button>
-    <div class="panel-header">⚙️ Customize CV</div>
+    <div class="panel-header">⚙️ Customize CCV</div>
     <!-- backgrounds -->
     <div class="panel-section">
         <div class="panel-label">Page Background</div>
@@ -864,11 +863,6 @@ body {
                         <span contenteditable="true" data-placeholder="City, Country"></span>
                         <button class="delete-btn" onclick="deleteEl(this.parentElement)">×</button>
                     </div>
-                    <div class="contact-item">
-                        <i class="bi bi-github"></i>
-                        <span contenteditable="true" data-placeholder="your github"></span>
-                        <button class="delete-btn" onclick="deleteEl(this.parentElement)">×</button>
-                    </div>
                 </div>
                 <button class="add-item-btn" style="margin-top:6px;" onclick="addContact()">+ Add Contact</button>
             </div>
@@ -895,7 +889,7 @@ body {
 
             <div class="sidebar-section">
                 <button class="section-delete-btn" onclick="deleteEl(this.parentElement)">✕ Delete</button>
-                <h3 class="section-title" contenteditable="true" data-lang-en="Languages" data-lang-vi="Ngôn Ngữ">Languages</h3>
+                <h3 class="section-title" contenteditable="true" data-lang-en="Languages" data-lang-vi="Ngoại Ngữ">Languages</h3>
                 <div id="languagesContainer">
                     <div class="info-item-wrapper">
                         <div class="info-item" contenteditable="true" data-placeholder="e.g. Vietnamese – Native"></div>
@@ -907,7 +901,7 @@ body {
 
             <div class="sidebar-section">
                 <button class="section-delete-btn" onclick="deleteEl(this.parentElement)">✕ Delete</button>
-                <h3 class="section-title" contenteditable="true" data-lang-en="Certifications" data-lang-vi="Chứng Chỉ">Certifications</h3>
+                <h3 class="section-title" contenteditable="true" data-lang-en="OTHER SKILLS" data-lang-vi="KỸ NĂNG KHÁC">Certifications</h3>
                 <div id="certificationsContainer">
                     <div class="info-item-wrapper">
                         <div class="info-item" contenteditable="true" data-placeholder="Certification name"></div>

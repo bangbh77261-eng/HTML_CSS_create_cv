@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lịch Giảng Dạy Hàng Hải</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07101f; --bg2:#0b1929; --bg3:#112236; --card:rgba(11,25,41,0.95);
+  --teal:#00c8da; --teal2:#008fa0; --gold:#ffc842; --green:#00e39e;
+  --purple:#b47af0; --red:#ff4d70; --orange:#ff8d40;
+  --t:#daeef6; --td:#6e92ab;
+  --b:rgba(0,200,218,0.13); --bb:rgba(0,200,218,0.28); --r:9px;
+  --k1:#00c8da; --k2:#ffc842; --k3:#00e39e; --k4:#b47af0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--t);}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 55% 40% at 3% 6%,rgba(0,200,218,.07) 0%,transparent 55%),
+             radial-gradient(ellipse 40% 50% at 97% 95%,rgba(180,122,240,.06) 0%,transparent 55%);}
+
+/* HEADER */
+header{position:relative;z-index:10;background:linear-gradient(90deg,var(--bg2),var(--bg3));
+  border-bottom:1px solid var(--bb);padding:11px 22px;display:flex;align-items:center;gap:12px;}
+.logo{font-size:23px;}
+header h1{font-size:16px;font-weight:900;letter-spacing:-.3px;}
+header h1 em{font-style:normal;color:var(--teal);}
+.hdr-r{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.badge{background:rgba(0,200,218,.1);border:1px solid var(--bb);color:var(--teal);
+  font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.4px;}
+
+/* LAYOUT */
+.app{position:relative;z-index:1;display:flex;height:calc(100vh - 52px);}
+
+/* LEFT PANEL */
+.lp{width:300px;flex-shrink:0;background:var(--card);border-right:1px solid var(--b);
+  display:flex;flex-direction:column;overflow:hidden;}
+.ptabs{display:flex;border-bottom:1px solid var(--b);}
+.ptab{flex:1;padding:9px 4px;border:none;background:transparent;color:var(--td);
+  font-family:inherit;font-size:9px;font-weight:800;letter-spacing:.7px;cursor:pointer;
+  transition:all .15s;border-bottom:2px solid transparent;text-transform:uppercase;}
+.ptab.active{color:var(--teal);border-bottom-color:var(--teal);background:rgba(0,200,218,.04);}
+.pb{flex:1;overflow-y:auto;padding:14px;}
+.pb::-webkit-scrollbar{width:3px;}
+.pb::-webkit-scrollbar-thumb{background:var(--bb);border-radius:2px;}
+
+/* FORM ATOMS */
+.sl{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--teal);margin:13px 0 7px;display:block;}
+.sl:first-child{margin-top:0;}
+.fg{margin-bottom:8px;}
+.fg label{font-size:10px;color:var(--td);display:block;margin-bottom:3px;font-weight:500;}
+.fg input,.fg select{width:100%;background:rgba(7,16,31,.65);border:1px solid var(--b);
+  color:var(--t);border-radius:7px;padding:7px 9px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;transition:border .15s;}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--teal);}
+.fg select option{background:#0b1929;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.row2{display:flex;gap:6px;}
+.row2>.fg{flex:1;}
+.tbtn{flex:1;padding:7px 3px;border-radius:7px;border:1px solid var(--b);background:transparent;
+  color:var(--td);font-family:inherit;font-size:10px;font-weight:800;
+  cursor:pointer;transition:all .15s;text-transform:uppercase;}
+.tbtn.active{background:var(--teal);color:var(--bg);border-color:var(--teal);}
+
+/* CONSTRAINT ROWS */
+.cg{display:flex;flex-direction:column;}
+.cr{display:flex;align-items:center;justify-content:space-between;
+  padding:6px 0;border-bottom:1px solid rgba(0,200,218,.07);font-size:11px;}
+.cr:last-child{border:none;}
+.cr-l{color:var(--td);}
+.cr-v{background:rgba(0,200,218,.11);color:var(--teal);font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;}
+.sb{background:rgba(7,16,31,.5);border:1px solid var(--b);border-radius:8px;padding:9px;text-align:center;}
+.sn{font-size:19px;font-weight:900;color:var(--teal);font-family:'JetBrains Mono',monospace;}
+.sl2{font-size:9px;color:var(--td);margin-top:2px;}
+
+/* ACTION STACK */
+.as{display:flex;flex-direction:column;gap:7px;padding:12px;border-top:1px solid var(--b);}
+.bgen{width:100%;padding:11px;border-radius:9px;background:linear-gradient(135deg,var(--teal),var(--teal2));
+  border:none;color:var(--bg);font-family:inherit;font-size:13px;font-weight:900;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;}
+.bgen:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,200,218,.3);}
+.bexp{width:100%;padding:8px;border-radius:9px;border:1px solid rgba(0,227,158,.3);
+  background:transparent;color:var(--green);font-family:inherit;font-size:12px;font-weight:700;
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.bexp:hover{background:rgba(0,227,158,.07);}
+
+/* MAIN */
+.mc{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.ctabs{display:flex;gap:2px;padding:9px 16px 0;background:var(--bg2);border-bottom:1px solid var(--b);}
+.ctab{padding:7px 14px;border-radius:7px 7px 0 0;border:none;background:transparent;
+  color:var(--td);font-family:inherit;font-size:12px;font-weight:700;
+  cursor:pointer;transition:all .15s;border-bottom:2px solid transparent;}
+.ctab.active{background:rgba(0,200,218,.07);color:var(--teal);border-bottom-color:var(--teal);}
+.ca{flex:1;overflow-y:auto;padding:16px;}
+.ca::-webkit-scrollbar{width:4px;}
+.ca::-webkit-scrollbar-thumb{background:var(--bb);border-radius:2px;}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:70px 20px;color:var(--td);}
+.empty .ei{font-size:48px;margin-bottom:12px;}
+.empty h3{font-size:15px;color:var(--t);font-weight:700;margin-bottom:5px;}
+.empty p{font-size:12px;line-height:1.7;}
+
+/* SCHEDULE TABLE */
+.tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--b);}
+table{width:100%;border-collapse:collapse;font-size:11px;}
+thead th{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:7px 5px;
+  text-align:center;font-weight:700;font-size:10px;letter-spacing:.3px;color:var(--teal);
+  border-bottom:1px solid var(--b);white-space:nowrap;position:sticky;top:0;z-index:5;}
+thead th.thi{text-align:left;padding-left:9px;}
+thead th.thd{min-width:30px;font-family:'JetBrains Mono',monospace;}
+thead th.cfl{background:rgba(255,77,112,.12)!important;}
+tbody tr{border-bottom:1px solid rgba(0,200,218,.05);transition:background .1s;}
+tbody tr:hover{background:rgba(0,200,218,.03);}
+tbody tr.rk1{border-left:3px solid var(--k1);}
+tbody tr.rk2{border-left:3px solid var(--k2);}
+tbody tr.rk3{border-left:3px solid var(--k3);}
+tbody tr.rk4{border-left:3px solid var(--k4);}
+td{padding:5px 4px;text-align:center;vertical-align:middle;}
+td.tdi{text-align:left;padding-left:9px;}
+.cb{font-weight:900;font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 5px;border-radius:3px;display:inline-block;}
+.ck1{background:rgba(0,200,218,.14);color:var(--k1);}
+.ck2{background:rgba(255,200,66,.12);color:var(--k2);}
+.ck3{background:rgba(0,227,158,.11);color:var(--k3);}
+.ck4{background:rgba(180,122,240,.14);color:var(--k4);}
+.sc{font-weight:600;font-size:10px;max-width:172px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tc{color:var(--td);font-size:10px;white-space:nowrap;}
+.hc{font-weight:800;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);background:rgba(255,200,66,.05);}
+.dc{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;border-radius:3px;padding:3px 2px;}
+.dv8,.dv7{background:rgba(0,200,218,.17);color:var(--teal);}
+.dv6,.dv5{background:rgba(0,227,158,.13);color:var(--green);}
+.dv4{background:rgba(0,227,158,.09);color:var(--green);}
+.dv3,.dv2{background:rgba(255,200,66,.11);color:var(--gold);}
+.dv1{background:rgba(255,200,66,.07);color:var(--gold);}
+.dv0{color:transparent;}
+.dc.cfc{background:rgba(255,77,112,.2)!important;color:var(--red)!important;}
+.ct{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;}
+.rsep td{background:var(--bg2);font-size:9px;font-weight:800;letter-spacing:1px;color:var(--td);text-align:center;padding:4px;}
+.trow td{background:rgba(7,16,31,.55);border-top:2px solid var(--bb);}
+.leg{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--td);}
+.ld{width:8px;height:8px;border-radius:2px;}
+.sumbar{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.schip{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;border:1px solid;font-family:'JetBrains Mono',monospace;}
+
+/* DAILY VIEW */
+.dcard{background:rgba(11,25,41,.7);border:1px solid var(--b);border-radius:var(--r);padding:12px;margin-bottom:8px;}
+.dcard.hc2{border-color:rgba(255,77,112,.35);}
+.dch{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.dcnum{font-size:26px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--teal);line-height:1;}
+.dcname{font-size:12px;font-weight:700;}
+.dcmonth{font-size:10px;color:var(--td);}
+.dctot{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--td);}
+.slist{display:flex;flex-direction:column;gap:4px;}
+.sess{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:7px;background:rgba(7,16,31,.4);font-size:11px;}
+.sess.isc{border:1px solid rgba(255,77,112,.28);}
+.scls{font-weight:900;font-size:10px;font-family:'JetBrains Mono',monospace;min-width:22px;}
+.ssubj{flex:1;font-weight:600;}
+.stchr{color:var(--td);font-size:10px;}
+.sh{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:12px;}
+.cpill{background:var(--red);color:#fff;font-size:8px;font-weight:800;padding:1px 4px;border-radius:3px;}
+
+/* WARNING / OK */
+.wi{display:flex;align-items:flex-start;gap:9px;background:rgba(255,77,112,.07);
+  border:1px solid rgba(255,77,112,.18);border-radius:8px;padding:9px 12px;margin-bottom:7px;font-size:11px;}
+.wio{background:rgba(255,141,64,.06);border-color:rgba(255,141,64,.2);}
+.wiw{background:rgba(255,200,66,.05);border-color:rgba(255,200,66,.2);}
+.okbox{display:flex;align-items:center;gap:9px;background:rgba(0,227,158,.07);
+  border:1px solid rgba(0,227,158,.2);border-radius:8px;padding:13px 16px;font-size:13px;
+  color:var(--green);font-weight:700;}
+
+/* COURSE LIST */
+.cmh{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+.cmh h3{font-size:12px;font-weight:800;flex:1;}
+.btn{padding:5px 11px;border-radius:7px;border:1px solid var(--bb);background:transparent;
+  color:var(--td);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;
+  transition:all .15s;display:inline-flex;align-items:center;gap:4px;}
+.btn:hover{background:rgba(0,200,218,.09);color:var(--teal);border-color:var(--teal);}
+.btn.primary{background:var(--teal);color:var(--bg);border-color:var(--teal);font-weight:800;}
+.btn.primary:hover{background:var(--teal2);transform:translateY(-1px);}
+.btn.danger{border-color:rgba(255,77,112,.3);color:var(--red);}
+.btn.danger:hover{background:rgba(255,77,112,.1);border-color:var(--red);}
+
+.citm{background:rgba(7,16,31,.5);border:1px solid var(--b);border-radius:8px;
+  padding:9px 10px;margin-bottom:4px;transition:border-color .15s;}
+.citm:hover{border-color:var(--bb);}
+.citp{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;}
+.cimeta{flex:1;min-width:0;}
+.ciname{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.citchr{font-size:10px;color:var(--td);margin-top:1px;}
+.ciac{display:flex;gap:3px;flex-shrink:0;}
+.ib{width:23px;height:23px;border-radius:5px;border:1px solid var(--b);background:transparent;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .13s;}
+.ib:hover{border-color:var(--teal);background:rgba(0,200,218,.09);}
+.ib.d:hover{border-color:var(--red);background:rgba(255,77,112,.09);}
+.cibt{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.cii{font-size:9px;color:var(--td);background:rgba(255,255,255,.04);
+  padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(3,8,18,.86);z-index:100;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
+.modal{background:var(--bg2);border:1px solid var(--bb);border-radius:13px;
+  padding:22px;width:600px;max-width:96vw;max-height:93vh;overflow-y:auto;position:relative;}
+.modal::-webkit-scrollbar{width:3px;}
+.modal::-webkit-scrollbar-thumb{background:var(--bb);border-radius:2px;}
+.mtitle{font-size:15px;font-weight:900;margin-bottom:15px;display:flex;align-items:center;gap:8px;}
+.mtitle em{font-style:normal;color:var(--teal);}
+.mfooter{display:flex;gap:7px;justify-content:flex-end;margin-top:16px;padding-top:13px;border-top:1px solid var(--b);}
+.mclose{position:absolute;top:13px;right:13px;width:26px;height:26px;border-radius:5px;
+  border:1px solid var(--b);background:transparent;color:var(--td);cursor:pointer;
+  font-size:13px;display:flex;align-items:center;justify-content:center;}
+.mclose:hover{border-color:var(--red);color:var(--red);}
+
+/* ─── SCHEDULE TEXTFIELD SECTION ─── */
+.sched-sec{margin-top:14px;border-top:1px solid var(--b);padding-top:14px;}
+.sched-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.sched-hdr-title{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--teal);}
+.sched-guide{font-size:10px;color:var(--td);line-height:1.65;
+  background:rgba(0,200,218,.05);border:1px solid rgba(0,200,218,.12);
+  border-radius:7px;padding:9px 11px;margin-bottom:12px;}
+.sched-guide strong{color:var(--teal);}
+.sched-guide code{background:rgba(0,200,218,.12);color:var(--teal);padding:1px 5px;border-radius:3px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;}
+
+/* GROUP BLOCK */
+.grp{background:rgba(7,16,31,.5);border:1px solid var(--b);border-radius:9px;padding:12px;margin-bottom:8px;}
+.grp.grp-dd{border-color:rgba(180,122,240,.22);background:rgba(180,122,240,.04);}
+.grp-hdr{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.grp-lbl{font-size:10px;font-weight:800;padding:2px 8px;border-radius:4px;}
+.grp-lbl-dd{background:rgba(180,122,240,.15);color:var(--purple);}
+.grp-lbl-normal{background:rgba(0,200,218,.12);color:var(--teal);}
+.grp-status{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;}
+
+/* INPUT FIELD - number-only schedule */
+.si-wrap{position:relative;}
+.si{width:100%;background:rgba(7,16,31,.7);border:1px solid var(--b);color:var(--t);
+  border-radius:7px;padding:9px 11px;font-family:'JetBrains Mono',monospace;
+  font-size:13px;letter-spacing:.8px;transition:border .15s;}
+.si:focus{outline:none;border-color:var(--teal);}
+.si.ok{border-color:rgba(0,227,158,.5);}
+.si.err{border-color:rgba(255,77,112,.6);}
+.si-hint{font-size:9px;margin-top:3px;font-family:'JetBrains Mono',monospace;height:13px;}
+.si-hint.h-ok{color:var(--green);}
+.si-hint.h-err{color:var(--red);}
+.si-hint.h-warn{color:var(--orange);}
+
+/* OVERLAP WARNING INLINE */
+.olap-warn{display:none;margin-top:9px;font-size:10px;color:var(--orange);
+  background:rgba(255,141,64,.08);border:1px solid rgba(255,141,64,.22);
+  border-radius:7px;padding:8px 11px;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🚢</div>
+  <h1>Lịch <em>Giảng Dạy</em> Hàng Hải</h1>
+  <div class="hdr-r">
+    <div class="badge" id="clsBadge">K1 · K2 · K3 · K4</div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- ══ LEFT PANEL ══ -->
+  <div class="lp">
+    <div class="ptabs">
+      <button class="ptab active" onclick="showPanel('schedule',this)">📅 Lịch</button>
+      <button class="ptab" onclick="showPanel('courses',this)">📚 Môn học</button>
+      <button class="ptab" onclick="showPanel('stats',this)">📊 Thống kê</button>
+    </div>
+
+    <!-- SCHEDULE PANEL -->
+    <div class="pb" id="panel-schedule">
+      <span class="sl">Khoảng thời gian</span>
+      <div class="row2" style="margin-bottom:8px;">
+        <button class="tbtn active" id="mr" onclick="setMode('range')">Từ→Đến</button>
+        <button class="tbtn" id="md" onclick="setMode('days')">Số ngày</button>
+      </div>
+      <div id="pRange">
+        <div class="fg"><label>Ngày bắt đầu</label><input type="date" id="sd1"></div>
+        <div class="fg"><label>Ngày kết thúc</label><input type="date" id="ed1"></div>
+      </div>
+      <div id="pDays" style="display:none">
+        <div class="fg"><label>Ngày bắt đầu</label><input type="date" id="sd2"></div>
+        <div class="fg"><label>Số ngày</label><input type="number" id="nd" value="90" min="1" max="180"></div>
+      </div>
+      <span class="sl">Ràng buộc</span>
+      <div class="cg">
+        <div class="cr"><span class="cr-l">Giờ tối đa / cột</span><span class="cr-v">≤ 8</span></div>
+        <div class="cr"><span class="cr-l">Tổng hàng = Σ ô</span><span class="cr-v">Auto</span></div>
+        <div class="cr"><span class="cr-l">Không 3+ lớp cùng lúc</span><span class="cr-v">K1–K4</span></div>
+        <div class="cr"><span class="cr-l" style="color:var(--purple)">🔒 Điều động = 4 nhóm</span><span class="cr-v" style="background:rgba(180,122,240,.12);color:var(--purple)">Bắt buộc</span></div>
+      </div>
+    </div>
+
+    <!-- COURSES PANEL -->
+    <div class="pb" id="panel-courses" style="display:none">
+      <div class="cmh">
+        <h3>Môn học (<span id="courseCount">0</span>)</h3>
+        <button class="btn primary" onclick="openModal()">+ Thêm</button>
+      </div>
+      <div class="fg" style="margin-bottom:9px;">
+        <select id="filterCls" onchange="renderCourseList()">
+          <option value="">Tất cả lớp</option>
+          <option>K1</option><option>K2</option><option>K3</option><option>K4</option>
+        </select>
+      </div>
+      <div id="courseList"></div>
+    </div>
+
+    <!-- STATS PANEL -->
+    <div class="pb" id="panel-stats" style="display:none">
+      <span class="sl">Tổng quan</span>
+      <div class="sg">
+        <div class="sb"><div class="sn" id="st-days">—</div><div class="sl2">Ngày</div></div>
+        <div class="sb"><div class="sn" id="st-rows">—</div><div class="sl2">Môn</div></div>
+        <div class="sb"><div class="sn" id="st-cf" style="color:var(--red)">—</div><div class="sl2">Xung đột</div></div>
+        <div class="sb"><div class="sn" id="st-tot">—</div><div class="sl2">Tổng giờ</div></div>
+      </div>
+      <span class="sl" style="margin-top:12px;">Theo lớp</span>
+      <div id="st-cls"></div>
+    </div>
+
+    <div class="as">
+      <button class="bgen" onclick="generateSchedule()">▶ Tạo Lịch Giảng Dạy</button>
+      <button class="bexp" id="btnExp" onclick="exportCSV()" style="display:none">⬇ Xuất Excel (CSV)</button>
+    </div>
+  </div>
+
+  <!-- ══ MAIN CONTENT ══ -->
+  <div class="mc">
+    <div class="ctabs">
+      <button class="ctab active" onclick="switchTab('Table',this)">📊 Bảng lịch</button>
+      <button class="ctab" onclick="switchTab('Daily',this)">📋 Theo ngày</button>
+      <button class="ctab" onclick="switchTab('Check',this)">⚠ Kiểm tra</button>
+    </div>
+    <div class="ca">
+      <div id="tabTable">
+        <div class="empty" id="emptyState">
+          <div class="ei">📅</div>
+          <h3>Chưa có lịch giảng dạy</h3>
+          <p>Cấu hình thời gian rồi nhấn<br><strong style="color:var(--teal)">▶ Tạo Lịch Giảng Dạy</strong></p>
+        </div>
+        <div id="schedOut" style="display:none">
+          <div class="leg">
+            <div class="li"><div class="ld" style="background:var(--k1)"></div>K1</div>
+            <div class="li"><div class="ld" style="background:var(--k2)"></div>K2</div>
+            <div class="li"><div class="ld" style="background:var(--k3)"></div>K3</div>
+            <div class="li"><div class="ld" style="background:var(--k4)"></div>K4</div>
+            <div class="li"><div class="ld" style="background:var(--red);opacity:.6"></div>Xung đột 3+ lớp</div>
+          </div>
+          <div class="sumbar" id="sumbar"></div>
+          <div class="tw" id="tblWrap"></div>
+        </div>
+      </div>
+      <div id="tabDaily" style="display:none"></div>
+      <div id="tabCheck" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     MODAL
+══════════════════════════════════════════════════════ -->
+<div class="overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="mclose" onclick="closeModal()">✕</button>
+    <div class="mtitle">✦ <em id="mtitle">Thêm môn học</em></div>
+
+    <div class="g2">
+      <div class="fg"><label>Lớp *</label>
+        <select id="mCls" onchange="onModalChange()">
+          <option>K1</option><option>K2</option><option>K3</option><option>K4</option>
+        </select>
+      </div>
+      <div class="fg"><label>Mã môn *</label>
+        <select id="mCode" onchange="onModalChange()">
+          <option value="MĐ 01">MĐ 01 — An toàn cơ bản…</option>
+          <option value="MĐ 02">MĐ 02 — Thủy nghiệp cơ bản</option>
+          <option value="MH 03">MH 03 — Luồng đường thủy</option>
+          <option value="MH 04">MH 04 — Pháp luật GTĐTNĐ</option>
+          <option value="MĐ 05">MĐ 05 — Điều động phương tiện 🔒</option>
+          <option value="MH 06">MH 06 — Vận tải H&HK</option>
+          <option value="MĐ 07">MĐ 07 — Bảo dưỡng phương tiện</option>
+          <option value="KHÁC">Khác</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fg"><label>Tên môn học *</label>
+      <input type="text" id="mName" placeholder="Tên đầy đủ môn học">
+    </div>
+    <div class="g2">
+      <div class="fg"><label>Loại</label>
+        <select id="mType">
+          <option value="MĐ">MĐ — Mô đun</option>
+          <option value="MH">MH — Môn học</option>
+        </select>
+      </div>
+      <div class="fg"><label>Tổng số tiết *</label>
+        <input type="number" id="mHours" min="1" max="500" placeholder="Ví dụ: 50"
+          oninput="refreshAll()">
+      </div>
+    </div>
+
+    <!-- ── SCHEDULE INPUT SECTION ── -->
+    <div class="sched-sec">
+      <div class="sched-hdr">
+        <span class="sched-hdr-title">📋 Nhập lịch học theo ngày</span>
+      </div>
+      <div class="sched-guide">
+        Nhập <strong>số tiết mỗi ngày</strong>, chỉ nhập số, cách nhau bởi <strong>dấu phẩy</strong> hoặc <strong>khoảng trắng</strong>.<br>
+        Max <code>8</code> tiết/ngày · Tổng = tổng số tiết môn học · Vị trí = ngày thứ N trong lịch.<br>
+        Ví dụ: <code>8 8 8 8 8 2</code> = 6 ngày liên tiếp từ đầu · <code>8 8 8 0 8 8 8</code> = nghỉ ngày 4<br>
+        <strong style="color:var(--orange)">⚠ Các nhóm Điều động không được trùng vị trí ngày học nhau.</strong>
+      </div>
+      <div id="grpBlocks"></div>
+      <div class="olap-warn" id="olapWarn"></div>
+    </div>
+
+    <div class="mfooter">
+      <button class="btn danger" onclick="closeModal()">Hủy</button>
+      <button class="btn primary" onclick="saveCourse()">💾 Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════
+const CODE_NAMES = {
+  'MĐ 01':'An toàn cơ bản, đạo đức nghề nghiệp và bảo vệ môi trường',
+  'MĐ 02':'Thủy nghiệp cơ bản',
+  'MH 03':'Luồng đường thủy nội địa',
+  'MH 04':'Pháp luật về giao thông đường thủy nội địa',
+  'MĐ 05':'Điều động phương tiện',
+  'MH 06':'Vận tải hàng hóa và hành khách',
+  'MĐ 07':'Bảo dưỡng phương tiện'
+};
+const CODE_HOURS = {'MĐ 01':50,'MĐ 02':45,'MH 03':15,'MH 04':40,'MĐ 05':80,'MH 06':15,'MĐ 07':15};
+const CODE_TYPE  = {'MĐ 01':'MĐ','MĐ 02':'MĐ','MH 03':'MH','MH 04':'MH','MĐ 05':'MĐ','MH 06':'MH','MĐ 07':'MĐ'};
+const VNM = ['Th.1','Th.2','Th.3','Th.4','Th.5','Th.6','Th.7','Th.8','Th.9','Th.10','Th.11','Th.12'];
+const VND = ['CN','T2','T3','T4','T5','T6','T7'];
+const KCOL = {K1:'var(--k1)',K2:'var(--k2)',K3:'var(--k3)',K4:'var(--k4)'};
+
+// Parse "8 8 8 6" → sessions array. 0 means skip that day (null).
+function parseSched(str){
+  if(!str||!str.trim()) return [];
+  return str.trim().split(/[\s,]+/)
+    .filter(s=>s!=='')
+    .map(s=>{
+      const n=parseInt(s);
+      if(isNaN(n)||n<=0) return null;          // 0 or non-number = skip day
+      return Math.min(8,n);                     // cap at 8
+    });
+}
+// sessions array → display string (only non-null values, space separated)
+function schedToStr(arr){
+  if(!arr||!arr.length) return '';
+  // Show full array including nulls as visual positions
+  return arr.map(v=>v===null||v===undefined?'':String(v)).join(' ').trim().replace(/\s+/g,' ');
+}
+// sessions array → compact (only non-null)
+function schedCompact(arr){
+  if(!arr) return '';
+  return arr.filter(v=>v).join(' ');
+}
+
+// ════════════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════════════
+let COURSES = [
+// ─ K1 ─
+{id:1, class:'K1',type:'MĐ',code:'MĐ 01',name:'An toàn cơ bản, đạo đức nghề nghiệp và bảo vệ môi trường',hours:50,teacher:'Nguyễn Văn Tài',group:1,sessions:[8,8,8,8,8,8,2]},
+{id:2, class:'K1',type:'MĐ',code:'MĐ 01',name:'An toàn cơ bản, đạo đức nghề nghiệp và bảo vệ môi trường',hours:50,teacher:'Vũ Văn Thanh',group:2,sessions:[8,8,8,8,8,8,2]},
+{id:3, class:'K1',type:'MĐ',code:'MĐ 02',name:'Thủy nghiệp cơ bản',hours:45,teacher:'Phạm Ngọc Bân',group:1,sessions:[null,null,null,null,null,null,null,5,8,8,8,8,8]},
+{id:4, class:'K1',type:'MĐ',code:'MĐ 02',name:'Thủy nghiệp cơ bản',hours:45,teacher:'Bùi Trung Kiên',group:2,sessions:[null,null,null,null,null,null,null,5,8,8,8,8,8]},
+{id:5, class:'K1',type:'MH',code:'MH 03',name:'Luồng đường thủy nội địa',hours:15,teacher:'Phạm Ngọc Bân',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,8,7]},
+{id:6, class:'K1',type:'MH',code:'MH 04',name:'Pháp luật về giao thông đường thủy nội địa',hours:40,teacher:'GVM-Nguyễn Duy Thành',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,8,8,null,8,8,null,6]},
+{id:7, class:'K1',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Nguyễn Trọng Vấn',group:1,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:8, class:'K1',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Vũ Văn Thanh',group:2,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:9, class:'K1',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Trần Văn Sáng',group:3,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:10,class:'K1',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Đặng Quang Thắng',group:4,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:11,class:'K1',type:'MH',code:'MH 06',name:'Vận tải hàng hóa và hành khách',hours:15,teacher:'Nguyễn Văn Tài',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,7]},
+{id:12,class:'K1',type:'MĐ',code:'MĐ 07',name:'Bảo dưỡng phương tiện',hours:15,teacher:'Dương Văn Kha',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,null,7]},
+{id:13,class:'K1',type:'MĐ',code:'MĐ 07',name:'Bảo dưỡng phương tiện',hours:15,teacher:'Nguyễn Văn Tài',group:2,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,null,7]},
+// ─ K2 ─
+{id:21,class:'K2',type:'MĐ',code:'MĐ 01',name:'An toàn cơ bản, đạo đức nghề nghiệp và bảo vệ môi trường',hours:50,teacher:'Dương Văn Kha',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,8,8,8,8,8,2]},
+{id:22,class:'K2',type:'MĐ',code:'MĐ 01',name:'An toàn cơ bản, đạo đức nghề nghiệp và bảo vệ môi trường',hours:50,teacher:'Trần Văn Sáng',group:2,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,8,8,8,8,8,2]},
+{id:23,class:'K2',type:'MĐ',code:'MĐ 02',name:'Thủy nghiệp cơ bản',hours:45,teacher:'Bùi Trung Kiên',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,5,8,8,8,null,8,8]},
+{id:24,class:'K2',type:'MĐ',code:'MĐ 02',name:'Thủy nghiệp cơ bản',hours:45,teacher:'Đỗ Văn Phương',group:2,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,5,8,8,8,null,8,8]},
+{id:25,class:'K2',type:'MH',code:'MH 03',name:'Luồng đường thủy nội địa',hours:15,teacher:'Trần Văn Sáng',group:1,sessions:[8,7]},
+{id:26,class:'K2',type:'MH',code:'MH 04',name:'Pháp luật về giao thông đường thủy nội địa',hours:40,teacher:'Trần Văn Sáng',group:1,sessions:[null,null,null,null,null,null,null,8,8,8,null,8,8,null,6]},
+{id:27,class:'K2',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Trần Văn Sáng',group:1,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:28,class:'K2',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Đặng Quang Thắng',group:2,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:29,class:'K2',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Nguyễn Trọng Vấn',group:3,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:30,class:'K2',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'GVM-Nguyễn Duy Thành',group:4,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:31,class:'K2',type:'MH',code:'MH 06',name:'Vận tải hàng hóa và hành khách',hours:15,teacher:'Đỗ Văn Phương',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,7]},
+{id:32,class:'K2',type:'MĐ',code:'MĐ 07',name:'Bảo dưỡng phương tiện',hours:15,teacher:'Dương Văn Kha',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,null,7]},
+{id:33,class:'K2',type:'MĐ',code:'MĐ 07',name:'Bảo dưỡng phương tiện',hours:15,teacher:'Nguyễn Văn Tài',group:2,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,null,7]},
+// ─ K3 ─
+{id:41,class:'K3',type:'MĐ',code:'MĐ 01',name:'An toàn cơ bản, đạo đức nghề nghiệp và bảo vệ môi trường',hours:50,teacher:'Nguyễn Văn Tài',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,8,8,8,8,8,2]},
+{id:42,class:'K3',type:'MĐ',code:'MĐ 01',name:'An toàn cơ bản, đạo đức nghề nghiệp và bảo vệ môi trường',hours:50,teacher:'Đỗ Văn Phương',group:2,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,8,8,8,8,8,2]},
+{id:43,class:'K3',type:'MĐ',code:'MĐ 02',name:'Thủy nghiệp cơ bản',hours:45,teacher:'Phạm Ngọc Bân',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,5,8,8,8,null,8,8]},
+{id:44,class:'K3',type:'MĐ',code:'MĐ 02',name:'Thủy nghiệp cơ bản',hours:45,teacher:'Trần Văn Sáng',group:2,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,5,8,8,8,null,8,8]},
+{id:45,class:'K3',type:'MH',code:'MH 03',name:'Luồng đường thủy nội địa',hours:15,teacher:'Phạm Ngọc Bân',group:1,sessions:[null,null,8,7]},
+{id:46,class:'K3',type:'MH',code:'MH 04',name:'Pháp luật về giao thông đường thủy nội địa',hours:40,teacher:'Đỗ Văn Phương',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,8,null,8,8,null,6]},
+{id:47,class:'K3',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Phạm Ngọc Bân',group:1,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:48,class:'K3',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Vũ Văn Thanh',group:2,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:49,class:'K3',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Bùi Trung Kiên',group:3,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:50,class:'K3',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Đặng Quang Thắng',group:4,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:51,class:'K3',type:'MH',code:'MH 06',name:'Vận tải hàng hóa và hành khách',hours:15,teacher:'Phạm Ngọc Bân',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,7]},
+{id:52,class:'K3',type:'MĐ',code:'MĐ 07',name:'Bảo dưỡng phương tiện',hours:15,teacher:'Phạm Ngọc Bân',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,null,7]},
+{id:53,class:'K3',type:'MĐ',code:'MĐ 07',name:'Bảo dưỡng phương tiện',hours:15,teacher:'Dương Văn Kha',group:2,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,null,7]},
+// ─ K4 ─
+{id:61,class:'K4',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Đặng Quang Thắng',group:1,locked:true,sessions:[null,null,null,null,null,null,null,null,null,4,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:62,class:'K4',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Bùi Trung Kiên',group:2,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,4,8,8,8,8,null,8,8,8,8,8,8,null,6]},
+{id:63,class:'K4',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'Nguyễn Trọng Vấn',group:3,locked:true,sessions:[null,null,null,null,null,null,null,null,null,null,4,8,8,null,8,8,8,8,8,8,null,null,6]},
+{id:64,class:'K4',type:'MĐ',code:'MĐ 05',name:'Điều động phương tiện',hours:80,teacher:'GVM-Nguyễn Duy Thành',group:4,locked:true,sessions:[null,null,null,null,null,null,null,null,null,4,8,8,null,8,8,8,8,null,8,8,8,null,6]},
+{id:65,class:'K4',type:'MĐ',code:'MĐ 01',name:'An toàn cơ bản, đạo đức nghề nghiệp và bảo vệ môi trường',hours:50,teacher:'Trần Văn Sáng',group:1,sessions:[8,8,8,8,8,8,2]},
+{id:66,class:'K4',type:'MĐ',code:'MĐ 02',name:'Thủy nghiệp cơ bản',hours:45,teacher:'Đỗ Văn Phương',group:1,sessions:[null,null,null,null,null,null,null,5,8,8,8,8,8]},
+{id:67,class:'K4',type:'MH',code:'MH 04',name:'Pháp luật về giao thông đường thủy nội địa',hours:40,teacher:'Phạm Ngọc Bân',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,8,8,null,8,8,null,6]},
+{id:68,class:'K4',type:'MH',code:'MH 03',name:'Luồng đường thủy nội địa',hours:15,teacher:'Vũ Văn Thanh',group:1,sessions:[null,null,null,null,8,7]},
+{id:69,class:'K4',type:'MH',code:'MH 06',name:'Vận tải hàng hóa và hành khách',hours:15,teacher:'Nguyễn Văn Tài',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,7]},
+{id:70,class:'K4',type:'MĐ',code:'MĐ 07',name:'Bảo dưỡng phương tiện',hours:15,teacher:'Dương Văn Kha',group:1,sessions:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8,null,7]},
+];
+
+let nextId = 300;
+let generatedData = null;
+let currentMode = 'range';
+let editingId = null;
+
+// ════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════
+window.onload = () => {
+  const t = new Date(); const e2 = new Date(t); e2.setDate(e2.getDate()+89);
+  document.getElementById('sd1').value = fmt(t);
+  document.getElementById('ed1').value = fmt(e2);
+  document.getElementById('sd2').value = fmt(t);
+  renderCourseList(); updateClsBadge();
+};
+function fmt(d){ return d.toISOString().split('T')[0]; }
+function fmtD(d){ return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`; }
+
+// ════════════════════════════════════════════════════
+// UI NAVIGATION
+// ════════════════════════════════════════════════════
+function showPanel(p, el){
+  ['schedule','courses','stats'].forEach(x =>
+    document.getElementById(`panel-${x}`).style.display = x===p ? 'block':'none');
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(p==='courses') renderCourseList();
+}
+function switchTab(t, el){
+  ['Table','Daily','Check'].forEach(x =>
+    document.getElementById(`tab${x}`).style.display = x===t ? 'block':'none');
+  document.querySelectorAll('.ctab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+function setMode(m){
+  currentMode = m;
+  document.getElementById('mr').classList.toggle('active', m==='range');
+  document.getElementById('md').classList.toggle('active', m==='days');
+  document.getElementById('pRange').style.display = m==='range' ? 'block':'none';
+  document.getElementById('pDays').style.display  = m==='days'  ? 'block':'none';
+}
+function updateClsBadge(){
+  const cls = [...new Set(COURSES.map(c=>c.class))].sort();
+  document.getElementById('clsBadge').textContent = cls.join(' · ');
+}
+
+// ════════════════════════════════════════════════════
+// DATE HELPERS
+// ════════════════════════════════════════════════════
+function getDateRange(){
+  let s, e;
+  if(currentMode==='range'){
+    s = new Date(document.getElementById('sd1').value);
+    e = new Date(document.getElementById('ed1').value);
+  } else {
+    s = new Date(document.getElementById('sd2').value);
+    const n = parseInt(document.getElementById('nd').value)||90;
+    e = new Date(s); e.setDate(e.getDate()+n-1);
+  }
+  return {start:s, end:e};
+}
+function getDays(s,e){
+  const days=[]; const c=new Date(s);
+  while(c<=e){ days.push(new Date(c)); c.setDate(c.getDate()+1); }
+  return days;
+}
+
+// ════════════════════════════════════════════════════
+// GENERATE SCHEDULE
+// ════════════════════════════════════════════════════
+function generateSchedule(){
+  const {start,end} = getDateRange();
+  if(isNaN(start)||isNaN(end)||end<start){ alert('Khoảng ngày không hợp lệ!'); return; }
+  const days = getDays(start,end);
+  const schedule = COURSES.map(c => {
+    const s = [...(c.sessions||[])];
+    const dv = new Array(days.length).fill(null);
+    for(let d=0; d<days.length && d<s.length; d++) dv[d] = s[d]||null;
+    return {...c, dayValues:dv};
+  });
+  generatedData = {schedule, days};
+
+  const cf = findConflicts(schedule, days.length);
+  let totalH = 0; schedule.forEach(r => r.dayValues.forEach(v => {if(v)totalH+=v;}));
+  document.getElementById('st-days').textContent = days.length;
+  document.getElementById('st-rows').textContent = COURSES.length;
+  document.getElementById('st-cf').textContent   = cf.length;
+  document.getElementById('st-tot').textContent  = totalH;
+
+  let bch='<div class="cg">';
+  ['K1','K2','K3','K4'].forEach(k => {
+    const rows = schedule.filter(r=>r.class===k); if(!rows.length) return;
+    let h=0; rows.forEach(r => r.dayValues.forEach(v => {if(v)h+=v;}));
+    bch += `<div class="cr"><span class="cr-l">Lớp ${k}</span><span class="cr-v">${h}h / ${rows.length} môn</span></div>`;
+  });
+  document.getElementById('st-cls').innerHTML = bch+'</div>';
+
+  renderTable(schedule, days, cf);
+  renderDaily(schedule, days, cf);
+  renderCheck(schedule, days, cf);
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('schedOut').style.display = 'block';
+  document.getElementById('btnExp').style.display = 'flex';
+}
+
+function findConflicts(schedule, numDays){
+  const cf=[];
+  for(let d=0; d<numDays; d++){
+    const active=new Set(); schedule.forEach(r=>{ if(r.dayValues[d]>0) active.add(r.class); });
+    if(active.size>=3) cf.push(d);
+  }
+  return cf;
+}
+
+// ════════════════════════════════════════════════════
+// RENDER TABLE
+// ════════════════════════════════════════════════════
+function renderTable(schedule, days, conflicts){
+  const cf = new Set(conflicts);
+  let totalH=0; schedule.forEach(r => r.dayValues.forEach(v=>{if(v)totalH+=v;}));
+  let overCols=0;
+  for(let d=0;d<days.length;d++){let cs=0;schedule.forEach(r=>{if(r.dayValues[d])cs+=r.dayValues[d];});if(cs>8)overCols++;}
+
+  document.getElementById('sumbar').innerHTML =
+    `<span class="schip" style="color:var(--teal);border-color:rgba(0,200,218,.3)">${days.length} ngày</span>
+     <span class="schip" style="color:var(--gold);border-color:rgba(255,200,66,.3)">${totalH}h tổng</span>
+     <span class="schip" style="color:${conflicts.length?'var(--red)':'var(--green)'};border-color:${conflicts.length?'rgba(255,77,112,.3)':'rgba(0,227,158,.3)'}">${conflicts.length} xung đột</span>
+     ${overCols?`<span class="schip" style="color:var(--orange);border-color:rgba(255,141,64,.3)">${overCols} cột >8h</span>`:''}`;
+
+  let html = '<table><thead><tr>';
+  html += '<th class="thi" colspan="5" style="font-size:9px;color:var(--td)">MÔN HỌC / MÔ ĐUN</th>';
+  days.forEach((d,i) => html += `<th class="thd${cf.has(i)?' cfl':''}">${d.getDate()}</th>`);
+  html += '<th style="min-width:32px">∑</th></tr><tr>';
+  html += '<th class="thi">Lớp</th><th class="thi" style="min-width:52px">Mã</th>';
+  html += '<th class="thi" style="min-width:170px">Tên môn</th>';
+  html += '<th class="thi">Giảng viên</th><th class="thi">Tiết</th>';
+  days.forEach((d,i) => html += `<th class="thd${cf.has(i)?' cfl':''}">${VND[d.getDay()]}</th>`);
+  html += '<th>∑</th></tr></thead><tbody>';
+
+  let lastCls='';
+  schedule.forEach((row,ri) => {
+    if(row.class!==lastCls && ri>0)
+      html += `<tr class="rsep"><td colspan="${5+days.length+1}">── LỚP ${row.class} ──</td></tr>`;
+    lastCls = row.class;
+    const rk = row.class.toLowerCase();
+    let rowSum=0; let cells='';
+    row.dayValues.forEach((v,d)=>{
+      if(v>0) rowSum+=v;
+      const isC = cf.has(d)&&v>0;
+      cells += `<td class="dc ${v?`dv${v}`:'dv0'}${isC?' cfc':''}">${v||''}</td>`;
+    });
+    const match = rowSum===row.hours;
+    const isDD = row.code==='MĐ 05';
+    html += `<tr class="r${rk}">
+      <td class="tdi"><span class="cb c${rk}">${row.class}</span></td>
+      <td class="tdi" style="font-family:'JetBrains Mono',monospace;font-size:10px;
+        color:${isDD?'var(--purple)':'var(--teal)'};font-weight:700;white-space:nowrap">
+        ${row.code||row.type}${isDD?' 🔒':''}</td>
+      <td class="tdi sc" title="${row.name}">${row.name}${row.group>1?` <span style="color:var(--td);font-size:9px">Nh.${row.group}</span>`:''}</td>
+      <td class="tc">${row.teacher}</td>
+      <td class="tdi" style="font-family:'JetBrains Mono',monospace;font-size:10px;
+        color:${match?'var(--green)':'var(--orange)'}" title="${match?'✓ Khớp':'Lệch '+(Math.abs(rowSum-row.hours))+'h'}">${row.hours}</td>
+      ${cells}
+      <td class="hc">${rowSum}</td>
+    </tr>`;
+  });
+
+  html += '<tr class="trow"><td class="tdi" colspan="4" style="font-size:10px;font-weight:800;color:var(--td);text-align:right;padding-right:8px">TỔNG/CỘT</td><td></td>';
+  for(let d=0;d<days.length;d++){
+    let cs=0; schedule.forEach(r=>{if(r.dayValues[d])cs+=r.dayValues[d];});
+    const over=cs>8; const isC=cf.has(d);
+    html += `<td class="ct" style="color:${over?'var(--red)':isC?'var(--orange)':'var(--gold)'}${isC?';background:rgba(255,77,112,.07)':''}">${cs||''}</td>`;
+  }
+  html += '<td></td></tr></tbody></table>';
+  document.getElementById('tblWrap').innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════
+// RENDER DAILY
+// ════════════════════════════════════════════════════
+function renderDaily(schedule, days, conflicts){
+  const cf = new Set(conflicts);
+  let html = '';
+  days.forEach((day,d) => {
+    const sessions = schedule.filter(r=>r.dayValues[d]>0).map(r=>({...r,val:r.dayValues[d]}));
+    if(!sessions.length) return;
+    const isC=cf.has(d); const total=sessions.reduce((a,s)=>a+s.val,0);
+    html += `<div class="dcard${isC?' hc2':''}">
+      <div class="dch">
+        <div class="dcnum" style="color:${isC?'var(--red)':'var(--teal)'}">${day.getDate()}</div>
+        <div><div class="dcname">${VND[day.getDay()]}${isC?' <span style="color:var(--red);font-size:9px;margin-left:5px;font-weight:800">⚠ 3+ LỚP</span>':''}</div>
+          <div class="dcmonth">${VNM[day.getMonth()]} ${day.getFullYear()}</div></div>
+        <div class="dctot">${total}h</div>
+      </div>
+      <div class="slist">`;
+    sessions.forEach(s => {
+      const ck=s.class.toLowerCase();
+      html += `<div class="sess${isC?' isc':''}">
+        <span class="scls cb c${ck}">${s.class}</span>
+        <span class="ssubj">${s.name}${s.group>1?` <span style="color:var(--td);font-size:9px">Nh.${s.group}</span>`:''}</span>
+        <span class="stchr">${s.teacher}</span>
+        <span class="sh" style="color:${KCOL[s.class]}">${s.val}h</span>
+        ${isC?'<span class="cpill">CONFLICT</span>':''}
+      </div>`;
+    });
+    html += '</div></div>';
+  });
+  if(!html) html='<div class="okbox">✓ Không có ngày nào có lịch</div>';
+  document.getElementById('tabDaily').innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════
+// RENDER CHECK
+// ════════════════════════════════════════════════════
+function renderCheck(schedule, days, conflicts){
+  const overCols=[];
+  for(let d=0;d<days.length;d++){
+    let cs=0; schedule.forEach(r=>{if(r.dayValues[d])cs+=r.dayValues[d];});
+    if(cs>8) overCols.push({d,cs,date:days[d]});
+  }
+  const mismatch=[];
+  schedule.forEach(r => {
+    const s=r.dayValues.reduce((a,v)=>a+(v||0),0);
+    if(s!==r.hours) mismatch.push({...r,actual:s});
+  });
+  // Rule: each class must have exactly 4 DD groups
+  const ddFail=[];
+  ['K1','K2','K3','K4'].forEach(k => {
+    const n=COURSES.filter(c=>c.class===k&&c.code==='MĐ 05').length;
+    if(n!==4) ddFail.push({k,n});
+  });
+
+  let html='';
+  if(!conflicts.length&&!overCols.length&&!mismatch.length&&!ddFail.length){
+    html='<div class="okbox">✅ Lịch hợp lệ — Không phát hiện xung đột hoặc vi phạm!</div>';
+  } else {
+    if(ddFail.length){
+      ddFail.forEach(({k,n}) => {
+        html+=`<div class="wi" style="border-color:rgba(180,122,240,.3);background:rgba(180,122,240,.07)">
+          <span style="font-size:14px">🔒</span>
+          <div><strong style="color:var(--purple)">Lớp ${k} — MĐ 05 Điều động</strong><br>
+            <span style="color:var(--td)">Hiện có ${n} nhóm · Bắt buộc phải có đúng <strong style="color:var(--purple)">4 nhóm</strong></span>
+          </div></div>`;
+      });
+    }
+    if(conflicts.length){
+      html+=`<p style="font-size:11px;color:var(--td);margin:10px 0 7px;font-weight:700">🔴 ${conflicts.length} ngày xung đột (3+ lớp học cùng cột):</p>`;
+      conflicts.forEach(d => {
+        const active=[...new Set(schedule.filter(r=>r.dayValues[d]>0).map(r=>r.class))].join(', ');
+        html+=`<div class="wi"><span>⚠</span><div><strong style="color:var(--red)">Ngày ${fmtD(days[d])}</strong> — Lớp ${active} cùng có giờ học</div></div>`;
+      });
+    }
+    if(overCols.length){
+      html+=`<p style="font-size:11px;color:var(--td);margin:10px 0 7px;font-weight:700">🟠 ${overCols.length} cột vượt 8 giờ:</p>`;
+      overCols.forEach(({cs,date}) => {
+        html+=`<div class="wi wio"><span>📊</span><div><strong style="color:var(--orange)">Ngày ${fmtD(date)}</strong> — Tổng ${cs}h (vượt ${cs-8}h)</div></div>`;
+      });
+    }
+    if(mismatch.length){
+      html+=`<p style="font-size:11px;color:var(--td);margin:10px 0 7px;font-weight:700">🟡 ${mismatch.length} môn có tổng tiết lệch:</p>`;
+      mismatch.forEach(m => {
+        const diff=m.actual-m.hours;
+        html+=`<div class="wi wiw"><span>⚖</span>
+          <div><strong style="color:var(--gold)">[${m.class}] ${m.name}</strong><br>
+            <span style="color:var(--td)">Quy định: ${m.hours}t · Phân phối: ${m.actual}t · ${diff>0?'Thừa':'Thiếu'} ${Math.abs(diff)}t</span>
+          </div></div>`;
+      });
+    }
+  }
+  document.getElementById('tabCheck').innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════
+// COURSE LIST
+// ════════════════════════════════════════════════════
+function renderCourseList(){
+  const filter = document.getElementById('filterCls').value;
+  const list = filter ? COURSES.filter(c=>c.class===filter) : COURSES;
+  document.getElementById('courseCount').textContent = COURSES.length;
+
+  let html=''; let lastCls='';
+  list.forEach(c => {
+    const ck = c.class.toLowerCase();
+    if(c.class!==lastCls){
+      if(lastCls) html+='</div>';
+      html+=`<div style="font-size:9px;font-weight:800;letter-spacing:1.5px;color:${KCOL[c.class]};margin:10px 0 4px">● LỚP ${c.class}</div><div>`;
+      lastCls=c.class;
+    }
+    const sessSum=(c.sessions||[]).reduce((a,v)=>a+(v||0),0);
+    const match=sessSum===c.hours;
+    const isDD=c.code==='MĐ 05';
+    html+=`<div class="citm">
+      <div class="citp">
+        <div class="cimeta">
+          <div class="ciname" title="${c.name}">${c.name}${c.group?` <span style="color:var(--td);font-size:9px">(Nhóm ${c.group})</span>`:''}</div>
+          <div class="citchr">👤 ${c.teacher}</div>
+        </div>
+        <div class="ciac">
+          <button class="ib" onclick="openModal(${c.id})" title="Sửa">✏️</button>
+          ${isDD
+            ? `<span style="font-size:10px;color:var(--purple);padding:0 3px;cursor:default" title="Điều động bắt buộc 4 nhóm, không thể xóa">🔒</span>`
+            : `<button class="ib d" onclick="deleteCourse(${c.id})" title="Xóa">🗑</button>`}
+        </div>
+      </div>
+      <div class="cibt">
+        <span class="cb c${ck}">${c.class}</span>
+        ${c.code?`<span class="cii" style="color:${isDD?'var(--purple)':'var(--teal)'};font-weight:700">${c.code}</span>`:''}
+        <span class="cii">${c.hours}t</span>
+        <span class="cii">${(c.sessions||[]).filter(v=>v).length} ngày</span>
+        <span class="cii" style="color:${match?'var(--green)':'var(--orange)'}">${match?'✓ khớp':'⚠ lệch '+Math.abs(c.hours-sessSum)+'t'}</span>
+      </div>
+    </div>`;
+  });
+  if(lastCls) html+='</div>';
+  if(!list.length) html='<div style="text-align:center;color:var(--td);font-size:12px;padding:20px">Không có môn học</div>';
+  document.getElementById('courseList').innerHTML = html;
+}
+
+function deleteCourse(id){
+  const c=COURSES.find(x=>x.id===id);
+  if(!c) return;
+  if(c.code==='MĐ 05'){ alert('Môn Điều động phương tiện bắt buộc có 4 nhóm — không thể xóa!'); return; }
+  if(!confirm(`Xóa "${c.name}" (${c.class})?`)) return;
+  COURSES=COURSES.filter(x=>x.id!==id);
+  renderCourseList(); updateClsBadge();
+}
+
+// ════════════════════════════════════════════════════
+// MODAL — ADD / EDIT
+// ════════════════════════════════════════════════════
+function openModal(id=null){
+  editingId = id;
+  document.getElementById('mtitle').textContent = id ? 'Sửa môn học' : 'Thêm môn học mới';
+
+  if(id){
+    const c = COURSES.find(x=>x.id===id); if(!c) return;
+    document.getElementById('mCls').value   = c.class;
+    document.getElementById('mCode').value  = c.code||'MĐ 01';
+    document.getElementById('mName').value  = c.name;
+    document.getElementById('mType').value  = c.type;
+    document.getElementById('mHours').value = c.hours;
+  } else {
+    document.getElementById('mCls').value   = 'K1';
+    document.getElementById('mCode').value  = 'MĐ 01';
+    document.getElementById('mName').value  = CODE_NAMES['MĐ 01'];
+    document.getElementById('mType').value  = 'MĐ';
+    document.getElementById('mHours').value = '50';
+  }
+  buildGroupBlocks();
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal(){ document.getElementById('modal').style.display='none'; editingId=null; }
+
+// When code or class changes in modal
+function onModalChange(){
+  const code = document.getElementById('mCode').value;
+  if(CODE_NAMES[code]) document.getElementById('mName').value = CODE_NAMES[code];
+  if(CODE_HOURS[code]) document.getElementById('mHours').value = CODE_HOURS[code];
+  if(CODE_TYPE[code])  document.getElementById('mType').value  = CODE_TYPE[code];
+  buildGroupBlocks();
+}
+
+// Build the group input blocks in modal
+function buildGroupBlocks(){
+  const code = document.getElementById('mCode').value;
+  const cls  = document.getElementById('mCls').value;
+  const isDD = (code==='MĐ 05');
+  const hours = parseInt(document.getElementById('mHours').value)||0;
+
+  // Get existing data for this class+code
+  const existing = COURSES.filter(c=>c.class===cls&&c.code===code)
+                           .sort((a,b)=>a.group-b.group);
+
+  let html='';
+
+  if(isDD){
+    // Always show exactly 4 locked groups
+    html += `<div style="font-size:10px;color:var(--purple);font-weight:700;margin-bottom:10px;">
+      🔒 Điều động phương tiện luôn có đúng <strong>4 nhóm</strong>. Nhập lịch cho từng nhóm:
+    </div>`;
+    for(let i=0; i<4; i++){
+      const ex = existing[i] || null;
+      const val = ex ? schedCompact(ex.sessions) : '';
+      const teacher = ex ? ex.teacher : '';
+      html += buildGroupBlock(i, `Nhóm ${i+1}`, teacher, val, true, hours);
+    }
+  } else {
+    // Single group — if editing, show that course's data; else empty
+    let teacher='', val='';
+    if(editingId){
+      const c=COURSES.find(x=>x.id===editingId);
+      if(c){ teacher=c.teacher; val=schedCompact(c.sessions); }
+    }
+    html += buildGroupBlock(0, 'Giảng viên & Lịch học', teacher, val, false, hours);
+  }
+
+  document.getElementById('grpBlocks').innerHTML = html;
+  refreshAll();
+}
+
+function buildGroupBlock(idx, label, teacher, schedVal, isDDGroup, hours){
+  const color = isDDGroup ? 'var(--purple)' : 'var(--teal)';
+  const lblClass = isDDGroup ? 'grp-lbl-dd' : 'grp-lbl-normal';
+  return `<div class="grp${isDDGroup?' grp-dd':''}" id="grp-${idx}">
+    <div class="grp-hdr">
+      <span class="grp-lbl ${lblClass}">${label}</span>
+      <span class="grp-status" id="gst-${idx}"></span>
+    </div>
+    <div class="fg" style="margin-bottom:7px;">
+      <label>Giảng viên *</label>
+      <input type="text" id="gt-${idx}" value="${escHtml(teacher)}" placeholder="Họ tên giảng viên"
+        style="background:rgba(7,16,31,.65);border:1px solid var(--b);color:var(--t);border-radius:7px;padding:7px 9px;width:100%;font-family:inherit;font-size:12px;transition:border .15s;">
+    </div>
+    <div class="fg" style="margin-bottom:0;">
+      <label>Số tiết theo ngày (chỉ nhập số, cách nhau bởi khoảng trắng hoặc phẩy) *</label>
+      <div class="si-wrap">
+        <input type="text" class="si" id="gv-${idx}"
+          value="${escHtml(schedVal)}"
+          placeholder="VD: 8 8 8 8 8 6  hoặc  8,8,8,8,8,2"
+          oninput="refreshGroup(${idx})" inputmode="numeric">
+      </div>
+      <div class="si-hint" id="sh-${idx}"></div>
+    </div>
+  </div>`;
+}
+
+function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+// Validate & update status for one group
+function refreshGroup(idx){
+  const inpEl = document.getElementById(`gv-${idx}`);
+  const hintEl= document.getElementById(`sh-${idx}`);
+  const statEl= document.getElementById(`gst-${idx}`);
+  if(!inpEl) return;
+
+  // Enforce numbers-only: strip anything that isn't digit, space, or comma
+  const raw = inpEl.value;
+  const cleaned = raw.replace(/[^0-9\s,]/g, '');
+  if(cleaned !== raw){ inpEl.value = cleaned; }
+
+  const val = cleaned.trim();
+  const hours = parseInt(document.getElementById('mHours').value)||0;
+
+  if(!val){
+    inpEl.className='si'; hintEl.className='si-hint'; hintEl.textContent='';
+    statEl.textContent=''; checkOverlap(); return;
+  }
+
+  const parsed = parseSched(val);
+  const sum = parsed.reduce((a,v)=>a+(v||0),0);
+  const days = parsed.filter(v=>v).length;
+  const overDay = parsed.some(v=>v>8);
+
+  if(overDay){
+    inpEl.className='si err'; hintEl.className='si-hint h-err';
+    hintEl.textContent='⚠ Có ngày vượt 8 tiết!';
+    statEl.innerHTML=`<span style="color:var(--red)">${sum}/${hours}t</span>`;
+  } else if(sum===hours){
+    inpEl.className='si ok'; hintEl.className='si-hint h-ok';
+    const firstDay = parsed.findIndex(v=>v)+1;
+    hintEl.textContent=`✓ Đủ ${hours} tiết · ${days} ngày học · Bắt đầu ngày thứ ${firstDay}`;
+    statEl.innerHTML=`<span style="color:var(--green)">${sum}/${hours}t ✓</span>`;
+  } else {
+    inpEl.className='si'; hintEl.className='si-hint h-warn';
+    const diff=hours-sum;
+    const firstDay = parsed.length>0 ? parsed.findIndex(v=>v)+1 : 0;
+    hintEl.textContent=`${sum}/${hours}t · ${diff>0?'Còn thiếu '+diff:'Vượt '+(-diff)} tiết${firstDay>0?' · Bắt đầu ngày '+firstDay:''}`;
+    statEl.innerHTML=`<span style="color:var(--orange)">${sum}/${hours}t</span>`;
+  }
+  checkOverlap();
+}
+
+function refreshAll(){
+  const n = document.querySelectorAll('.grp').length;
+  for(let i=0;i<n;i++) refreshGroup(i);
+}
+
+// Check overlap between groups of same class+code — positions must be unique
+function checkOverlap(){
+  const n = document.querySelectorAll('.grp').length; if(n<2) return;
+  const parsed=[];
+  for(let i=0;i<n;i++){
+    const el=document.getElementById(`gv-${i}`);
+    parsed.push(el?parseSched(el.value):[]);
+  }
+
+  // Build set of "active day positions" for each group
+  const positions=parsed.map(arr=>{
+    const s=new Set(); arr.forEach((v,i)=>{if(v)s.add(i);}); return s;
+  });
+
+  const overlaps=[];
+  for(let a=0;a<n-1;a++){
+    for(let b=a+1;b<n;b++){
+      const common=[...positions[a]].filter(p=>positions[b].has(p));
+      if(common.length)
+        overlaps.push(`Nhóm ${a+1} & Nhóm ${b+1}: trùng vị trí ngày ${common.map(x=>x+1).join(', ')}`);
+    }
+  }
+
+  const warn=document.getElementById('olapWarn');
+  if(overlaps.length){
+    warn.style.display='block';
+    warn.innerHTML='⚠ <strong>Trùng lịch giữa các nhóm:</strong><br>'+overlaps.join('<br>');
+  } else {
+    warn.style.display='none';
+  }
+}
+
+// ════════════════════════════════════════════════════
+// SAVE COURSE
+// ════════════════════════════════════════════════════
+function saveCourse(){
+  const cls   = document.getElementById('mCls').value;
+  const code  = document.getElementById('mCode').value;
+  const name  = document.getElementById('mName').value.trim();
+  const type  = document.getElementById('mType').value;
+  const hours = parseInt(document.getElementById('mHours').value);
+  const isDD  = (code==='MĐ 05');
+
+  if(!name)  { alert('Nhập tên môn học!'); return; }
+  if(!hours) { alert('Nhập số tiết hợp lệ!'); return; }
+
+  const n = document.querySelectorAll('.grp').length;
+
+  // Validate each group
+  for(let i=0;i<n;i++){
+    const teacher=(document.getElementById(`gt-${i}`)?.value||'').trim();
+    const val=(document.getElementById(`gv-${i}`)?.value||'').trim();
+    if(!teacher){ alert(`${isDD?`Nhóm ${i+1}`:''}: Nhập giảng viên!`); return; }
+    if(val){
+      const parsed=parseSched(val);
+      if(parsed.some(v=>v>8)){ alert(`${isDD?`Nhóm ${i+1}`:''}: Có ngày vượt 8 tiết!`); return; }
+      const sum=parsed.reduce((a,v)=>a+(v||0),0);
+      if(sum>0&&sum!==hours&&!confirm(`${isDD?`Nhóm ${i+1}: `:''} Phân phối ${sum}t ≠ ${hours}t. Vẫn lưu?`)) return;
+    }
+  }
+
+  if(isDD){
+    // Update all 4 DD groups for this class
+    const existingDD = COURSES.filter(c=>c.class===cls&&c.code==='MĐ 05').sort((a,b)=>a.group-b.group);
+    for(let i=0;i<4;i++){
+      const teacher=(document.getElementById(`gt-${i}`)?.value||'').trim();
+      const val=(document.getElementById(`gv-${i}`)?.value||'').trim();
+      const sessions=val?parseSched(val):[];
+      const obj={class:cls,type,code,name,hours,teacher,group:i+1,locked:true,sessions};
+      if(existingDD[i]){
+        const idx=COURSES.findIndex(c=>c.id===existingDD[i].id);
+        if(idx>=0) COURSES[idx]={...COURSES[idx],...obj};
+      } else {
+        COURSES.push({id:++nextId,...obj});
+      }
+    }
+    // Enforce exactly 4 — remove extras if somehow more exist
+    const after=COURSES.filter(c=>c.class===cls&&c.code==='MĐ 05');
+    if(after.length>4){
+      const extras=after.sort((a,b)=>a.group-b.group).slice(4).map(c=>c.id);
+      COURSES=COURSES.filter(c=>!extras.includes(c.id));
+    }
+  } else {
+    const teacher=(document.getElementById('gt-0')?.value||'').trim();
+    const val=(document.getElementById('gv-0')?.value||'').trim();
+    const sessions=val?parseSched(val):[];
+    const obj={class:cls,type,code,name,hours,teacher,sessions};
+    if(editingId){
+      const idx=COURSES.findIndex(c=>c.id===editingId);
+      if(idx>=0) COURSES[idx]={...COURSES[idx],...obj};
+    } else {
+      COURSES.push({id:++nextId,...obj,group:1});
+    }
+  }
+
+  closeModal();
+  renderCourseList();
+  updateClsBadge();
+}
+
+// ════════════════════════════════════════════════════
+// EXPORT
+// ════════════════════════════════════════════════════
+function exportCSV(){
+  if(!generatedData) return;
+  const {schedule,days}=generatedData;
+  let csv='Lớp,Mã môn,Tên môn,Giảng viên,Nhóm,Số tiết';
+  days.forEach(d=>csv+=`,${d.getDate()}/${d.getMonth()+1}`);
+  csv+=',Tổng\n';
+  schedule.forEach(row=>{
+    let s=0,cells='';
+    row.dayValues.forEach(v=>{if(v)s+=v; cells+=`,${v||''}`; });
+    csv+=`${row.class},${row.code||''},"${row.name}","${row.teacher}",${row.group||1},${row.hours}${cells},${s}\n`;
+  });
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='lich_giang_day.csv'; a.click();
+}
+</script>
+</body>
+</html>

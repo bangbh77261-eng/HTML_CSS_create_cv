@@ -6,6 +6,7 @@
 <title>Hệ Thống Kiểm Tra</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root {
   --white:    #ffffff;
@@ -67,9 +68,55 @@ body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--ink);min
 .form-grid .full{grid-column:1/-1}
 .field{display:flex;flex-direction:column;gap:5px}
 label{font-size:.75rem;font-weight:500;color:var(--ink2)}
-input,select{background:var(--off);border:1.5px solid var(--border);border-radius:7px;color:var(--ink);font-family:'DM Sans',sans-serif;font-size:.9rem;padding:10px 13px;transition:border-color .15s,background .15s;outline:none;width:100%}
-input:focus,select:focus{border-color:var(--ink2);background:var(--white)}
-input::placeholder{color:var(--ink3)}
+input,select,textarea{background:var(--off);border:1.5px solid var(--border);border-radius:7px;color:var(--ink);font-family:'DM Sans',sans-serif;font-size:.9rem;padding:10px 13px;transition:border-color .15s,background .15s;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--ink2);background:var(--white)}
+input::placeholder,textarea::placeholder{color:var(--ink3)}
+textarea{resize:vertical;min-height:110px}
+
+.admin-entry{display:none}
+.admin-entry.show{display:block}
+.admin-entry-note{font-size:.84rem;color:var(--ink3);line-height:1.6}
+.admin-entry-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+#screen-admin{max-width:1280px;margin:0 auto;padding:40px 20px 80px}
+.admin-shell{display:flex;flex-direction:column;gap:18px}
+.admin-top{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px}
+.admin-top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.admin-title-wrap h2{font-family:'Instrument Serif',serif;font-size:2rem;letter-spacing:-.02em;margin-bottom:6px}
+.admin-title-wrap p{font-size:.88rem;color:var(--ink3);line-height:1.6}
+.admin-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.admin-tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.admin-panel{display:none}
+.admin-panel.active{display:block}
+.admin-panel-single{display:grid;gap:18px}
+.admin-columns{display:grid;grid-template-columns:minmax(320px,380px) minmax(0,1fr);gap:18px}
+.admin-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.admin-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
+.admin-card-title{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.admin-note{font-size:.82rem;color:var(--ink3);line-height:1.6}
+.admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.admin-form-grid .full{grid-column:1/-1}
+.admin-table-wrap{overflow:auto;border:1px solid var(--border);border-radius:10px}
+.data-table{width:100%;border-collapse:collapse;background:var(--white)}
+.data-table th,.data-table td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top;font-size:.84rem}
+.data-table th{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);background:var(--off)}
+.data-table tbody tr:hover td{background:#fbfaf8}
+.data-table tbody tr:last-child td{border-bottom:none}
+.td-actions{white-space:nowrap}
+.question-preview{min-width:260px;line-height:1.55}
+.admin-empty{font-size:.85rem;color:var(--ink3);line-height:1.6}
+.sql-preview{min-height:240px;font-family:Consolas,'Courier New',monospace;font-size:.8rem}
+.admin-import-summary{font-size:.82rem;color:var(--ink3);line-height:1.6;padding:12px 14px;border-radius:8px;background:var(--off);border:1px solid var(--border)}
+.admin-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.admin-kpi{background:var(--off);border:1px solid var(--border);border-radius:10px;padding:14px 12px}
+.admin-kpi .v{display:block;font-family:'Instrument Serif',serif;font-size:1.55rem;color:var(--ink)}
+.admin-kpi .l{font-size:.68rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em}
+.admin-session-detail{display:flex;flex-direction:column;gap:14px}
+.admin-review-list .review-q-item:first-child{padding-top:0}
+.pill{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:.72rem;font-weight:600}
+.pill.green{background:var(--green-bg);color:var(--green)}
+.pill.red{background:var(--red-bg);color:var(--red)}
+.pill.amber{background:var(--amber-bg);color:var(--amber)}
 
 /* BUTTONS */
 .btn{border:none;border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;font-size:.875rem;padding:10px 22px;transition:all .15s;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
@@ -267,12 +314,15 @@ input::placeholder{color:var(--ink3)}
 .loading-overlay p{font-size:.85rem;color:var(--ink3)}
 
 @media(max-width:768px){
+  #screen-admin{padding:28px 16px 60px}
   .quiz-topbar{grid-template-columns:1fr}
   .quiz-corner,.unanswered-wrap{align-items:flex-start}
   .q-mini-grid{justify-content:flex-start;max-width:none}
   .question-nav-card,.questions-panel,.page-nav,.quiz-submit-bar{max-width:none}
   .question-nav-legend{justify-content:flex-start}
   .quiz-submit-bar{flex-direction:column;align-items:stretch}
+  .admin-columns,.admin-kpis,.admin-form-grid{grid-template-columns:1fr}
+  .admin-top-row{flex-direction:column}
   .result-stats{grid-template-columns:repeat(2,1fr)}
   .header{padding:0 16px}
   #screen-register{padding:28px 16px 60px}
@@ -327,7 +377,17 @@ input::placeholder{color:var(--ink3)}
     </div>
   </div>
 
-  <button class="btn btn-dark btn-lg btn-full" onclick="startQuiz()">Bắt Đầu Kiểm Tra →</button>
+  <div class="form-card admin-entry" id="admin-entry">
+    <div class="form-section-label">Quyền Quản Trị</div>
+    <div class="admin-entry-note" id="admin-entry-note">Tài khoản admin đã được nhận diện. Bạn có thể nhập Excel, quản lý câu hỏi và xem kết quả người dùng.</div>
+    <div class="admin-entry-actions">
+      <button class="btn btn-dark" type="button" onclick="enterAdminMode('import')">Nhập Excel</button>
+      <button class="btn btn-outline" type="button" onclick="enterAdminMode('questions')">Quản Lý Câu Hỏi</button>
+      <button class="btn btn-outline" type="button" onclick="enterAdminMode('results')">Xem Kết Quả</button>
+    </div>
+  </div>
+
+  <button class="btn btn-dark btn-lg btn-full" id="btn-start-quiz" onclick="startQuiz()">Bắt Đầu Kiểm Tra →</button>
 </div>
 
 <!-- ══ QUIZ ══ -->
@@ -379,6 +439,166 @@ input::placeholder{color:var(--ink3)}
 </div>
 
 <!-- ══ RESULT ══ -->
+<div id="screen-admin" class="screen">
+  <div class="admin-shell">
+    <div class="admin-top">
+      <div class="admin-top-row">
+        <div class="admin-title-wrap">
+          <div class="form-section-label">Bảng Điều Khiển</div>
+          <h2>Quản Trị Hệ Thống</h2>
+          <p id="admin-meta">Theo dõi ngân hàng câu hỏi, import từ Excel và xem chi tiết kết quả từng người làm bài.</p>
+        </div>
+        <button class="btn btn-outline" type="button" onclick="goHome()">← Về Trang Nhập</button>
+      </div>
+
+      <div class="admin-tabs">
+        <button class="btn btn-outline admin-tab active" type="button" data-admin-tab="import" onclick="openAdminSection('import')">Nhập Excel</button>
+        <button class="btn btn-outline admin-tab" type="button" data-admin-tab="questions" onclick="openAdminSection('questions')">Câu Hỏi</button>
+        <button class="btn btn-outline admin-tab" type="button" data-admin-tab="results" onclick="openAdminSection('results')">Kết Quả</button>
+      </div>
+
+      <div class="admin-kpis">
+        <div class="admin-kpi"><span class="v" id="admin-kpi-questions">0</span><span class="l">Tổng Câu Hỏi</span></div>
+        <div class="admin-kpi"><span class="v" id="admin-kpi-sessions">0</span><span class="l">Phiên Thi</span></div>
+        <div class="admin-kpi"><span class="v" id="admin-kpi-users">0</span><span class="l">Người Làm Bài</span></div>
+        <div class="admin-kpi"><span class="v" id="admin-kpi-latest">—</span><span class="l">Cập Nhật Cuối</span></div>
+      </div>
+    </div>
+
+    <section class="admin-panel active" id="admin-panel-import">
+      <div class="admin-panel-single">
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <div class="admin-card-title">Nhập Câu Hỏi Từ Excel</div>
+          </div>
+          <p class="admin-note">Hệ thống hỗ trợ file `xlsx`, `xls`, `csv`. Mặc định đọc các cột A-F theo thứ tự: `question`, `option_a`, `option_b`, `option_c`, `option_d`, `correct_key`. Nếu file có hàng tiêu đề đúng tên các cột này, hệ thống sẽ tự map.</p>
+          <div class="admin-form-grid" style="margin-top:14px">
+            <div class="field full">
+              <label>Chọn file Excel</label>
+              <input id="inp-question-excel" type="file" accept=".xlsx,.xls,.csv"/>
+            </div>
+          </div>
+          <div class="admin-entry-actions">
+            <button class="btn btn-outline" type="button" onclick="previewExcelImport()">Đọc File</button>
+            <button class="btn btn-dark" type="button" id="btn-import-questions" onclick="importQuestionsToDb()" disabled>Import Vào Supabase</button>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <div class="admin-card-title">Preview Và SQL Insert</div>
+          </div>
+          <div class="admin-import-summary" id="excel-import-summary">Chưa chọn file.</div>
+          <div class="field" style="margin-top:14px">
+            <label>Câu lệnh insert tương ứng</label>
+            <textarea id="sql-preview" class="sql-preview" readonly placeholder="insert into questions (...) values (...);"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-panel" id="admin-panel-questions">
+      <div class="admin-columns">
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <div class="admin-card-title" id="question-form-title">Thêm Câu Hỏi</div>
+          </div>
+          <div class="admin-form-grid">
+            <div class="field full">
+              <label>Câu hỏi</label>
+              <textarea id="qf-question" placeholder="Nhập nội dung câu hỏi"></textarea>
+            </div>
+            <div class="field full">
+              <label>Đáp án A</label>
+              <textarea id="qf-option-a" placeholder="Nhập đáp án A"></textarea>
+            </div>
+            <div class="field full">
+              <label>Đáp án B</label>
+              <textarea id="qf-option-b" placeholder="Nhập đáp án B"></textarea>
+            </div>
+            <div class="field full">
+              <label>Đáp án C</label>
+              <textarea id="qf-option-c" placeholder="Nhập đáp án C"></textarea>
+            </div>
+            <div class="field full">
+              <label>Đáp án D</label>
+              <textarea id="qf-option-d" placeholder="Nhập đáp án D"></textarea>
+            </div>
+            <div class="field">
+              <label>Đáp án đúng</label>
+              <select id="qf-correct">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+              </select>
+            </div>
+          </div>
+          <div class="admin-entry-actions">
+            <button class="btn btn-dark" type="button" onclick="saveQuestionForm()">Lưu Câu Hỏi</button>
+            <button class="btn btn-ghost" type="button" onclick="resetQuestionForm()">Tạo Mới</button>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <div class="admin-card-title">Danh Sách Câu Hỏi</div>
+            <button class="btn btn-outline btn-sm" type="button" onclick="loadAdminQuestions()">Làm Mới</button>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Câu hỏi</th>
+                  <th>Đúng</th>
+                  <th>Ngày tạo</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="admin-questions-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-panel" id="admin-panel-results">
+      <div class="admin-columns">
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <div class="admin-card-title">Danh Sách Phiên Làm Bài</div>
+            <button class="btn btn-outline btn-sm" type="button" onclick="loadAdminResults()">Làm Mới</button>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Người dùng</th>
+                  <th>Điểm</th>
+                  <th>Đúng / Sai</th>
+                  <th>Thời gian</th>
+                  <th>Ngày</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="admin-results-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="admin-card admin-session-detail">
+          <div class="admin-card-head">
+            <div class="admin-card-title">Chi Tiết Phiên</div>
+          </div>
+          <div id="admin-result-summary" class="admin-empty">Chọn một phiên làm bài để xem người dùng đã sai những câu nào.</div>
+          <div id="admin-review-list" class="admin-review-list"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
 <div id="screen-result" class="screen">
   <div class="result-hero">
     <h2>Kết Quả Bài Làm</h2>
@@ -466,6 +686,10 @@ const PER_PAGE = 10;
 let respondent = null, questions = [], answers = [];
 let currentPage = 0, startTime = null, timerInterval = null;
 let prevSessionData = null, resultSaved = false;
+let matchedRespondent = null, adminEditingQuestionId = null;
+let adminQuestions = [], adminResults = [], adminImportRows = [];
+let activeAdminSection = 'import', adminDetailSessionId = null;
+let adminAuthenticated = false;
 
 // ── UTILS ──
 const $ = id => document.getElementById(id);
@@ -507,10 +731,69 @@ function escapeHTML(value) {
     .replace(/'/g,'&#39;');
 }
 
+function norm(value) {
+  return String(value ?? '').trim();
+}
+
+function lower(value) {
+  return norm(value).toLowerCase();
+}
+
+function isAdminRecord(resp) {
+  return !!(resp && lower(resp.full_name) === 'admin');
+}
+
+function hasAdminAccess() {
+  return adminAuthenticated;
+}
+
+function isAdminLoginCandidate() {
+  return !!(
+    matchedRespondent &&
+    isAdminRecord(matchedRespondent) &&
+    lower($('inp-name')?.value) === 'admin' &&
+    norm(matchedRespondent.employee_id) === norm($('inp-empid')?.value)
+  );
+}
+
+function refreshAdminAccess() {
+  const enabled = isAdminLoginCandidate();
+  const adminEntry = $('admin-entry');
+  const startBtn = $('btn-start-quiz');
+  if(adminEntry) adminEntry.classList.toggle('show', enabled);
+  if(startBtn) startBtn.style.display = enabled ? 'none' : '';
+  if(enabled && $('admin-entry-note')) {
+    $('admin-entry-note').textContent = `Tài khoản admin ${matchedRespondent.employee_id} đã được nhận diện. Bạn có thể nhập Excel, quản lý câu hỏi và xem kết quả người dùng.`;
+  }
+  if(enabled) $('prev-banner').classList.remove('show');
+}
+
+function chunkArray(items, size=200) {
+  const chunks = [];
+  for(let i=0;i<items.length;i+=size) chunks.push(items.slice(i, i + size));
+  return chunks;
+}
+
+function sqlValue(value) {
+  return `'${String(value ?? '').replace(/'/g,"''")}'`;
+}
+
+function buildQuestionsInsertSQL(rows) {
+  if(!rows.length) return '';
+  const values = rows.map(r =>
+    `(${sqlValue(r.question)}, ${sqlValue(r.option_a)}, ${sqlValue(r.option_b)}, ${sqlValue(r.option_c)}, ${sqlValue(r.option_d)}, ${sqlValue(r.correct_key)})`
+  ).join(',\n');
+  return `insert into questions (question, option_a, option_b, option_c, option_d, correct_key)\nvalues\n${values};`;
+}
+
 // ── EMP LOOKUP ──
 let _empTimer=null;
 function onEmpIdInput(val) {
-  clearTimeout(_empTimer); $('prev-banner').classList.remove('show'); prevSessionData=null;
+  clearTimeout(_empTimer);
+  $('prev-banner').classList.remove('show');
+  prevSessionData=null;
+  matchedRespondent=null;
+  refreshAdminAccess();
   if(!val.trim()) return;
   _empTimer=setTimeout(()=>lookupEmployee(val.trim()),700);
 }
@@ -518,12 +801,21 @@ function onEmpIdInput(val) {
 async function lookupEmployee(empId) {
   try {
     const {data:resp}=await db.from('respondents').select('*').eq('employee_id',empId).maybeSingle();
-    if(!resp) return;
+    matchedRespondent = resp || null;
+    if(!resp) {
+      refreshAdminAccess();
+      return;
+    }
     $('inp-name').value=resp.full_name||''; $('inp-age').value=resp.age||'';
     $('inp-email').value=resp.email||''; $('inp-phone').value=resp.phone||'';
+    refreshAdminAccess();
 
     const {data:sessions}=await db.from('quiz_sessions').select('*')
       .eq('respondent_id',resp.id).order('taken_at',{ascending:false}).limit(1);
+    if(isAdminLoginCandidate()) {
+      $('prev-banner').classList.remove('show');
+      return;
+    }
     if(!sessions||!sessions.length) return;
 
     const sess=sessions[0]; prevSessionData={respondent:resp,session:sess};
@@ -556,11 +848,439 @@ async function loadPrevDetail() {
 }
 
 // ── START QUIZ ──
+function openAdminSection(section='import') {
+  activeAdminSection = section;
+  document.querySelectorAll('.admin-panel').forEach(panel=>{
+    panel.classList.toggle('active', panel.id === `admin-panel-${section}`);
+  });
+  document.querySelectorAll('.admin-tab').forEach(tab=>{
+    tab.classList.toggle('active', tab.dataset.adminTab === section);
+  });
+}
+
+function updateAdminDashboard() {
+  $('admin-kpi-questions').textContent = adminQuestions.length;
+  $('admin-kpi-sessions').textContent = adminResults.length;
+  $('admin-kpi-users').textContent = new Set(adminResults.map(item=>item.respondent_id).filter(Boolean)).size;
+  const latestStamp = adminResults[0]?.taken_at || adminQuestions[0]?.created_at || null;
+  $('admin-kpi-latest').textContent = latestStamp ? fmtDate(latestStamp).split(' ')[0] : '—';
+  if(respondent) $('admin-meta').textContent = `Đăng nhập quản trị: ${respondent.full_name} · ${respondent.employee_id}`;
+}
+
+async function enterAdminMode(section='import') {
+  const verifiedCandidate = isAdminLoginCandidate();
+  if(!verifiedCandidate && !hasAdminAccess()) {
+    showToast('Không có quyền quản trị', 'error');
+    return;
+  }
+  if(verifiedCandidate) {
+    adminAuthenticated = true;
+    respondent = matchedRespondent;
+  }
+
+  showLoading('Đang tải dữ liệu quản trị...');
+  try {
+    await Promise.all([loadAdminQuestions(true), loadAdminResults(true)]);
+    openAdminSection(section);
+    hideLoading();
+    showScreen('screen-admin');
+  } catch(e) {
+    hideLoading();
+    showToast(e.message || 'Không tải được dữ liệu quản trị', 'error', 5000);
+  }
+}
+
+async function loadAdminQuestions(silent=false) {
+  if(!silent) showLoading('Đang tải danh sách câu hỏi...');
+  try {
+    const {data,error}=await db.from('questions').select('*').order('created_at',{ascending:false});
+    if(error) throw error;
+    adminQuestions = data || [];
+    renderAdminQuestions();
+    updateAdminDashboard();
+  } catch(e) {
+    if(silent) throw e;
+    showToast(e.message || 'Không tải được câu hỏi', 'error', 5000);
+  } finally {
+    if(!silent) hideLoading();
+  }
+}
+
+function renderAdminQuestions() {
+  const body = $('admin-questions-body');
+  if(!body) return;
+  if(!adminQuestions.length) {
+    body.innerHTML = '<tr><td colspan="5" class="admin-empty">Chưa có câu hỏi trong hệ thống.</td></tr>';
+    return;
+  }
+  body.innerHTML = adminQuestions.map((q,idx)=>`
+    <tr>
+      <td>${idx + 1}</td>
+      <td class="question-preview">${escapeHTML(q.question)}</td>
+      <td><span class="pill green">${escapeHTML(q.correct_key)}</span></td>
+      <td>${fmtDate(q.created_at)}</td>
+      <td class="td-actions">
+        <button class="btn btn-outline btn-sm" type="button" onclick="editQuestion('${q.id}')">Sửa</button>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="deleteQuestion('${q.id}')">Xóa</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function resetQuestionForm() {
+  adminEditingQuestionId = null;
+  $('question-form-title').textContent = 'Thêm Câu Hỏi';
+  ['qf-question','qf-option-a','qf-option-b','qf-option-c','qf-option-d'].forEach(id=>$(id).value='');
+  $('qf-correct').value = 'A';
+}
+
+function editQuestion(questionId) {
+  const question = adminQuestions.find(item=>item.id===questionId);
+  if(!question) return;
+  adminEditingQuestionId = questionId;
+  $('question-form-title').textContent = 'Sửa Câu Hỏi';
+  $('qf-question').value = question.question || '';
+  $('qf-option-a').value = question.option_a || '';
+  $('qf-option-b').value = question.option_b || '';
+  $('qf-option-c').value = question.option_c || '';
+  $('qf-option-d').value = question.option_d || '';
+  $('qf-correct').value = question.correct_key || 'A';
+  openAdminSection('questions');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function getQuestionFormPayload() {
+  const payload = {
+    question: norm($('qf-question').value),
+    option_a: norm($('qf-option-a').value),
+    option_b: norm($('qf-option-b').value),
+    option_c: norm($('qf-option-c').value),
+    option_d: norm($('qf-option-d').value),
+    correct_key: norm($('qf-correct').value).toUpperCase(),
+  };
+  if(!payload.question || !payload.option_a || !payload.option_b || !payload.option_c || !payload.option_d) {
+    throw new Error('Vui lòng nhập đầy đủ câu hỏi và 4 đáp án.');
+  }
+  if(!['A','B','C','D'].includes(payload.correct_key)) {
+    throw new Error('Đáp án đúng phải là A, B, C hoặc D.');
+  }
+  return payload;
+}
+
+async function saveQuestionForm() {
+  if(!hasAdminAccess()) {
+    showToast('Không có quyền quản trị', 'error');
+    return;
+  }
+  let payload;
+  try {
+    payload = getQuestionFormPayload();
+  } catch(e) {
+    showToast(e.message, 'error');
+    return;
+  }
+
+  showLoading(adminEditingQuestionId ? 'Đang cập nhật câu hỏi...' : 'Đang thêm câu hỏi...');
+  try {
+    const query = adminEditingQuestionId
+      ? db.from('questions').update(payload).eq('id', adminEditingQuestionId)
+      : db.from('questions').insert(payload);
+    const {error}=await query;
+    if(error) throw error;
+    await loadAdminQuestions(true);
+    hideLoading();
+    showToast(adminEditingQuestionId ? 'Đã cập nhật câu hỏi' : 'Đã thêm câu hỏi', 'success');
+    resetQuestionForm();
+  } catch(e) {
+    hideLoading();
+    showToast(e.message || 'Không lưu được câu hỏi', 'error', 5000);
+  }
+}
+
+async function deleteQuestion(questionId) {
+  if(!hasAdminAccess()) {
+    showToast('Không có quyền quản trị', 'error');
+    return;
+  }
+  if(!confirm('Xóa câu hỏi này khỏi hệ thống?')) return;
+  showLoading('Đang xóa câu hỏi...');
+  try {
+    const {error}=await db.from('questions').delete().eq('id', questionId);
+    if(error) throw error;
+    await loadAdminQuestions(true);
+    hideLoading();
+    showToast('Đã xóa câu hỏi', 'success');
+    if(adminEditingQuestionId === questionId) resetQuestionForm();
+  } catch(e) {
+    hideLoading();
+    showToast(e.message || 'Không xóa được câu hỏi', 'error', 5000);
+  }
+}
+
+function normalizeHeaderKey(value) {
+  const key = lower(value).replace(/\s+/g,'_');
+  const aliases = {
+    question:'question',
+    cau_hoi:'question',
+    câu_hỏi:'question',
+    option_a:'option_a',
+    dap_an_a:'option_a',
+    đáp_án_a:'option_a',
+    option_b:'option_b',
+    dap_an_b:'option_b',
+    đáp_án_b:'option_b',
+    option_c:'option_c',
+    dap_an_c:'option_c',
+    đáp_án_c:'option_c',
+    option_d:'option_d',
+    dap_an_d:'option_d',
+    đáp_án_d:'option_d',
+    correct_key:'correct_key',
+    correct:'correct_key',
+    answer_key:'correct_key',
+    dap_an_dung:'correct_key',
+    đáp_án_đúng:'correct_key',
+    key:'correct_key',
+  };
+  return aliases[key] || '';
+}
+
+function buildHeaderMap(headerRow) {
+  const map = {};
+  headerRow.forEach((cell,idx)=>{
+    const normalized = normalizeHeaderKey(cell);
+    if(normalized && map[normalized] == null) map[normalized] = idx;
+  });
+  const required = ['question','option_a','option_b','option_c','option_d','correct_key'];
+  return required.every(key=>map[key] != null) ? map : null;
+}
+
+function parseImportedQuestionRows(rows) {
+  const cleanRows = (rows || []).filter(row=>Array.isArray(row) && row.some(cell=>norm(cell)));
+  if(!cleanRows.length) throw new Error('File Excel không có dữ liệu.');
+
+  let startIndex = 0;
+  const headerMap = buildHeaderMap(cleanRows[0]);
+  if(headerMap) startIndex = 1;
+
+  const items = [];
+  const errors = [];
+
+  cleanRows.slice(startIndex).forEach((row,idx)=>{
+    const rowNo = idx + startIndex + 1;
+    const raw = headerMap ? {
+      question: row[headerMap.question],
+      option_a: row[headerMap.option_a],
+      option_b: row[headerMap.option_b],
+      option_c: row[headerMap.option_c],
+      option_d: row[headerMap.option_d],
+      correct_key: row[headerMap.correct_key],
+    } : {
+      question: row[0],
+      option_a: row[1],
+      option_b: row[2],
+      option_c: row[3],
+      option_d: row[4],
+      correct_key: row[5],
+    };
+
+    const item = {
+      question: norm(raw.question),
+      option_a: norm(raw.option_a),
+      option_b: norm(raw.option_b),
+      option_c: norm(raw.option_c),
+      option_d: norm(raw.option_d),
+      correct_key: norm(raw.correct_key).toUpperCase(),
+    };
+
+    if(!Object.values(item).some(Boolean)) return;
+    if(!item.question || !item.option_a || !item.option_b || !item.option_c || !item.option_d || !item.correct_key) {
+      errors.push(`Dòng ${rowNo}: thiếu dữ liệu. Cần đủ 6 cột question, option_a, option_b, option_c, option_d, correct_key.`);
+      return;
+    }
+    if(!['A','B','C','D'].includes(item.correct_key)) {
+      errors.push(`Dòng ${rowNo}: correct_key phải là A, B, C hoặc D.`);
+      return;
+    }
+    items.push(item);
+  });
+
+  if(!items.length && errors.length) throw new Error(errors.slice(0,5).join('\n'));
+  return {items, errors};
+}
+
+async function previewExcelImport() {
+  const file = $('inp-question-excel').files?.[0];
+  if(!file) {
+    showToast('Chưa chọn file Excel', 'error');
+    return;
+  }
+  if(typeof XLSX === 'undefined') {
+    showToast('Chưa tải được thư viện đọc Excel', 'error', 5000);
+    return;
+  }
+
+  showLoading('Đang đọc file Excel...');
+  try {
+    const buffer = await file.arrayBuffer();
+    const workbook = XLSX.read(buffer, {type:'array'});
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(firstSheet, {header:1, defval:''});
+    const {items, errors} = parseImportedQuestionRows(rows);
+
+    adminImportRows = items;
+    $('btn-import-questions').disabled = !items.length;
+    $('sql-preview').value = buildQuestionsInsertSQL(items);
+    $('excel-import-summary').innerHTML = `Đã đọc <strong>${items.length}</strong> dòng hợp lệ từ file <strong>${escapeHTML(file.name)}</strong>${errors.length ? `<br>Cảnh báo: ${escapeHTML(errors.slice(0,3).join(' | '))}` : ''}`;
+    hideLoading();
+    showToast(`Đã đọc ${items.length} câu hỏi từ Excel`, 'success');
+  } catch(e) {
+    hideLoading();
+    adminImportRows = [];
+    $('btn-import-questions').disabled = true;
+    $('sql-preview').value = '';
+    $('excel-import-summary').textContent = e.message || 'Không đọc được file Excel.';
+    showToast(e.message || 'Không đọc được file Excel', 'error', 5000);
+  }
+}
+
+async function importQuestionsToDb() {
+  if(!hasAdminAccess()) {
+    showToast('Không có quyền quản trị', 'error');
+    return;
+  }
+  if(!adminImportRows.length) {
+    showToast('Chưa có dữ liệu để import', 'error');
+    return;
+  }
+
+  showLoading('Đang import câu hỏi vào Supabase...');
+  try {
+    for(const chunk of chunkArray(adminImportRows, 200)) {
+      const {error}=await db.from('questions').insert(chunk);
+      if(error) throw error;
+    }
+    const insertedCount = adminImportRows.length;
+    adminImportRows = [];
+    $('btn-import-questions').disabled = true;
+    $('inp-question-excel').value = '';
+    $('sql-preview').value = '';
+    $('excel-import-summary').textContent = `Đã import ${insertedCount} câu hỏi vào bảng questions.`;
+    await loadAdminQuestions(true);
+    hideLoading();
+    showToast(`Đã import ${insertedCount} câu hỏi`, 'success');
+    openAdminSection('questions');
+  } catch(e) {
+    hideLoading();
+    showToast(e.message || 'Import thất bại', 'error', 5000);
+  }
+}
+
+async function loadAdminResults(silent=false) {
+  if(!silent) showLoading('Đang tải kết quả người dùng...');
+  try {
+    const {data:sessions,error}=await db.from('quiz_sessions').select('*').order('taken_at',{ascending:false});
+    if(error) throw error;
+
+    const respondentIds = [...new Set((sessions || []).map(item=>item.respondent_id).filter(Boolean))];
+    let respondentMap = {};
+    if(respondentIds.length) {
+      const {data:rows,error:respErr}=await db.from('respondents').select('id, full_name, employee_id').in('id', respondentIds);
+      if(respErr) throw respErr;
+      respondentMap = Object.fromEntries((rows || []).map(item=>[item.id, item]));
+    }
+
+    adminResults = (sessions || []).map(item=>({
+      ...item,
+      respondent: respondentMap[item.respondent_id] || null,
+    }));
+    renderAdminResults();
+    updateAdminDashboard();
+  } catch(e) {
+    if(silent) throw e;
+    showToast(e.message || 'Không tải được kết quả', 'error', 5000);
+  } finally {
+    if(!silent) hideLoading();
+  }
+}
+
+function renderAdminResults() {
+  const body = $('admin-results-body');
+  if(!body) return;
+  if(!adminResults.length) {
+    body.innerHTML = '<tr><td colspan="6" class="admin-empty">Chưa có phiên làm bài nào.</td></tr>';
+    return;
+  }
+  body.innerHTML = adminResults.map(session=>{
+    const person = session.respondent ? `${escapeHTML(session.respondent.full_name)}<br><span style="color:var(--ink3)">${escapeHTML(session.respondent.employee_id)}</span>` : '<span class="admin-empty">Không rõ</span>';
+    return `
+      <tr>
+        <td>${person}</td>
+        <td>${session.score ?? '—'}</td>
+        <td>${session.correct_count ?? 0} / ${session.wrong_count ?? 0}</td>
+        <td>${fmtTime(session.duration_sec || 0)}</td>
+        <td>${fmtDate(session.taken_at)}</td>
+        <td class="td-actions"><button class="btn btn-outline btn-sm" type="button" onclick="openAdminSession('${session.id}')">Xem</button></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function openAdminSession(sessionId) {
+  const session = adminResults.find(item=>item.id === sessionId);
+  if(!session) return;
+  adminDetailSessionId = sessionId;
+  showLoading('Đang tải chi tiết phiên làm bài...');
+  try {
+    const {data:answerRows,error}=await db.from('quiz_answers').select('question_id, chosen_key, is_correct').eq('session_id', sessionId);
+    if(error) throw error;
+
+    let qMap = Object.fromEntries(adminQuestions.map(item=>[item.id, item]));
+    const missingIds = [...new Set((answerRows || []).map(item=>item.question_id).filter(id=>!qMap[id]))];
+    if(missingIds.length) {
+      const {data:missingQuestions,error:qErr}=await db.from('questions').select('*').in('id', missingIds);
+      if(qErr) throw qErr;
+      (missingQuestions || []).forEach(item=>{ qMap[item.id] = item; });
+    }
+
+    $('admin-result-summary').innerHTML = `
+      <div class="admin-note">
+        <strong>${escapeHTML(session.respondent?.full_name || 'Người dùng không xác định')}</strong><br>
+        Mã nhân viên: ${escapeHTML(session.respondent?.employee_id || '—')}<br>
+        Điểm: ${session.score ?? '—'} · Đúng: ${session.correct_count ?? 0} · Sai: ${session.wrong_count ?? 0}<br>
+        Thời gian: ${fmtTime(session.duration_sec || 0)} · Làm lúc: ${fmtDate(session.taken_at)}
+      </div>
+    `;
+    $('admin-review-list').innerHTML = buildReviewHtml(answerRows || [], qMap) || '<div class="admin-empty">Phiên này chưa có dữ liệu trả lời.</div>';
+    hideLoading();
+    openAdminSection('results');
+  } catch(e) {
+    hideLoading();
+    showToast(e.message || 'Không tải được chi tiết phiên', 'error', 5000);
+  }
+}
+
 async function startQuiz() {
   const name=$('inp-name').value.trim(), age=parseInt($('inp-age').value);
   const empId=$('inp-empid').value.trim(), email=$('inp-email').value.trim();
   const phone=$('inp-phone').value.trim();
 
+  if(lower(name)==='admin' && empId && !matchedRespondent) {
+    try {
+      const {data:resp}=await db.from('respondents').select('*').eq('employee_id', empId).maybeSingle();
+      matchedRespondent = resp || null;
+      refreshAdminAccess();
+    } catch(e) {}
+  }
+
+  if(isAdminLoginCandidate()) {
+    adminAuthenticated = true;
+    respondent = matchedRespondent;
+    await enterAdminMode(activeAdminSection || 'import');
+    return;
+  }
+
+  adminAuthenticated = false;
   if(!name||!age||!empId||!email){showToast('Vui lòng điền đầy đủ thông tin!','error');return;}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('Email không hợp lệ!','error');return;}
 
@@ -725,6 +1445,28 @@ async function submitAndSave() {
 }
 
 // ── RENDER RESULT ──
+function buildReviewHtml(answerRows, qMap) {
+  return (answerRows || []).map((a,i)=>{
+    if(!a || !a.chosen_key) return '';
+    const q=qMap[a.question_id];
+    if(!q) return '';
+    const optMap={A:q.option_a,B:q.option_b,C:q.option_c,D:q.option_d};
+    let ansRow='';
+    if(!a.is_correct){
+      ansRow=`<div class="review-ans-row">
+        <span class="ans-chip ac-user">Bạn chọn: ${a.chosen_key}. ${escapeHTML(optMap[a.chosen_key]||'?')}</span>
+        <span class="ac-sep">→</span>
+        <span class="ans-chip ac-correct">Đúng: ${q.correct_key}. ${escapeHTML(optMap[q.correct_key]||'?')}</span>
+      </div>`;
+    }
+    return `<div class="review-q-item">
+      <div class="review-q-top">
+        <span class="review-badge ${a.is_correct?'rb-right':'rb-wrong'}">${a.is_correct?'✓ ĐÚNG':'✗ SAI'}</span>
+        <span class="review-q-text">${i+1}. ${escapeHTML(q.question)}</span>
+      </div>${ansRow}</div>`;
+  }).join('');
+}
+
 function renderResultScreen({respondent:r,session:s,answers:ans,questions:qs,readonly}) {
   const savedTag=(resultSaved||readonly)?'<span class="saved-tag">✓ Đã lưu</span>':'';
   $('res-name-sub').innerHTML=`👤 ${escapeHTML(r.full_name)} · ${escapeHTML(r.employee_id)}${savedTag}`;
@@ -775,8 +1517,21 @@ function goHome() {
   ['inp-name','inp-age','inp-empid','inp-email','inp-phone'].forEach(id=>$(id).value='');
   respondent=null; questions=[]; answers=[]; currentPage=0;
   prevSessionData=null; resultSaved=false;
+  matchedRespondent=null; adminEditingQuestionId=null; adminDetailSessionId=null;
+  adminQuestions=[]; adminResults=[]; adminImportRows=[]; activeAdminSection='import';
+  adminAuthenticated=false;
   $('score-arc').style.strokeDashoffset='351.9';
   $('prev-banner').classList.remove('show');
+  $('admin-entry').classList.remove('show');
+  $('btn-start-quiz').style.display='';
+  if($('btn-import-questions')) $('btn-import-questions').disabled=true;
+  if($('sql-preview')) $('sql-preview').value='';
+  if($('excel-import-summary')) $('excel-import-summary').textContent='Chưa chọn file.';
+  if($('inp-question-excel')) $('inp-question-excel').value='';
+  if($('admin-result-summary')) $('admin-result-summary').textContent='Chọn một phiên làm bài để xem người dùng đã sai những câu nào.';
+  if($('admin-review-list')) $('admin-review-list').innerHTML='';
+  if($('admin-meta')) $('admin-meta').textContent='Theo dõi ngân hàng câu hỏi, import từ Excel và xem chi tiết kết quả từng người làm bài.';
+  resetQuestionForm();
   showScreen('screen-register');
 }
 
@@ -787,6 +1542,13 @@ document.querySelectorAll('.modal-backdrop').forEach(m=>{
 
 // ── INIT ──
 window.addEventListener('DOMContentLoaded',async()=>{
+  $('inp-name')?.addEventListener('input', refreshAdminAccess);
+  $('inp-question-excel')?.addEventListener('change', ()=>{
+    adminImportRows = [];
+    if($('btn-import-questions')) $('btn-import-questions').disabled = true;
+    if($('sql-preview')) $('sql-preview').value = '';
+    if($('excel-import-summary')) $('excel-import-summary').textContent = $('inp-question-excel').files?.[0]?.name || 'Chưa chọn file.';
+  });
   try {
     const {error}=await db.from('respondents').select('id').limit(1);
     if(error&&error.code==='42P01') showToast('⚠️ Chưa có database. Chạy SQL Setup.','error',8000);

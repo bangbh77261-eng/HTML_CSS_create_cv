@@ -1,651 +1,577 @@
-    <!DOCTYPE html>
-    <html lang="vi">
-    <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hệ Thống Kiểm Tra Trắc Nghiệm</title>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-        --bg: #0a0f1e;
-        --surface: #111827;
-        --surface2: #1a2235;
-        --border: #1e2d45;
-        --accent: #0ea5e9;
-        --accent2: #38bdf8;
-        --success: #22c55e;
-        --danger: #ef4444;
-        --warn: #f59e0b;
-        --text: #e2e8f0;
-        --muted: #64748b;
-        --radius: 12px;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-        font-family: 'Be Vietnam Pro', sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        min-height: 100vh;
-        overflow-x: hidden;
-        }
-
-        body::before {
-        content: '';
-        position: fixed;
-        top: -200px; left: -200px;
-        width: 600px; height: 600px;
-        background: radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%);
-        pointer-events: none;
-        z-index: 0;
-        }
-
-        /* ========== LAYOUT ========== */
-        #app { position: relative; z-index: 1; }
-
-        .header {
-        background: linear-gradient(135deg, #0a0f1e 0%, #0f172a 100%);
-        border-bottom: 1px solid var(--border);
-        padding: 18px 32px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        position: sticky; top: 0; z-index: 100;
-        }
-
-        .header-logo {
-        width: 40px; height: 40px;
-        background: linear-gradient(135deg, var(--accent), #6366f1);
-        border-radius: 10px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 18px;
-        }
-
-        .header h1 {
-        font-size: 1.1rem; font-weight: 700;
-        background: linear-gradient(90deg, var(--accent2), #a5b4fc);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .header-sub { font-size: 0.75rem; color: var(--muted); font-family: 'Space Mono', monospace; }
-
-        /* ========== SCREENS ========== */
-        .screen { display: none; max-width: 760px; margin: 0 auto; padding: 32px 20px; }
-        .screen.active { display: block; }
-
-        /* ========== CARDS ========== */
-        .card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 28px;
-        margin-bottom: 20px;
-        }
-
-        .card-title {
-        font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
-        text-transform: uppercase; color: var(--accent);
-        margin-bottom: 18px;
-        display: flex; align-items: center; gap: 8px;
-        }
-
-        .card-title::after {
-        content: ''; flex: 1; height: 1px;
-        background: linear-gradient(90deg, var(--border), transparent);
-        }
-
-        /* ========== FORM ========== */
-        .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        }
-
-        .form-grid .full { grid-column: 1/-1; }
-
-        .field { display: flex; flex-direction: column; gap: 6px; }
-
-        label {
-        font-size: 0.75rem; font-weight: 600;
-        color: var(--muted); letter-spacing: 0.5px;
-        }
-
-        input, select {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        color: var(--text);
-        font-family: 'Be Vietnam Pro', sans-serif;
-        font-size: 0.9rem;
-        padding: 11px 14px;
-        transition: border-color 0.2s, box-shadow 0.2s;
-        outline: none;
-        }
-
-        input:focus, select:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
-        }
-
-        input::placeholder { color: var(--muted); }
-
-        /* ========== BUTTONS ========== */
-        .btn {
-        border: none; border-radius: 8px; cursor: pointer;
-        font-family: 'Be Vietnam Pro', sans-serif;
-        font-weight: 600; font-size: 0.9rem;
-        padding: 12px 28px;
-        transition: all 0.2s;
-        display: inline-flex; align-items: center; gap: 8px;
-        }
-
-        .btn-primary {
-        background: linear-gradient(135deg, var(--accent), #6366f1);
-        color: #fff;
-        }
-
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(14,165,233,0.3); }
-
-        .btn-ghost {
-        background: transparent; color: var(--muted);
-        border: 1px solid var(--border);
-        }
-
-        .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-
-        .btn-success { background: var(--success); color: #fff; }
-        .btn-danger { background: var(--danger); color: #fff; }
-
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-
-        /* ========== QUIZ QUESTION ========== */
-        .question-header {
-        display: flex; justify-content: space-between; align-items: center;
-        margin-bottom: 24px;
-        }
-
-        .q-number {
-        font-family: 'Space Mono', monospace;
-        font-size: 0.75rem; color: var(--muted);
-        }
-
-        .progress-bar {
-        height: 4px; background: var(--surface2); border-radius: 2px;
-        margin-bottom: 28px; overflow: hidden;
-        }
-
-        .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, var(--accent), #6366f1);
-        border-radius: 2px;
-        transition: width 0.4s ease;
-        }
-
-        .question-text {
-        font-size: 1.05rem; font-weight: 600; line-height: 1.65;
-        margin-bottom: 24px;
-        color: #f1f5f9;
-        }
-
-        .options { display: flex; flex-direction: column; gap: 10px; }
-
-        .option {
-        display: flex; align-items: center; gap: 14px;
-        background: var(--surface2);
-        border: 1.5px solid var(--border);
-        border-radius: 10px;
-        padding: 14px 18px;
-        cursor: pointer;
-        transition: all 0.2s;
-        user-select: none;
-        }
-
-        .option:hover:not(.locked) {
-        border-color: var(--accent);
-        background: rgba(14,165,233,0.06);
-        }
-
-        .option.selected {
-        border-color: var(--accent);
-        background: rgba(14,165,233,0.1);
-        }
-
-        .option.correct {
-        border-color: var(--success);
-        background: rgba(34,197,94,0.1);
-        }
-
-        .option.wrong {
-        border-color: var(--danger);
-        background: rgba(239,68,68,0.1);
-        }
-
-        .option-key {
-        width: 30px; height: 30px; flex-shrink: 0;
-        background: var(--surface);
-        border-radius: 6px;
-        display: flex; align-items: center; justify-content: center;
-        font-family: 'Space Mono', monospace;
-        font-size: 0.75rem; font-weight: 700;
-        color: var(--muted);
-        transition: all 0.2s;
-        }
-
-        .option.selected .option-key { background: var(--accent); color: #fff; }
-        .option.correct .option-key { background: var(--success); color: #fff; }
-        .option.wrong .option-key { background: var(--danger); color: #fff; }
-
-        .option-text { font-size: 0.9rem; line-height: 1.5; flex: 1; }
-
-        .option.locked { cursor: default; }
-
-        /* ========== RESULT ========== */
-        .score-ring {
-        width: 140px; height: 140px;
-        margin: 0 auto 24px;
-        position: relative;
-        }
-
-        .score-ring svg { transform: rotate(-90deg); }
-
-        .score-ring-text {
-        position: absolute; top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        }
-
-        .score-ring-text .big {
-        font-size: 2rem; font-weight: 800;
-        font-family: 'Space Mono', monospace;
-        background: linear-gradient(135deg, var(--accent2), #a5b4fc);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .score-ring-text .small { font-size: 0.7rem; color: var(--muted); }
-
-        .stat-grid {
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
-        margin: 20px 0;
-        }
-
-        .stat-box {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 14px;
-        text-align: center;
-        }
-
-        .stat-box .num {
-        font-size: 1.4rem; font-weight: 800;
-        font-family: 'Space Mono', monospace;
-        }
-
-        .stat-box .lbl { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
-
-        .stat-box.s-good .num { color: var(--success); }
-        .stat-box.s-bad .num { color: var(--danger); }
-        .stat-box.s-score .num { color: var(--accent2); }
-
-        /* ========== REVIEW ========== */
-        .review-item {
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 16px 18px;
-        margin-bottom: 12px;
-        background: var(--surface2);
-        }
-
-        .review-item.r-wrong { border-color: rgba(239,68,68,0.35); }
-        .review-item.r-right { border-color: rgba(34,197,94,0.25); }
-
-        .review-q {
-        font-size: 0.88rem; font-weight: 600; margin-bottom: 10px;
-        display: flex; gap: 10px;
-        }
-
-        .review-badge {
-        display: inline-flex; align-items: center; gap: 4px;
-        font-size: 0.68rem; font-weight: 700; letter-spacing: 0.5px;
-        padding: 2px 8px; border-radius: 20px;
-        flex-shrink: 0; height: fit-content; margin-top: 2px;
-        }
-
-        .badge-wrong { background: rgba(239,68,68,0.15); color: var(--danger); }
-        .badge-right { background: rgba(34,197,94,0.15); color: var(--success); }
-
-        .review-ans {
-        font-size: 0.8rem; display: flex; gap: 8px; flex-wrap: wrap;
-        }
-
-        .ans-tag {
-        padding: 3px 10px; border-radius: 6px;
-        font-size: 0.75rem; font-weight: 500;
-        }
-
-        .ans-user { background: rgba(239,68,68,0.12); color: #fca5a5; }
-        .ans-correct { background: rgba(34,197,94,0.12); color: #86efac; }
-
-        /* ========== TOAST ========== */
-        #toast {
-        position: fixed; bottom: 28px; right: 28px;
-        background: var(--surface2); border: 1px solid var(--border);
-        border-radius: 10px; padding: 14px 20px;
-        font-size: 0.85rem; font-weight: 500;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-        transform: translateY(80px); opacity: 0;
-        transition: all 0.3s ease;
-        z-index: 999; max-width: 320px;
-        display: flex; align-items: center; gap: 10px;
-        }
-
-        #toast.show { transform: translateY(0); opacity: 1; }
-        #toast.success { border-color: var(--success); }
-        #toast.error { border-color: var(--danger); }
-
-        /* ========== LOADING ========== */
-        .spinner {
-        width: 20px; height: 20px;
-        border: 2px solid var(--border);
-        border-top-color: var(--accent);
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-        flex-shrink: 0;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .loading-overlay {
-        position: fixed; inset: 0;
-        background: rgba(10,15,30,0.85);
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
-        gap: 14px; z-index: 200;
-        }
-
-        .loading-overlay .spinner { width: 36px; height: 36px; border-width: 3px; }
-        .loading-overlay p { color: var(--muted); font-size: 0.85rem; }
-
-        /* ========== MISC ========== */
-        .nav-row {
-        display: flex; justify-content: space-between; align-items: center;
-        margin-top: 24px; padding-top: 20px;
-        border-top: 1px solid var(--border);
-        }
-
-        .hint-text { font-size: 0.78rem; color: var(--muted); margin-top: 8px; }
-
-        .divider { height: 1px; background: var(--border); margin: 20px 0; }
-
-        .text-center { text-align: center; }
-
-        .page-title {
-        font-size: 1.5rem; font-weight: 800;
-        background: linear-gradient(135deg, #f1f5f9, var(--accent2));
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        margin-bottom: 6px;
-        }
-
-        .page-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 28px; }
-
-        @media (max-width: 540px) {
-        .form-grid { grid-template-columns: 1fr; }
-        .stat-grid { grid-template-columns: 1fr 1fr; }
-        .header { padding: 14px 16px; }
-        .screen { padding: 20px 14px; }
-        .card { padding: 20px; }
-        }
-    </style>
-    </head>
-    <body>
-    <div id="app">
-
-    <!-- HEADER -->
-    <header class="header">
-        <div class="header-logo">📋</div>
-        <div>
-        <h1>Quiz System</h1>
-        <div class="header-sub">Hệ thống kiểm tra trắc nghiệm</div>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hệ Thống Kiểm Tra Trắc Nghiệm</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+    :root {
+    --bg: #0a0f1e;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #0ea5e9;
+    --accent2: #38bdf8;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warn: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    }
+
+    body::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    }
+
+    #app { position: relative; z-index: 1; }
+
+    .header {
+    background: linear-gradient(135deg, #0a0f1e 0%, #0f172a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky; top: 0; z-index: 100;
+    }
+
+    .header-logo {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    }
+
+    .header h1 {
+    font-size: 1.1rem; font-weight: 700;
+    background: linear-gradient(90deg, var(--accent2), #a5b4fc);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .header-sub { font-size: 0.75rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+    .screen { display: none; max-width: 760px; margin: 0 auto; padding: 32px 20px; }
+    .screen.active { display: block; }
+
+    .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+    }
+
+    .card-title {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+    }
+
+    .card-title::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    }
+
+    .form-grid .full { grid-column: 1/-1; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    label {
+    font-size: 0.75rem; font-weight: 600;
+    color: var(--muted); letter-spacing: 0.5px;
+    }
+
+    input, select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 0.9rem;
+    padding: 11px 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    }
+
+    input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
+    }
+
+    input::placeholder { color: var(--muted); }
+
+    .btn {
+    border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 600; font-size: 0.9rem;
+    padding: 12px 28px;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+    }
+
+    .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    color: #fff;
+    }
+
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(14,165,233,0.3); }
+
+    .btn-ghost {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+    .question-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px;
+    }
+
+    .q-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem; color: var(--muted);
+    }
+
+    .progress-bar {
+    height: 4px; background: var(--surface2); border-radius: 2px;
+    margin-bottom: 28px; overflow: hidden;
+    }
+
+    .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #6366f1);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    }
+
+    .question-text {
+    font-size: 1.05rem; font-weight: 600; line-height: 1.65;
+    margin-bottom: 24px;
+    color: #f1f5f9;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 10px; }
+
+    .option {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    }
+
+    .option:hover:not(.locked) {
+    border-color: var(--accent);
+    background: rgba(14,165,233,0.06);
+    }
+
+    .option.selected {
+    border-color: var(--accent);
+    background: rgba(14,165,233,0.1);
+    }
+
+    .option.correct {
+    border-color: var(--success);
+    background: rgba(34,197,94,0.1);
+    }
+
+    .option.wrong {
+    border-color: var(--danger);
+    background: rgba(239,68,68,0.1);
+    }
+
+    .option-key {
+    width: 30px; height: 30px; flex-shrink: 0;
+    background: var(--surface);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem; font-weight: 700;
+    color: var(--muted);
+    transition: all 0.2s;
+    }
+
+    .option.selected .option-key { background: var(--accent); color: #fff; }
+    .option.correct .option-key { background: var(--success); color: #fff; }
+    .option.wrong .option-key { background: var(--danger); color: #fff; }
+
+    .option-text { font-size: 0.9rem; line-height: 1.5; flex: 1; }
+    .option.locked { cursor: default; }
+
+    .score-ring {
+    width: 140px; height: 140px;
+    margin: 0 auto 24px;
+    position: relative;
+    }
+
+    .score-ring svg { transform: rotate(-90deg); }
+
+    .score-ring-text {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    }
+
+    .score-ring-text .big {
+    font-size: 2rem; font-weight: 800;
+    font-family: 'Space Mono', monospace;
+    background: linear-gradient(135deg, var(--accent2), #a5b4fc);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .score-ring-text .small { font-size: 0.7rem; color: var(--muted); }
+
+    .stat-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    margin: 20px 0;
+    }
+
+    .stat-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    }
+
+    .stat-box .num {
+    font-size: 1.4rem; font-weight: 800;
+    font-family: 'Space Mono', monospace;
+    }
+
+    .stat-box .lbl { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+    .stat-box.s-good .num { color: var(--success); }
+    .stat-box.s-bad .num { color: var(--danger); }
+    .stat-box.s-score .num { color: var(--accent2); }
+
+    .review-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    background: var(--surface2);
+    }
+
+    .review-item.r-wrong { border-color: rgba(239,68,68,0.35); }
+    .review-item.r-right { border-color: rgba(34,197,94,0.25); }
+
+    .review-q {
+    font-size: 0.88rem; font-weight: 600; margin-bottom: 10px;
+    display: flex; gap: 10px;
+    }
+
+    .review-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.5px;
+    padding: 2px 8px; border-radius: 20px;
+    flex-shrink: 0; height: fit-content; margin-top: 2px;
+    }
+
+    .badge-wrong { background: rgba(239,68,68,0.15); color: var(--danger); }
+    .badge-right { background: rgba(34,197,94,0.15); color: var(--success); }
+
+    .review-ans {
+    font-size: 0.8rem; display: flex; gap: 8px; flex-wrap: wrap;
+    }
+
+    .ans-tag {
+    padding: 3px 10px; border-radius: 6px;
+    font-size: 0.75rem; font-weight: 500;
+    }
+
+    .ans-user { background: rgba(239,68,68,0.12); color: #fca5a5; }
+    .ans-correct { background: rgba(34,197,94,0.12); color: #86efac; }
+
+    #toast {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 20px;
+    font-size: 0.85rem; font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 999; max-width: 320px;
+    display: flex; align-items: center; gap: 10px;
+    }
+
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { border-color: var(--success); }
+    #toast.error { border-color: var(--danger); }
+
+    .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10,15,30,0.85);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 14px; z-index: 200;
+    }
+
+    .loading-overlay .spinner { width: 36px; height: 36px; border-width: 3px; }
+    .loading-overlay p { color: var(--muted); font-size: 0.85rem; }
+
+    .nav-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 24px; padding-top: 20px;
+    border-top: 1px solid var(--border);
+    }
+
+    .hint-text { font-size: 0.78rem; color: var(--muted); margin-top: 8px; }
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+    .text-center { text-align: center; }
+
+    .page-title {
+    font-size: 1.5rem; font-weight: 800;
+    background: linear-gradient(135deg, #f1f5f9, var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+    }
+
+    .page-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 28px; }
+
+    @media (max-width: 540px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .header { padding: 14px 16px; }
+    .screen { padding: 20px 14px; }
+    .card { padding: 20px; }
+    }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-logo">📋</div>
+    <div>
+    <h1>Quiz System</h1>
+    <div class="header-sub">Hệ thống kiểm tra trắc nghiệm</div>
+    </div>
+</header>
+
+<!-- SCREEN 1: REGISTER -->
+<div id="screen-register" class="screen active">
+    <div class="text-center">
+    <div class="page-title">Đăng Ký Thông Tin</div>
+    <div class="page-sub">Nhập thông tin trước khi bắt đầu bài kiểm tra</div>
+    </div>
+
+    <div class="card">
+    <div class="card-title">📋 Thông tin người tham dự</div>
+    <div class="form-grid">
+        <div class="field">
+        <label>Họ và Tên *</label>
+        <input id="inp-name" type="text" placeholder="Nguyễn Văn A" />
         </div>
-    </header>
-
-    <!-- SCREEN 1: REGISTER -->
-    <div id="screen-register" class="screen active">
-        <div class="text-center">
-        <div class="page-title">Đăng Ký Thông Tin</div>
-        <div class="page-sub">Nhập thông tin trước khi bắt đầu bài kiểm tra</div>
+        <div class="field">
+        <label>Tuổi *</label>
+        <input id="inp-age" type="number" placeholder="25" min="16" max="70" />
         </div>
-
-        <div class="card">
-        <div class="card-title">📋 Thông tin người tham dự</div>
-        <div class="form-grid">
-            <div class="field">
-            <label>Họ và Tên *</label>
-            <input id="inp-name" type="text" placeholder="Nguyễn Văn A" />
-            </div>
-            <div class="field">
-            <label>Tuổi *</label>
-            <input id="inp-age" type="number" placeholder="25" min="16" max="70" />
-            </div>
-            <div class="field">
-            <label>Mã Nhân Viên *</label>
-            <input id="inp-empid" type="text" placeholder="NV001" />
-            </div>
-            <div class="field">
-            <label>Email *</label>
-            <input id="inp-email" type="email" placeholder="email@company.com" />
-            </div>
-            <div class="field full">
-            <label>Số Điện Thoại</label>
-            <input id="inp-phone" type="tel" placeholder="0900 000 000" />
-            </div>
+        <div class="field">
+        <label>Mã Nhân Viên *</label>
+        <input id="inp-empid" type="text" placeholder="NV001" />
         </div>
+        <div class="field">
+        <label>Email *</label>
+        <input id="inp-email" type="email" placeholder="email@company.com" />
         </div>
+        <div class="field full">
+        <label>Số Điện Thoại</label>
+        <input id="inp-phone" type="tel" placeholder="0900 000 000" />
+        </div>
+    </div>
+    </div>
 
-        <div style="text-align:right">
-        <button class="btn btn-primary" onclick="startQuiz()">
-            Bắt Đầu Kiểm Tra →
+    <div style="text-align:right">
+    <button class="btn btn-primary" id="btn-start">
+        Bắt Đầu Kiểm Tra →
+    </button>
+    </div>
+</div>
+
+<!-- SCREEN 2: QUIZ -->
+<div id="screen-quiz" class="screen">
+    <div class="card">
+    <div class="question-header">
+        <span class="q-number" id="q-counter">Câu 0 / 0</span>
+        <span class="q-number" id="q-timer" style="color:var(--accent)">⏱ 00:00</span>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="q-progress" style="width:0%"></div>
+    </div>
+    <div class="question-text" id="q-text">Đang tải...</div>
+    <div class="options" id="q-options"></div>
+    <div class="nav-row">
+        <span class="hint-text" id="q-hint">Chọn một đáp án</span>
+        <button class="btn btn-primary" id="btn-next" disabled>
+        Tiếp Theo →
         </button>
+    </div>
+    </div>
+</div>
+
+<!-- SCREEN 3: RESULT -->
+<div id="screen-result" class="screen">
+    <div class="text-center" style="margin-bottom:28px">
+    <div class="page-title">Kết Quả Kiểm Tra</div>
+    <div class="page-sub" id="res-name">—</div>
+    </div>
+
+    <div class="card text-center">
+    <div class="card-title">🏆 Điểm số</div>
+    <div class="score-ring">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="58" fill="none" stroke="var(--surface2)" stroke-width="10"/>
+        <circle id="score-arc" cx="70" cy="70" r="58" fill="none"
+            stroke="url(#grad)" stroke-width="10"
+            stroke-dasharray="364.4" stroke-dashoffset="364.4"
+            stroke-linecap="round"
+            style="transition: stroke-dashoffset 1.2s ease"/>
+        <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#0ea5e9"/>
+            <stop offset="100%" stop-color="#818cf8"/>
+            </linearGradient>
+        </defs>
+        </svg>
+        <div class="score-ring-text">
+        <div class="big" id="res-score">0</div>
+        <div class="small">/ 100</div>
         </div>
     </div>
 
-    <!-- SCREEN 2: QUIZ -->
-    <div id="screen-quiz" class="screen">
-        <div class="card">
-        <div class="question-header">
-            <span class="q-number" id="q-counter">Câu 0 / 0</span>
-            <span class="q-number" id="q-timer" style="color:var(--accent)">⏱ 00:00</span>
+    <div class="stat-grid">
+        <div class="stat-box s-good">
+        <div class="num" id="res-correct">0</div>
+        <div class="lbl">Câu Đúng ✓</div>
         </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="q-progress" style="width:0%"></div>
+        <div class="stat-box s-bad">
+        <div class="num" id="res-wrong">0</div>
+        <div class="lbl">Câu Sai ✗</div>
         </div>
-        <div class="question-text" id="q-text">Đang tải...</div>
-        <div class="options" id="q-options"></div>
-        <div class="nav-row">
-            <span class="hint-text" id="q-hint">Chọn một đáp án</span>
-            <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()" disabled>
-            Tiếp Theo →
-            </button>
-        </div>
+        <div class="stat-box s-score">
+        <div class="num" id="res-total">0</div>
+        <div class="lbl">Tổng Câu</div>
         </div>
     </div>
-
-    <!-- SCREEN 3: RESULT -->
-    <div id="screen-result" class="screen">
-        <div class="text-center" style="margin-bottom:28px">
-        <div class="page-title">Kết Quả Kiểm Tra</div>
-        <div class="page-sub" id="res-name">—</div>
-        </div>
-
-        <div class="card text-center">
-        <div class="card-title">🏆 Điểm số</div>
-        <div class="score-ring">
-            <svg width="140" height="140" viewBox="0 0 140 140">
-            <circle cx="70" cy="70" r="58" fill="none" stroke="var(--surface2)" stroke-width="10"/>
-            <circle id="score-arc" cx="70" cy="70" r="58" fill="none"
-                stroke="url(#grad)" stroke-width="10"
-                stroke-dasharray="364.4" stroke-dashoffset="364.4"
-                stroke-linecap="round"
-                style="transition: stroke-dashoffset 1.2s ease"/>
-            <defs>
-                <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#0ea5e9"/>
-                <stop offset="100%" stop-color="#818cf8"/>
-                </linearGradient>
-            </defs>
-            </svg>
-            <div class="score-ring-text">
-            <div class="big" id="res-score">0</div>
-            <div class="small">/ 100</div>
-            </div>
-        </div>
-
-        <div class="stat-grid">
-            <div class="stat-box s-good">
-            <div class="num" id="res-correct">0</div>
-            <div class="lbl">Câu Đúng ✓</div>
-            </div>
-            <div class="stat-box s-bad">
-            <div class="num" id="res-wrong">0</div>
-            <div class="lbl">Câu Sai ✗</div>
-            </div>
-            <div class="stat-box s-score">
-            <div class="num" id="res-total">0</div>
-            <div class="lbl">Tổng Câu</div>
-            </div>
-        </div>
-        </div>
-
-        <div class="card">
-        <div class="card-title">📝 Chi Tiết Bài Làm</div>
-        <div id="review-list"></div>
-        </div>
-
-        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap">
-        <button class="btn btn-ghost" onclick="goHome()">← Làm Lại</button>
-        <button class="btn btn-primary" onclick="saveAndFinish()">
-            💾 Lưu Kết Quả
-        </button>
-        </div>
     </div>
 
+    <div class="card">
+    <div class="card-title">📝 Chi Tiết Bài Làm</div>
+    <div id="review-list"></div>
     </div>
 
-    <!-- LOADING -->
-    <div class="loading-overlay" id="loading" style="display:none">
-    <div class="spinner"></div>
-    <p id="loading-msg">Đang xử lý...</p>
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap">
+    <button class="btn btn-ghost" id="btn-home">← Làm Lại</button>
+    <button class="btn btn-primary" id="btn-save">
+        💾 Lưu Kết Quả
+    </button>
     </div>
+</div>
 
-    <!-- TOAST -->
-    <div id="toast">
-    <span id="toast-icon">ℹ️</span>
-    <span id="toast-msg"></span>
-    </div>
+</div>
 
-    <script>
-    // ============================================================
-    //  SUPABASE CONFIG
-    // ============================================================
-    const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-    const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY;
-    const { createClient } = supabase;
-    const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+<!-- LOADING -->
+<div class="loading-overlay" id="loading" style="display:none">
+<div class="spinner"></div>
+<p id="loading-msg">Đang xử lý...</p>
+</div>
 
-    // ============================================================
-    //  STATE
-    // ============================================================
-    let respondent = null;
-    let questions = [];
-    let currentQ = 0;
-    let answers = [];   // { question_id, chosen_key, is_correct }
-    let startTime = null;
-    let timerInterval = null;
+<!-- TOAST -->
+<div id="toast">
+<span id="toast-icon">ℹ️</span>
+<span id="toast-msg"></span>
+</div>
 
-    // ============================================================
-    //  DB SETUP — run once to create tables if they don't exist
-    // ============================================================
-    async function setupDatabase() {
-    // We create tables via RPC / SQL if they don't already exist.
-    // Supabase anon key can only run SELECT / INSERT / UPDATE / DELETE
-    // on tables that are already created. So we attempt to query; if
-    // it fails we show a setup SQL notice.
-    const { error } = await db.from('respondents').select('id').limit(1);
-    if (error && error.code === '42P01') {
-        showToast('⚠️ Chưa có database. Vui lòng chạy SQL Setup trong Supabase.', 'error', 6000);
-        console.warn('RUN THIS SQL IN SUPABASE SQL EDITOR:\n', setupSQL());
-    }
-    }
+<script>
+// ============================================================
+//  CONFIG — Thay 2 giá trị này bằng URL và KEY từ Supabase
+// ============================================================
+const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';   // ← thay vào đây
+const SUPABASE_KEY = 'YOUR_ANON_PUBLIC_KEY';               // ← thay vào đây
 
-    function setupSQL() {
-    return `
-    -- TABLE: respondents
-    CREATE TABLE IF NOT EXISTS respondents (
-    id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    full_name   TEXT NOT NULL,
-    age         INT,
-    employee_id TEXT UNIQUE NOT NULL,
-    email       TEXT NOT NULL,
-    phone       TEXT,
-    created_at  TIMESTAMPTZ DEFAULT NOW()
-    );
+// ============================================================
+//  INIT SUPABASE
+// ============================================================
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    -- TABLE: questions
-    CREATE TABLE IF NOT EXISTS questions (
-    id           UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    question     TEXT NOT NULL,
-    option_a     TEXT NOT NULL,
-    option_b     TEXT NOT NULL,
-    option_c     TEXT NOT NULL,
-    option_d     TEXT NOT NULL,
-    correct_key  CHAR(1) NOT NULL CHECK (correct_key IN ('A','B','C','D')),
-    created_at   TIMESTAMPTZ DEFAULT NOW()
-    );
+// ============================================================
+//  STATE
+// ============================================================
+let respondent  = null;
+let questions   = [];
+let currentQ    = 0;
+let answers     = [];
+let startTime   = null;
+let timerInterval = null;
 
-    -- TABLE: quiz_sessions
-    CREATE TABLE IF NOT EXISTS quiz_sessions (
-    id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    respondent_id   UUID REFERENCES respondents(id) ON DELETE CASCADE,
-    score           NUMERIC(5,2),
-    total_questions INT,
-    correct_count   INT,
-    wrong_count     INT,
-    duration_sec    INT,
-    taken_at        TIMESTAMPTZ DEFAULT NOW()
-    );
-
-    -- TABLE: quiz_answers
-    CREATE TABLE IF NOT EXISTS quiz_answers (
-    id            UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    session_id    UUID REFERENCES quiz_sessions(id) ON DELETE CASCADE,
-    question_id   UUID REFERENCES questions(id),
-    chosen_key    CHAR(1),
-    is_correct    BOOLEAN,
-    created_at    TIMESTAMPTZ DEFAULT NOW()
-    );
-    `;
-    }
-
-    // ============================================================
-    //  UTILITIES
-    // ============================================================
-    function showScreen(id) {
+// ============================================================
+//  UTILITIES
+// ============================================================
+function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-' + id).classList.add('active');
-    }
+}
 
-    function showLoading(msg = 'Đang xử lý...') {
+function showLoading(msg = 'Đang xử lý...') {
     document.getElementById('loading-msg').textContent = msg;
     document.getElementById('loading').style.display = 'flex';
-    }
+}
 
-    function hideLoading() {
+function hideLoading() {
     document.getElementById('loading').style.display = 'none';
-    }
+}
 
-    function showToast(msg, type = 'info', duration = 3000) {
+function showToast(msg, type = 'info', duration = 3000) {
     const t = document.getElementById('toast');
     const icons = { success: '✅', error: '❌', info: 'ℹ️' };
     document.getElementById('toast-icon').textContent = icons[type] || 'ℹ️';
@@ -653,14 +579,73 @@
     t.className = 'show ' + type;
     clearTimeout(t._timeout);
     t._timeout = setTimeout(() => { t.className = ''; }, duration);
+}
+
+function $(id) { return document.getElementById(id); }
+
+// ============================================================
+//  DB SETUP CHECK
+// ============================================================
+async function setupDatabase() {
+    const { error } = await db.from('respondents').select('id').limit(1);
+    if (error && error.code === '42P01') {
+        showToast('⚠️ Chưa có database. Vui lòng chạy SQL Setup trong Supabase.', 'error', 6000);
+        console.warn('RUN THIS SQL IN SUPABASE SQL EDITOR:\n', setupSQL());
     }
+}
 
-    function $(id) { return document.getElementById(id); }
+function setupSQL() {
+    return `
+-- TABLE: respondents
+CREATE TABLE IF NOT EXISTS respondents (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  full_name   TEXT NOT NULL,
+  age         INT,
+  employee_id TEXT UNIQUE NOT NULL,
+  email       TEXT NOT NULL,
+  phone       TEXT,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
 
-    // ============================================================
-    //  REGISTER & START
-    // ============================================================
-    async function startQuiz() {
+-- TABLE: questions
+CREATE TABLE IF NOT EXISTS questions (
+  id           UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  question     TEXT NOT NULL,
+  option_a     TEXT NOT NULL,
+  option_b     TEXT NOT NULL,
+  option_c     TEXT NOT NULL,
+  option_d     TEXT NOT NULL,
+  correct_key  CHAR(1) NOT NULL CHECK (correct_key IN ('A','B','C','D')),
+  created_at   TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- TABLE: quiz_sessions
+CREATE TABLE IF NOT EXISTS quiz_sessions (
+  id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  respondent_id   UUID REFERENCES respondents(id) ON DELETE CASCADE,
+  score           NUMERIC(5,2),
+  total_questions INT,
+  correct_count   INT,
+  wrong_count     INT,
+  duration_sec    INT,
+  taken_at        TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- TABLE: quiz_answers
+CREATE TABLE IF NOT EXISTS quiz_answers (
+  id            UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  session_id    UUID REFERENCES quiz_sessions(id) ON DELETE CASCADE,
+  question_id   UUID REFERENCES questions(id),
+  chosen_key    CHAR(1),
+  is_correct    BOOLEAN,
+  created_at    TIMESTAMPTZ DEFAULT NOW()
+);`;
+}
+
+// ============================================================
+//  REGISTER & START
+// ============================================================
+async function startQuiz() {
     const name  = $('inp-name').value.trim();
     const age   = parseInt($('inp-age').value);
     const empId = $('inp-empid').value.trim();
@@ -673,37 +658,38 @@
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showToast('Email không hợp lệ!', 'error'); return;
+        showToast('Email không hợp lệ!', 'error');
+        return;
     }
 
     showLoading('Đang đăng ký thông tin...');
 
     try {
-        // Upsert respondent by employee_id
         const { data, error } = await db
-        .from('respondents')
-        .upsert({ full_name: name, age, employee_id: empId, email, phone },
-                { onConflict: 'employee_id' })
-        .select()
-        .single();
+            .from('respondents')
+            .upsert(
+                { full_name: name, age, employee_id: empId, email, phone },
+                { onConflict: 'employee_id' }
+            )
+            .select()
+            .single();
 
         if (error) throw error;
         respondent = data;
 
-        // Load questions
         const { data: qs, error: qErr } = await db
-        .from('questions')
-        .select('*')
-        .order('created_at');
+            .from('questions')
+            .select('*')
+            .order('created_at');
 
         if (qErr) throw qErr;
         if (!qs || qs.length === 0) {
-        throw new Error('Chưa có câu hỏi. Chạy SQL Setup trong Supabase!');
+            throw new Error('Chưa có câu hỏi. Vui lòng chạy SQL Setup và thêm câu hỏi!');
         }
 
         questions = qs;
-        answers = [];
-        currentQ = 0;
+        answers   = [];
+        currentQ  = 0;
         startTime = Date.now();
 
         hideLoading();
@@ -715,12 +701,12 @@
         showToast(e.message || 'Lỗi kết nối Supabase!', 'error', 5000);
         console.error(e);
     }
-    }
+}
 
-    // ============================================================
-    //  TIMER
-    // ============================================================
-    function startTimer() {
+// ============================================================
+//  TIMER
+// ============================================================
+function startTimer() {
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
@@ -728,20 +714,21 @@
         const s = String(elapsed % 60).padStart(2, '0');
         $('q-timer').textContent = `⏱ ${m}:${s}`;
     }, 1000);
-    }
+}
 
-    // ============================================================
-    //  RENDER QUESTION
-    // ============================================================
-    function renderQuestion() {
-    const q = questions[currentQ];
+// ============================================================
+//  RENDER QUESTION
+// ============================================================
+function renderQuestion() {
+    const q     = questions[currentQ];
     const total = questions.length;
 
-    $('q-counter').textContent = `Câu ${currentQ + 1} / ${total}`;
-    $('q-progress').style.width = `${((currentQ) / total) * 100}%`;
-    $('q-text').textContent = `${currentQ + 1}. ${q.question}`;
-    $('btn-next').disabled = true;
-    $('q-hint').textContent = 'Chọn một đáp án';
+    $('q-counter').textContent    = `Câu ${currentQ + 1} / ${total}`;
+    $('q-progress').style.width   = `${(currentQ / total) * 100}%`;
+    $('q-text').textContent       = `${currentQ + 1}. ${q.question}`;
+    $('btn-next').disabled        = true;
+    $('btn-next').textContent     = 'Tiếp Theo →';
+    $('q-hint').textContent       = 'Chọn một đáp án';
 
     const opts = [
         { key: 'A', text: q.option_a },
@@ -751,18 +738,24 @@
     ];
 
     $('q-options').innerHTML = opts.map(o => `
-        <div class="option" id="opt-${o.key}" onclick="selectOption('${o.key}', '${q.correct_key}')">
+        <div class="option" id="opt-${o.key}" data-key="${o.key}">
         <div class="option-key">${o.key}</div>
         <div class="option-text">${o.text}</div>
         </div>
     `).join('');
-    }
 
-    // ============================================================
-    //  SELECT OPTION
-    // ============================================================
-    function selectOption(chosen, correct) {
-    // Lock all options
+    // Attach click handlers
+    opts.forEach(o => {
+        document.getElementById('opt-' + o.key).addEventListener('click', () => {
+            selectOption(o.key, q.correct_key);
+        });
+    });
+}
+
+// ============================================================
+//  SELECT OPTION
+// ============================================================
+function selectOption(chosen, correct) {
     document.querySelectorAll('.option').forEach(el => el.classList.add('locked'));
 
     const isCorrect = chosen === correct;
@@ -778,22 +771,21 @@
 
     answers.push({
         question_id: questions[currentQ].id,
-        chosen_key: chosen,
-        is_correct: isCorrect,
+        chosen_key:  chosen,
+        is_correct:  isCorrect,
     });
 
     $('btn-next').disabled = false;
 
-    // Last question: change button text
     if (currentQ === questions.length - 1) {
         $('btn-next').textContent = '🏁 Xem Kết Quả';
     }
-    }
+}
 
-    // ============================================================
-    //  NEXT QUESTION
-    // ============================================================
-    function nextQuestion() {
+// ============================================================
+//  NEXT QUESTION
+// ============================================================
+function nextQuestion() {
     currentQ++;
     if (currentQ < questions.length) {
         renderQuestion();
@@ -801,51 +793,48 @@
         clearInterval(timerInterval);
         showResults();
     }
-    }
+}
 
-    // ============================================================
-    //  SHOW RESULTS
-    // ============================================================
-    function showResults() {
-    const total   = questions.length;
-    const correct = answers.filter(a => a.is_correct).length;
-    const wrong   = total - correct;
-    const score   = Math.round((correct / total) * 100);
+// ============================================================
+//  SHOW RESULTS
+// ============================================================
+function showResults() {
+    const total    = questions.length;
+    const correct  = answers.filter(a => a.is_correct).length;
+    const wrong    = total - correct;
+    const score    = Math.round((correct / total) * 100);
     const duration = Math.floor((Date.now() - startTime) / 1000);
 
-    // Header
-    $('res-name').textContent = `👤 ${respondent.full_name} · ${respondent.employee_id}`;
-    $('res-score').textContent = score;
+    $('res-name').textContent    = `👤 ${respondent.full_name} · ${respondent.employee_id}`;
+    $('res-score').textContent   = score;
     $('res-correct').textContent = correct;
-    $('res-wrong').textContent = wrong;
-    $('res-total').textContent = total;
+    $('res-wrong').textContent   = wrong;
+    $('res-total').textContent   = total;
 
-    // Animate arc
     setTimeout(() => {
-        const circ = 2 * Math.PI * 58; // 364.4
+        const circ   = 2 * Math.PI * 58;
         const offset = circ - (score / 100) * circ;
         $('score-arc').style.strokeDashoffset = offset;
     }, 300);
 
-    // Review list
     const reviewHtml = answers.map((a, i) => {
         const q = questions.find(q => q.id === a.question_id);
         if (!q) return '';
-        const cls = a.is_correct ? 'r-right' : 'r-wrong';
+        const cls   = a.is_correct ? 'r-right' : 'r-wrong';
         const badge = a.is_correct
-        ? '<span class="review-badge badge-right">✓ ĐÚNG</span>'
-        : '<span class="review-badge badge-wrong">✗ SAI</span>';
+            ? '<span class="review-badge badge-right">✓ ĐÚNG</span>'
+            : '<span class="review-badge badge-wrong">✗ SAI</span>';
 
         let ansRow = '';
         if (!a.is_correct) {
-        const optMap = { A: q.option_a, B: q.option_b, C: q.option_c, D: q.option_d };
-        ansRow = `
-            <div class="review-ans">
-            <span style="color:var(--muted);font-size:0.75rem">Bạn chọn:</span>
-            <span class="ans-tag ans-user">${a.chosen_key}. ${optMap[a.chosen_key] || '?'}</span>
-            <span style="color:var(--muted);font-size:0.75rem">Đáp án đúng:</span>
-            <span class="ans-tag ans-correct">${q.correct_key}. ${optMap[q.correct_key]}</span>
-            </div>`;
+            const optMap = { A: q.option_a, B: q.option_b, C: q.option_c, D: q.option_d };
+            ansRow = `
+                <div class="review-ans">
+                <span style="color:var(--muted);font-size:0.75rem">Bạn chọn:</span>
+                <span class="ans-tag ans-user">${a.chosen_key}. ${optMap[a.chosen_key] || '?'}</span>
+                <span style="color:var(--muted);font-size:0.75rem">Đáp án đúng:</span>
+                <span class="ans-tag ans-correct">${q.correct_key}. ${optMap[q.correct_key]}</span>
+                </div>`;
         }
 
         return `
@@ -856,45 +845,42 @@
     }).join('');
 
     $('review-list').innerHTML = reviewHtml;
-
-    // Store session data for saving
     window._sessionData = { total, correct, wrong, score, duration };
 
     showScreen('result');
-    }
+}
 
-    // ============================================================
-    //  SAVE TO SUPABASE
-    // ============================================================
-    async function saveAndFinish() {
-    const btn = event.currentTarget;
+// ============================================================
+//  SAVE TO SUPABASE
+// ============================================================
+async function saveAndFinish() {
+    const btn = $('btn-save');
     btn.disabled = true;
     showLoading('Đang lưu kết quả...');
 
     try {
         const { total, correct, wrong, score, duration } = window._sessionData;
 
-        // Insert session
         const { data: session, error: sErr } = await db
-        .from('quiz_sessions')
-        .insert({
-            respondent_id: respondent.id,
-            score, total_questions: total,
-            correct_count: correct,
-            wrong_count: wrong,
-            duration_sec: duration,
-        })
-        .select()
-        .single();
+            .from('quiz_sessions')
+            .insert({
+                respondent_id:    respondent.id,
+                score,
+                total_questions:  total,
+                correct_count:    correct,
+                wrong_count:      wrong,
+                duration_sec:     duration,
+            })
+            .select()
+            .single();
 
         if (sErr) throw sErr;
 
-        // Insert answers
         const rows = answers.map(a => ({
-        session_id: session.id,
-        question_id: a.question_id,
-        chosen_key: a.chosen_key,
-        is_correct: a.is_correct,
+            session_id:  session.id,
+            question_id: a.question_id,
+            chosen_key:  a.chosen_key,
+            is_correct:  a.is_correct,
         }));
 
         const { error: aErr } = await db.from('quiz_answers').insert(rows);
@@ -910,29 +896,35 @@
         showToast(e.message || 'Lỗi khi lưu kết quả!', 'error', 5000);
         console.error(e);
     }
-    }
+}
 
-    // ============================================================
-    //  GO HOME
-    // ============================================================
-    function goHome() {
+// ============================================================
+//  GO HOME
+// ============================================================
+function goHome() {
     clearInterval(timerInterval);
-    // Reset form
-    ['inp-name','inp-age','inp-empid','inp-email','inp-phone'].forEach(id => $(id).value = '');
-    respondent = null; questions = []; answers = []; currentQ = 0;
+    ['inp-name', 'inp-age', 'inp-empid', 'inp-email', 'inp-phone'].forEach(id => $(id).value = '');
+    respondent = null;
+    questions  = [];
+    answers    = [];
+    currentQ   = 0;
     $('score-arc').style.strokeDashoffset = '364.4';
     showScreen('register');
-    }
+}
 
-    // ============================================================
-    //  INIT
-    // ============================================================
-    window.addEventListener('DOMContentLoaded', () => {
+// ============================================================
+//  BIND EVENTS — đặt ở đây thay vì dùng onclick inline
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    $('btn-start').addEventListener('click', startQuiz);
+    $('btn-next').addEventListener('click', nextQuestion);
+    $('btn-save').addEventListener('click', saveAndFinish);
+    $('btn-home').addEventListener('click', goHome);
+
     setupDatabase();
-    // Print SQL hint to console for first-time setup
     console.info('%c📋 SUPABASE SQL SETUP', 'font-weight:bold;color:#0ea5e9;font-size:14px');
     console.info(setupSQL());
-    });
-    </script>
-    </body>
-    </html>
+});
+</script>
+</body>
+</html>

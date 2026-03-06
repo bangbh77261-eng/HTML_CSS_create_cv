@@ -134,7 +134,7 @@ input::placeholder{color:var(--ink3)}
 .opt-btn.reveal-missed .opt-key{background:var(--green);color:#fff}
 
 .opt-key{width:26px;height:26px;border-radius:5px;background:var(--off2);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--ink3);flex-shrink:0;transition:all .15s}
-.opt-text{font-size:.875rem;line-height:1.5;flex:1}
+.opt-text{font-size:.875rem;line-height:1.5;flex:1;white-space:normal;overflow-wrap:anywhere;word-break:break-word}
 
 /* PAGE NAV */
 .page-nav{display:flex;align-items:center;justify-content:space-between;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;box-shadow:var(--shadow);margin:4px auto 0;max-width:820px;width:100%}
@@ -498,6 +498,15 @@ function fmtDate(iso) {
   return d.toLocaleDateString('vi-VN')+' '+d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
 }
 
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
 // ── EMP LOOKUP ──
 let _empTimer=null;
 function onEmpIdInput(val) {
@@ -603,13 +612,13 @@ function renderQuizPage() {
     const optsHtml=keys.map((k,ki)=>`
       <button class="opt-btn${chosen===k?' selected':''}" onclick="selectAnswer(${gi},'${k}')">
         <span class="opt-key">${k}</span>
-        <span class="opt-text">${texts[ki]}</span>
+        <span class="opt-text">${escapeHTML(texts[ki])}</span>
       </button>`).join('');
     return `
       <div class="q-item${chosen?' answered':''}" id="q-item-${gi}">
         <div class="q-head">
           <div class="q-num${chosen?' answered':''}">${gi+1}</div>
-          <div class="q-text">${q.question}</div>
+          <div class="q-text">${escapeHTML(q.question)}</div>
         </div>
         <div class="q-options">${optsHtml}</div>
       </div>`;
@@ -718,7 +727,7 @@ async function submitAndSave() {
 // ── RENDER RESULT ──
 function renderResultScreen({respondent:r,session:s,answers:ans,questions:qs,readonly}) {
   const savedTag=(resultSaved||readonly)?'<span class="saved-tag">✓ Đã lưu</span>':'';
-  $('res-name-sub').innerHTML=`👤 ${r.full_name} · ${r.employee_id}${savedTag}`;
+  $('res-name-sub').innerHTML=`👤 ${escapeHTML(r.full_name)} · ${escapeHTML(r.employee_id)}${savedTag}`;
   $('res-score').textContent=s.score;
   $('res-correct-v').textContent=s.correct_count;
   $('res-wrong-v').textContent=s.wrong_count;
@@ -744,15 +753,15 @@ function renderResultScreen({respondent:r,session:s,answers:ans,questions:qs,rea
     let ansRow='';
     if(!a.is_correct){
       ansRow=`<div class="review-ans-row">
-        <span class="ans-chip ac-user">Bạn chọn: ${a.chosen_key}. ${optMap[a.chosen_key]||'?'}</span>
+        <span class="ans-chip ac-user">Bạn chọn: ${a.chosen_key}. ${escapeHTML(optMap[a.chosen_key]||'?')}</span>
         <span class="ac-sep">→</span>
-        <span class="ans-chip ac-correct">Đúng: ${q.correct_key}. ${optMap[q.correct_key]}</span>
+        <span class="ans-chip ac-correct">Đúng: ${q.correct_key}. ${escapeHTML(optMap[q.correct_key]||'?')}</span>
       </div>`;
     }
     return `<div class="review-q-item">
       <div class="review-q-top">
         <span class="review-badge ${a.is_correct?'rb-right':'rb-wrong'}">${a.is_correct?'✓ ĐÚNG':'✗ SAI'}</span>
-        <span class="review-q-text">${i+1}. ${q.question}</span>
+        <span class="review-q-text">${i+1}. ${escapeHTML(q.question)}</span>
       </div>${ansRow}</div>`;
   }).join('');
 

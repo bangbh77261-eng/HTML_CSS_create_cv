@@ -92,6 +92,7 @@ textarea{resize:vertical;min-height:110px}
 .admin-columns{display:grid;grid-template-columns:minmax(320px,380px) minmax(0,1fr);gap:18px}
 .admin-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
 .admin-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
+.admin-card-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .admin-card-title{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
 .admin-note{font-size:.82rem;color:var(--ink3);line-height:1.6}
 .admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -102,6 +103,7 @@ textarea{resize:vertical;min-height:110px}
 .data-table th{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);background:var(--off)}
 .data-table tbody tr:hover td{background:#fbfaf8}
 .data-table tbody tr:last-child td{border-bottom:none}
+.data-table input[type="checkbox"]{width:16px;height:16px;accent-color:var(--ink)}
 .td-actions{white-space:nowrap}
 .question-preview{min-width:260px;line-height:1.55}
 .admin-empty{font-size:.85rem;color:var(--ink3);line-height:1.6}
@@ -543,12 +545,17 @@ textarea{resize:vertical;min-height:110px}
         <div class="admin-card">
           <div class="admin-card-head">
             <div class="admin-card-title">Danh Sách Câu Hỏi</div>
-            <button class="btn btn-outline btn-sm" type="button" onclick="loadAdminQuestions()">Làm Mới</button>
+            <div class="admin-card-tools">
+              <span class="admin-note" id="selected-questions-count">0 đã chọn</span>
+              <button class="btn btn-ghost btn-sm" type="button" id="btn-delete-selected" onclick="deleteSelectedQuestions()" disabled>Xóa Đã Chọn</button>
+              <button class="btn btn-outline btn-sm" type="button" onclick="loadAdminQuestions()">Làm Mới</button>
+            </div>
           </div>
           <div class="admin-table-wrap">
             <table class="data-table">
               <thead>
                 <tr>
+                  <th><input type="checkbox" id="admin-select-all" onchange="toggleAllAdminQuestions(this.checked)"/></th>
                   <th>#</th>
                   <th>Câu hỏi</th>
                   <th>Đúng</th>
@@ -690,6 +697,7 @@ let matchedRespondent = null, adminEditingQuestionId = null;
 let adminQuestions = [], adminResults = [], adminImportRows = [];
 let activeAdminSection = 'import', adminDetailSessionId = null;
 let adminAuthenticated = false;
+let selectedAdminQuestionIds = new Set();
 
 // ── UTILS ──
 const $ = id => document.getElementById(id);
@@ -909,12 +917,15 @@ async function loadAdminQuestions(silent=false) {
 function renderAdminQuestions() {
   const body = $('admin-questions-body');
   if(!body) return;
+  selectedAdminQuestionIds = new Set([...selectedAdminQuestionIds].filter(id=>adminQuestions.some(item=>item.id===id)));
   if(!adminQuestions.length) {
-    body.innerHTML = '<tr><td colspan="5" class="admin-empty">Chưa có câu hỏi trong hệ thống.</td></tr>';
+    body.innerHTML = '<tr><td colspan="6" class="admin-empty">Chưa có câu hỏi trong hệ thống.</td></tr>';
+    syncAdminQuestionSelectionUi();
     return;
   }
   body.innerHTML = adminQuestions.map((q,idx)=>`
     <tr>
+      <td><input class="admin-question-check" type="checkbox" ${selectedAdminQuestionIds.has(q.id)?'checked':''} onchange="toggleAdminQuestionSelection('${q.id}', this.checked)"/></td>
       <td>${idx + 1}</td>
       <td class="question-preview">${escapeHTML(q.question)}</td>
       <td><span class="pill green">${escapeHTML(q.correct_key)}</span></td>
@@ -925,6 +936,30 @@ function renderAdminQuestions() {
       </td>
     </tr>
   `).join('');
+  syncAdminQuestionSelectionUi();
+}
+
+function syncAdminQuestionSelectionUi() {
+  const count = selectedAdminQuestionIds.size;
+  const selectAll = $('admin-select-all');
+  $('selected-questions-count').textContent = `${count} đã chọn`;
+  $('btn-delete-selected').disabled = count === 0;
+  if(selectAll) {
+    selectAll.checked = !!adminQuestions.length && count === adminQuestions.length;
+    selectAll.indeterminate = count > 0 && count < adminQuestions.length;
+  }
+}
+
+function toggleAdminQuestionSelection(questionId, checked) {
+  if(checked) selectedAdminQuestionIds.add(questionId);
+  else selectedAdminQuestionIds.delete(questionId);
+  syncAdminQuestionSelectionUi();
+}
+
+function toggleAllAdminQuestions(checked) {
+  selectedAdminQuestionIds = checked ? new Set(adminQuestions.map(item=>item.id)) : new Set();
+  document.querySelectorAll('.admin-question-check').forEach(input=>{ input.checked = checked; });
+  syncAdminQuestionSelectionUi();
 }
 
 function resetQuestionForm() {
@@ -1014,6 +1049,33 @@ async function deleteQuestion(questionId) {
   } catch(e) {
     hideLoading();
     showToast(e.message || 'Không xóa được câu hỏi', 'error', 5000);
+  }
+}
+
+async function deleteSelectedQuestions() {
+  if(!hasAdminAccess()) {
+    showToast('Không có quyền quản trị', 'error');
+    return;
+  }
+  const ids = [...selectedAdminQuestionIds];
+  if(!ids.length) {
+    showToast('Chưa chọn câu hỏi nào để xóa', 'error');
+    return;
+  }
+  if(!confirm(`Xóa ${ids.length} câu hỏi đã chọn khỏi hệ thống?`)) return;
+
+  showLoading('Đang xóa các câu hỏi đã chọn...');
+  try {
+    const {error}=await db.from('questions').delete().in('id', ids);
+    if(error) throw error;
+    selectedAdminQuestionIds = new Set();
+    await loadAdminQuestions(true);
+    hideLoading();
+    showToast(`Đã xóa ${ids.length} câu hỏi`, 'success');
+    if(ids.includes(adminEditingQuestionId)) resetQuestionForm();
+  } catch(e) {
+    hideLoading();
+    showToast(e.message || 'Không xóa được các câu hỏi đã chọn', 'error', 5000);
   }
 }
 
@@ -1519,6 +1581,7 @@ function goHome() {
   prevSessionData=null; resultSaved=false;
   matchedRespondent=null; adminEditingQuestionId=null; adminDetailSessionId=null;
   adminQuestions=[]; adminResults=[]; adminImportRows=[]; activeAdminSection='import';
+  selectedAdminQuestionIds = new Set();
   adminAuthenticated=false;
   $('score-arc').style.strokeDashoffset='351.9';
   $('prev-banner').classList.remove('show');

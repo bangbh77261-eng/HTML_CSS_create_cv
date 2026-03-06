@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel Date Formula — Chuẩn hóa Ngày Tháng</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #0f1623;
+    --surface2: #161e2e;
+    --border: #1e2d42;
+    --green: #00d68f;
+    --green-dim: #00d68f22;
+    --amber: #f59e0b;
+    --amber-dim: #f59e0b18;
+    --red: #f43f5e;
+    --blue: #3b82f6;
+    --cyan: #22d3ee;
+    --purple: #a855f7;
+    --text: #e2eaf6;
+    --muted: #4a5a72;
+    --subtle: #8899b0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 36px 20px 60px;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { max-width: 920px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* Header */
+  header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 32px;
+    animation: fadeUp .5s ease both;
+  }
+
+  .logo {
+    background: linear-gradient(135deg, #1a7a47, #00d68f);
+    border-radius: 14px;
+    width: 56px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700; font-size: 18px; color: #fff;
+    box-shadow: 0 0 24px #00d68f44;
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px; font-weight: 900;
+    color: #fff; line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle { font-size: 13px; color: var(--subtle); margin-top: 4px; }
+  .subtitle span { color: var(--green); font-weight: 600; }
+
+  .warning-bar {
+    background: var(--amber-dim);
+    border: 1px solid var(--amber);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #fcd34d;
+    margin-bottom: 24px;
+    line-height: 1.6;
+    animation: fadeUp .5s .1s ease both;
+  }
+  .warning-bar strong { color: var(--amber); }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 5px;
+    margin-bottom: 22px;
+    animation: fadeUp .5s .15s ease both;
+  }
+
+  .tab-btn {
+    flex: 1; padding: 9px 14px;
+    border: none; border-radius: 8px;
+    cursor: pointer; font-size: 13px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    background: transparent;
+    color: var(--muted);
+    transition: all .2s;
+  }
+  .tab-btn.active {
+    background: var(--surface2);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  .tab-btn:hover:not(.active) { color: var(--subtle); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Cases layout */
+  .cases-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 14px;
+    animation: fadeUp .4s ease both;
+  }
+
+  /* Sidebar */
+  .sidebar { display: flex; flex-direction: column; gap: 6px; }
+
+  .case-btn {
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    cursor: pointer;
+    text-align: left;
+    background: var(--surface);
+    transition: all .2s;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .case-btn:hover { border-color: var(--muted); }
+  .case-btn.active {
+    background: var(--surface2);
+  }
+
+  .case-badge {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+
+  .case-label { font-size: 12px; font-weight: 600; color: var(--subtle); line-height: 1.3; }
+  .case-btn.active .case-label { color: var(--text); }
+
+  /* Detail panel */
+  .detail {
+    background: var(--surface);
+    border-radius: 13px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .detail-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+
+  .badge-id {
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 11px; font-weight: 800;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #fff;
+  }
+
+  .star-badge {
+    background: var(--amber);
+    color: #000;
+    border-radius: 6px;
+    padding: 2px 9px;
+    font-size: 11px; font-weight: 800;
+  }
+
+  .detail-title { font-size: 15px; font-weight: 700; color: #fff; }
+  .detail-pattern { font-size: 12px; color: var(--subtle); margin-top: 2px; }
+
+  .detail-body { padding: 20px; }
+
+  /* IO row */
+  .io-row {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 11px 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .io-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; width: 50px; }
+  .io-val { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+  .io-in { color: #f87171; }
+  .io-arr { font-size: 20px; color: var(--muted); }
+  .io-out { color: var(--green); font-weight: 700; }
+
+  /* Section label */
+  .sec-label {
+    font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 7px;
+  }
+
+  /* Formula block */
+  .formula-wrap { position: relative; margin-bottom: 18px; }
+
+  .formula-block {
+    background: #070b13;
+    border-left: 3px solid var(--green);
+    border-radius: 0 9px 9px 0;
+    padding: 14px 70px 14px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px; color: #e2eaf6;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-x: auto;
+  }
+
+  .copy-btn {
+    position: absolute; top: 9px; right: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--subtle);
+    border-radius: 6px; padding: 4px 11px;
+    font-size: 11px; font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer; transition: all .15s;
+  }
+  .copy-btn:hover { color: var(--text); border-color: var(--muted); }
+  .copy-btn.copied { background: #00d68f22; border-color: var(--green); color: var(--green); }
+
+  .formula-block.alt { border-left-color: var(--cyan); }
+  .formula-block.alt .copy-btn { }
+
+  /* Steps */
+  .steps { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+  .step { display: flex; gap: 10px; align-items: flex-start; }
+  .step-num {
+    border-radius: 5px;
+    padding: 1px 7px;
+    font-size: 10px; font-weight: 800;
+    font-family: 'IBM Plex Mono', monospace;
+    flex-shrink: 0; margin-top: 2px;
+    color: #fff;
+  }
+  .step-fn { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text); }
+  .step-desc { font-size: 12px; color: var(--subtle); }
+
+  /* Note */
+  .note-box {
+    background: var(--amber-dim);
+    border: 1px solid #f59e0b44;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px; color: #fcd34d;
+    line-height: 1.6;
+  }
+
+  /* Quick tricks */
+  .tricks-list { display: flex; flex-direction: column; gap: 14px; animation: fadeUp .4s ease both; }
+  .trick-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .trick-header {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 9px;
+  }
+  .trick-num {
+    background: #1a7a47;
+    color: #fff; border-radius: 5px;
+    padding: 2px 9px; font-size: 11px; font-weight: 800;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .trick-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .trick-body { padding: 16px 18px; }
+  .trick-note { margin-top: 10px; font-size: 12px; color: var(--subtle); line-height: 1.6; }
+
+  /* Live test */
+  .test-section { animation: fadeUp .4s ease both; }
+  .test-grid {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .test-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 7px; }
+  .test-input {
+    width: 100%;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 9px;
+    padding: 11px 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; color: #f87171;
+    outline: none; transition: border-color .2s;
+  }
+  .test-input:focus { border-color: var(--blue); }
+  .test-arrow { font-size: 22px; color: var(--muted); text-align: center; }
+  .test-output {
+    background: var(--green-dim);
+    border: 2px solid var(--green);
+    border-radius: 9px;
+    padding: 11px 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; color: var(--green);
+    font-weight: 700; min-height: 44px;
+  }
+
+  .samples-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 10px; }
+  .samples-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .sample-chip {
+    padding: 5px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; color: var(--subtle);
+    cursor: pointer; transition: all .15s;
+  }
+  .sample-chip:hover, .sample-chip.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+
+  .results-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--surface);
+    border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .results-table th {
+    padding: 10px 16px; text-align: left;
+    font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .results-table td {
+    padding: 9px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    border-bottom: 1px solid var(--border);
+  }
+  .results-table tr:last-child td { border-bottom: none; }
+  .results-table tr:nth-child(even) td { background: #0d111a; }
+  .td-in { color: #f87171; }
+  .td-out { color: var(--green); font-weight: 700; }
+
+  /* Power query box */
+  .pq-box {
+    background: linear-gradient(135deg, #1d4ed811, #7c3aed11);
+    border: 1px solid #3b82f644;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 14px;
+  }
+  .pq-title { font-size: 15px; font-weight: 800; color: #93c5fd; margin-bottom: 12px; }
+  .pq-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .pq-item { display: flex; gap: 8px; font-size: 13px; color: var(--subtle); }
+  .pq-tick { color: var(--green); flex-shrink: 0; }
+  .pq-note {
+    background: var(--bg);
+    border-radius: 8px; padding: 10px 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; color: var(--muted);
+  }
+  .pq-note span { color: #93c5fd; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Syntax highlights */
+  .kw { color: #569cd6; }
+  .fn { color: #dcdcaa; }
+  .str { color: #ce9178; }
+  .num { color: #b5cea8; }
+  .cmt { color: #6a9955; }
+
+  @media (max-width: 640px) {
+    .cases-layout { grid-template-columns: 1fr; }
+    .test-grid { grid-template-columns: 1fr; }
+    .test-arrow { display: none; }
+    h1 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">fx</div>
+    <div>
+      <h1>Excel Formula<br>Chuẩn hóa Ngày Tháng</h1>
+      <div class="subtitle">
+        Dùng <span>SUBSTITUTE · TEXT · LET · DATEVALUE</span> để xử lý cột ngày → dd/mm/yyyy
+      </div>
+    </div>
+  </header>
+
+  <div class="warning-bar">
+    ⚠️ <strong>Lưu ý:</strong> Excel không có Regex built-in. Mỗi công thức dưới đây xử lý
+    <strong>một pattern cụ thể</strong>. Với dữ liệu hỗn hợp nhiều dạng, hãy dùng
+    <strong>Power Query</strong> hoặc <strong>Python/VBA</strong> để áp dụng Regex thực sự.
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('cases',this)">📋 Công thức theo Case</button>
+    <button class="tab-btn" onclick="switchTab('tricks',this)">⚡ Quick Tricks</button>
+    <button class="tab-btn" onclick="switchTab('test',this)">🧪 Live Test</button>
+  </div>
+
+  <!-- CASES TAB -->
+  <div id="tab-cases" class="tab-content active">
+    <div class="cases-layout">
+      <div class="sidebar" id="sidebar"></div>
+      <div id="detail-panel"></div>
+    </div>
+  </div>
+
+  <!-- TRICKS TAB -->
+  <div id="tab-tricks" class="tab-content">
+    <div class="tricks-list" id="tricks-list"></div>
+  </div>
+
+  <!-- TEST TAB -->
+  <div id="tab-test" class="tab-content">
+    <div class="test-section">
+      <div class="test-grid">
+        <div>
+          <div class="test-label">Input (Raw)</div>
+          <input class="test-input" id="test-input" value="31/12-13/01" oninput="runTest(this.value)" />
+        </div>
+        <div class="test-arrow">→</div>
+        <div>
+          <div class="test-label">Output (Normalized)</div>
+          <div class="test-output" id="test-output"></div>
+        </div>
+      </div>
+
+      <div class="samples-label">Bộ test nhanh</div>
+      <div class="samples-grid" id="samples-grid"></div>
+
+      <table class="results-table" id="results-table">
+        <thead><tr><th>Raw Value</th><th>Normalized</th></tr></thead>
+        <tbody id="results-body"></tbody>
+      </table>
+
+      <div class="pq-box">
+        <div class="pq-title">🚀 Khi nào nên dùng Power Query thay Formula?</div>
+        <div class="pq-list">
+          <div class="pq-item"><span class="pq-tick">✓</span>Dữ liệu có >5 dạng format khác nhau trong cùng 1 cột</div>
+          <div class="pq-item"><span class="pq-tick">✓</span>Cần Regex thực sự (Power Query hỗ trợ qua Text.RegexMatch)</div>
+          <div class="pq-item"><span class="pq-tick">✓</span>File >10,000 hàng — formula lồng nhau sẽ rất chậm</div>
+          <div class="pq-item"><span class="pq-tick">✓</span>Cần tái sử dụng logic mỗi khi data refresh</div>
+        </div>
+        <div class="pq-note">
+          Power Query: <span>Data → Get Data → From Table/Range → Transform Data</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const CASES = [
+  {
+    id:"A", label:"ISO datetime", accent:"#f59e0b",
+    pattern:"yyyy-mm-dd 00:00:00  →  dd/mm/yyyy",
+    example:"2003-05-10 00:00:00", result:"10/05/2003",
+    formula:`=TEXT(DATEVALUE(LEFT(A2,10)),"dd/mm/yyyy")`,
+    steps:[
+      {fn:'LEFT(A2,10)', desc:'Lấy 10 ký tự đầu → "2003-05-10"'},
+      {fn:'DATEVALUE(...)', desc:'Chuyển text thành giá trị ngày Excel'},
+      {fn:'TEXT(...,"dd/mm/yyyy")', desc:'Format sang dd/mm/yyyy'},
+    ],
+    note:'Chỉ áp dụng khi ô đúng format ISO. Dùng IF(ISNUMBER(FIND(" 00:00",A2)),...) để kiểm tra trước.',
+  },
+  {
+    id:"B", label:"Thiếu số 0 đầu", accent:"#22d3ee",
+    pattern:"d/m  →  dd/mm  (zero-pad)",
+    example:"5/3  →  05/03   |   16/1  →  16/01",  result:"dd/mm",
+    formula:`=TEXT(LEFT(A2,FIND("/",A2)-1)*1,"00")&"/"&TEXT(MID(A2,FIND("/",A2)+1,10)*1,"00")`,
+    simpleLabel:"Cách đầy đủ (có năm)",
+    simpleFormula:`=TEXT(DATE(2025,MID(A2,FIND("/",A2)+1,2)*1,LEFT(A2,FIND("/",A2)-1)*1),"dd/mm/yyyy")`,
+    steps:[
+      {fn:'FIND("/",A2)', desc:'Vị trí dấu /'},
+      {fn:'LEFT(A2,...-1)*1', desc:'Phần ngày → nhân *1 để thành số'},
+      {fn:'MID(A2,...+1,10)*1', desc:'Phần tháng → nhân *1'},
+      {fn:'TEXT(...,"00")', desc:'Format 2 chữ số với số 0 đầu'},
+    ],
+    note:'Dấu *1 ép kiểu text → number. Áp dụng tốt với dd/mm thuần (không có năm).',
+  },
+  {
+    id:"C", label:"En/Em dash → -", accent:"#10b981",
+    pattern:'"–" hoặc "—"  →  "-"  (chuẩn hóa gạch)',
+    example:"30/03 – 09/04", result:"30/03 - 09/04",
+    formula:`=SUBSTITUTE(SUBSTITUTE(A2,CHAR(8211),"-"),CHAR(8212),"-")`,
+    steps:[
+      {fn:'CHAR(8211)', desc:'En-dash  –  (Unicode 8211)'},
+      {fn:'CHAR(8212)', desc:'Em-dash  —  (Unicode 8212)'},
+      {fn:'SUBSTITUTE(...,dash,"-")', desc:'Thay bằng dấu - thông thường'},
+    ],
+    note:'Áp dụng TRƯỚC các bước khác vì FIND/MID không phân biệt loại dash.',
+  },
+  {
+    id:"D", label:"Xóa ; thừa cuối", accent:"#f43f5e",
+    pattern:'"19/02-12/03;"  →  "19/02-12/03"',
+    example:"19/02-12/03;", result:"19/02-12/03",
+    formula:`=IF(RIGHT(TRIM(A2),1)=";",LEFT(TRIM(A2),LEN(TRIM(A2))-1),TRIM(A2))`,
+    steps:[
+      {fn:'TRIM(A2)', desc:'Xóa khoảng trắng 2 đầu trước'},
+      {fn:'RIGHT(...,1)=";"', desc:'Kiểm tra ký tự cuối'},
+      {fn:'LEFT(...,LEN(...)-1)', desc:'Nếu có: cắt bỏ ký tự cuối'},
+    ],
+    note:'Kết hợp TRIM để tránh lỗi khi có khoảng trắng trước dấu ;',
+  },
+  {
+    id:"E", label:"Kết hợp (LET)", accent:"#3b82f6", isHighlight:true,
+    pattern:"Pipe tất cả bước — yêu cầu Excel 365",
+    example:"30/03 – 9/4;", result:"30/03 - 09/04",
+    formula:`=LET(
+  s1, TRIM(A2),
+  s2, SUBSTITUTE(SUBSTITUTE(s1,CHAR(8211),"-"),CHAR(8212),"-"),
+  s3, IF(RIGHT(s2,1)=";",LEFT(s2,LEN(s2)-1),s2),
+  TRIM(s3)
+)`,
+    steps:[
+      {fn:'s1 = TRIM(A2)', desc:'Bước 1: Xóa khoảng trắng thừa'},
+      {fn:'s2 = SUBSTITUTE dash', desc:'Bước 2: Chuẩn hóa dấu gạch'},
+      {fn:'s3 = Xóa ; cuối', desc:'Bước 3: Cắt dấu ; nếu có'},
+      {fn:'TRIM(s3)', desc:'Bước 4: Dọn dẹp lần cuối'},
+    ],
+    note:'Hàm LET() yêu cầu Excel 365 / Excel 2021+. Với Excel cũ hơn, lồng SUBSTITUTE trực tiếp.',
+  },
+];
+
+const TRICKS = [
+  {
+    num:"T1", title:"Xóa khoảng trắng thừa 2 đầu",
+    formula:`=TRIM(A2)`,
+    note:"TRIM chỉ xóa đầu/cuối. Để xóa double-space giữa chuỗi: =TRIM(SUBSTITUTE(A2,\"  \",\" \"))",
+  },
+  {
+    num:"T2", title:"Chuẩn hóa dấu phân cách \"; \"",
+    formula:`=SUBSTITUTE(SUBSTITUTE(TRIM(A2),";","; "),"  "," ")`,
+    note:"Thay ; → '; ' rồi dùng SUBSTITUTE lần 2 xóa double-space phát sinh.",
+  },
+  {
+    num:"T3", title:"Kiểm tra ô có phải ISO datetime không",
+    formula:`=ISNUMBER(FIND(" 00:00",A2))`,
+    note:"Trả về TRUE nếu ô là dạng 2003-05-10 00:00:00. Dùng trong IF để chọn formula phù hợp.",
+  },
+  {
+    num:"T4", title:"Xử lý có điều kiện ISO vs thường",
+    formula:`=IF(ISNUMBER(FIND(" 00:00",A2)),
+  TEXT(DATEVALUE(LEFT(A2,10)),"dd/mm/yyyy"),
+  TRIM(A2)
+)`,
+    note:"Tự động chọn công thức phù hợp dựa theo dạng dữ liệu thực tế trong ô.",
+  },
+  {
+    num:"T5", title:"Zero-pad ngày đơn: 5 → 05",
+    formula:`=TEXT(A2*1,"00")`,
+    note:"Nhân *1 để ép kiểu text → number, rồi TEXT format thêm số 0 đầu.",
+  },
+];
+
+const SAMPLES = [
+  "2003-05-10 00:00:00","16/01","5,6,7,8/5",
+  "31/12-13/01","17/01-16/02; 10/04-02/05",
+  "21-24/02","30/03 – 09/4","28,29/04/2025",
+  "19/02-12/03;","13- 16/03",
+];
+
+function normalize(v) {
+  if (!v) return v;
+  let s = String(v);
+  s = s.replace(/(\d{4})-(\d{2})-(\d{2})\s\d{2}:\d{2}:\d{2}/g, (_,y,mo,d)=>`${d}/${mo}/${y}`);
+  s = s.replace(/\b(\d{1,2})\/(\d{1,2})\b/g, (_,d,m)=>d.padStart(2,'0')+'/'+m.padStart(2,'0'));
+  s = s.replace(/\s*[–—]\s*/g, '-');
+  s = s.replace(/\s*-\s*/g, ' - ');
+  s = s.replace(/\s*;\s*/g, '; ');
+  s = s.replace(/\b(\d{2}) - (\d{2})\/(\d{2})\b/g, (_,d1,d2,mo)=>`${d1}/${mo} - ${d2}/${mo}`);
+  s = s.replace(/;\s*$/, '').trim();
+  return s;
+}
+
+let activeCase = 'A';
+
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = CASES.map(c => `
+    <button class="case-btn ${c.id===activeCase?'active':''}" onclick="selectCase('${c.id}')" style="${c.id===activeCase?'border-color:'+c.accent+';':''}" >
+      <span class="case-badge" style="background:${c.accent}">${c.id}</span>
+      <span class="case-label">${c.label}</span>
+    </button>
+  `).join('');
+}
+
+function renderDetail() {
+  const c = CASES.find(x=>x.id===activeCase);
+  const panel = document.getElementById('detail-panel');
+  panel.innerHTML = `
+    <div class="detail" style="border-color:${c.accent}44">
+      <div class="detail-header" style="background:${c.accent}0d">
+        <span class="badge-id" style="background:${c.accent}">Case ${c.id}</span>
+        ${c.isHighlight?'<span class="star-badge">⭐ Recommended</span>':''}
+        <div>
+          <div class="detail-title">${c.label}</div>
+          <div class="detail-pattern">${c.pattern}</div>
+        </div>
+      </div>
+      <div class="detail-body">
+        <div class="io-row">
+          <span class="io-label">Input</span>
+          <span class="io-val io-in">${c.example}</span>
+          <span class="io-arr">→</span>
+          <span class="io-val io-out">${c.result}</span>
+        </div>
+
+        <div class="sec-label" style="color:${c.accent}">Công thức Excel</div>
+        <div class="formula-wrap">
+          <pre class="formula-block" style="border-left-color:${c.accent}">${c.formula}</pre>
+          <button class="copy-btn" onclick="copyFormula(this,'${escStr(c.formula)}')">Copy</button>
+        </div>
+
+        ${c.simpleFormula?`
+          <div class="sec-label" style="color:#22d3ee">${c.simpleLabel||'Cách đầy đủ'}</div>
+          <div class="formula-wrap">
+            <pre class="formula-block alt">${c.simpleFormula}</pre>
+            <button class="copy-btn" onclick="copyFormula(this,'${escStr(c.simpleFormula)}')">Copy</button>
+          </div>
+        `:''}
+
+        <div class="sec-label" style="color:${c.accent};margin-top:4px">Giải thích từng bước</div>
+        <div class="steps">
+          ${c.steps.map((s,i)=>`
+            <div class="step">
+              <span class="step-num" style="background:${c.accent}33;color:${c.accent}">${i+1}</span>
+              <div>
+                <span class="step-fn">${s.fn}</span>
+                <span class="step-desc"> — ${s.desc}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="note-box">💡 ${c.note}</div>
+      </div>
+    </div>
+  `;
+}
+
+function escStr(s) { return s.replace(/'/g,"\\'").replace(/\n/g,'\\n'); }
+
+function selectCase(id) {
+  activeCase = id;
+  renderSidebar();
+  renderDetail();
+}
+
+function copyFormula(btn, text) {
+  navigator.clipboard.writeText(text.replace(/\\n/g,'\n'));
+  btn.textContent = '✓ Copied';
+  btn.classList.add('copied');
+  setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('copied'); }, 1800);
+}
+
+function renderTricks() {
+  document.getElementById('tricks-list').innerHTML = TRICKS.map(t=>`
+    <div class="trick-card">
+      <div class="trick-header">
+        <span class="trick-num">${t.num}</span>
+        <span class="trick-title">${t.title}</span>
+      </div>
+      <div class="trick-body">
+        <div class="formula-wrap">
+          <pre class="formula-block">${t.formula}</pre>
+          <button class="copy-btn" onclick="copyFormula(this,'${escStr(t.formula)}')">Copy</button>
+        </div>
+        <div class="trick-note">💡 ${t.note}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTestSamples() {
+  document.getElementById('samples-grid').innerHTML = SAMPLES.map(s=>`
+    <button class="sample-chip" onclick="setTest(this,'${s}')">${s}</button>
+  `).join('');
+  
+  const tbody = document.getElementById('results-body');
+  tbody.innerHTML = SAMPLES.map(s=>`
+    <tr>
+      <td class="td-in">${s}</td>
+      <td class="td-out">${normalize(s)}</td>
+    </tr>
+  `).join('');
+  
+  runTest(document.getElementById('test-input').value);
+}
+
+function setTest(btn, val) {
+  document.querySelectorAll('.sample-chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('test-input').value = val;
+  runTest(val);
+}
+
+function runTest(val) {
+  document.getElementById('test-output').textContent = normalize(val) || '—';
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Init
+renderSidebar();
+renderDetail();
+renderTricks();
+renderTestSamples();
+</script>
+</body>
+</html>

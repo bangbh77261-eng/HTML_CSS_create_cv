@@ -3,1110 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV Editor - Professional</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&family=Open+Sans:wght@300;400;600;700;800&family=Lato:wght@300;400;700;900&family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&family=Nunito:wght@300;400;600;700;800&family=Work+Sans:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@300;400;600;700;800&family=Raleway:wght@300;400;500;600;700;800&family=Ubuntu:wght@300;400;500;700&family=Quicksand:wght@300;400;500;600;700&family=Rubik:wght@300;400;500;600;700;800&family=Mulish:wght@300;400;600;700;800&family=Barlow:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Dữ liệu Google Sheet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #07101f;
+            --bg2: #0b1929;
+            --bg3: #112236;
+            --card: rgba(11, 25, 41, 0.95);
+            --teal: #00c8da;
+            --teal2: #008fa0;
+            --gold: #ffc842;
+            --green: #00e39e;
+            --purple: #b47af0;
+            --red: #ff4d70;
+            --orange: #ff8d40;
+            --t: #daeef6;
+            --td: #6e92ab;
+            --b: rgba(0, 200, 218, 0.13);
+            --bb: rgba(0, 200, 218, 0.28);
+            --r: 9px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
+        html,
         body {
-            background: #f0f0f0;
-            padding: 30px;
-            line-height: 1.6;
-            font-size: 16px;
+            height: 100%;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: var(--bg);
+            color: var(--t);
         }
-        .cv-container {
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(ellipse 55% 40% at 3% 6%, rgba(0, 200, 218, .07) 0%, transparent 55%),
+                radial-gradient(ellipse 40% 50% at 97% 95%, rgba(180, 122, 240, .06) 0%, transparent 55%);
+        }
+
+        /* HEADER */
+        header {
+            position: relative;
+            z-index: 10;
+            background: linear-gradient(90deg, var(--bg2), var(--bg3));
+            border-bottom: 1px solid var(--bb);
+            padding: 15px 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 23px;
+        }
+
+        header h1 {
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: -0.3px;
+        }
+
+        header h1 em {
+            font-style: normal;
+            color: var(--teal);
+        }
+
+        .hdr-r {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .badge {
+            background: rgba(0, 200, 218, .1);
+            border: 1px solid var(--bb);
+            color: var(--teal);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+            letter-spacing: .4px;
+        }
+
+        /* MAIN CONTENT */
+        .container {
+            position: relative;
+            z-index: 1;
+            padding: 30px;
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.15);
-            display: flex;
-            min-height: 1400px;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-        }  
-        /* Left Sidebar */
-        .cv-left {
-            width: 355px;
-            background: #f5f1eb;
-            padding: 0;
-            position: relative;
         }
-        .profile-section {
-            text-align: center;
-            padding: 30px 30px 20px;
-            background: #e8e1d5;
-        }
-        .profile-photo {
-            width: 60%;
-            height: 60%;
-            border-radius: 10px;
+
+        .table-wrapper {
+            background: var(--card);
+            border: 1px solid var(--b);
+            border-radius: var(--r);
             overflow: hidden;
-            margin: 0 auto 10px;
-            background: #d4cdc0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
-        .profile-photo:hover {
-            transform: scale(1.05);
-        }
-        .profile-photo img {
+
+        table {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .profile-photo-placeholder {
-            color: #8a8478;
+            border-collapse: collapse;
             font-size: 14px;
-            text-align: center;
-            padding: 20px;
         }
-        
-        .contact-info {
-            padding: 0 20px 10px;
-            background: #e8e1d5;
+
+        thead {
+            background: linear-gradient(90deg, var(--bg2), var(--bg3));
+            border-bottom: 2px solid var(--bb);
         }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-           
-            padding: 10px 0;
-            border-bottom: 1px solid #d4cdc0;
-            position: relative;
-        }
-        
-        .contact-icon {
-            width: 35px;
-            height: 35px;
-            background: #5f6652;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 15px;
-            flex-shrink: 0;
-        }
-        
-        .contact-icon i {
-            line-height: 1;
-        }
-        
-        .contact-text {
-            flex: 1;
-            font-size: 1.2em;
-            color: #2c2c2c;
-            min-height: 20px;
-        }
-        
-        .left-section {
-            padding: 10px 20px 10px;
-            border-top: 3px solid #d4cdc0;
-            position: relative;
-        }
-        
-        .left-section-title {
-            font-size: 1.43em;
+
+        th {
+            padding: 15px;
+            text-align: left;
             font-weight: 700;
-            color: #2c2c2c;
-            margin-bottom: 12px;
-            text-transform: none;
-        }
-        
-        .skill-item {
-            margin-bottom: 0px;
-            position: relative;
-            padding-right: 10px;
-        }
-        
-        .skill-content {
-            display: flex;
-            align-items: center;
-            gap: 0px;
-        }
-        
-        .skill-icon {
-            color: #5f6652;
-            font-size: 16px;
-            flex-shrink: 0;
-            line-height: 1;
-        }
-        
-        .skill-text {
-            flex: 1;
-            font-size: 1.1em;
-            color: #2c2c2c;
-            line-height: 1.5;
-            min-height: 20px;
-        }
-        
-        .cert-item, .award-item {
-            margin-bottom: 12px;
-            position: relative;
-        }
-        
-        .cert-year, .award-year {
-            font-size: 1.1em;
-            font-weight: 700;
-            color: #2c2c2c;
-            margin-bottom: 2px;
-            min-height: 20px;
-        }
-        
-        .cert-title, .award-title {
-            font-size: 1.1em;
-            color: #2c2c2c;
-            line-height: 1.5;
-            min-height: 20px;
-        }
-        
-        /* Right Content */
-        .cv-right {
-            flex: 1;
-            padding: 0;
-        }
-        
-        .header-section {
-            background: #5f6652;
-            padding: 35px 20px;
-            color: white;
-        }
-        
-        .name {
-            font-size: 3.43em;
-            font-weight: 800;
-            margin-bottom: 8px;
-            min-height: 55px;
-            letter-spacing: 1px;
-        }
-        
-        .job-title {
-            font-size: 1.29em;
-            font-weight: 500;
+            color: var(--teal);
+            letter-spacing: 0.5px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(255,255,255,0.3);
-            margin-bottom: 10px;
-            min-height: 25px;
+            font-size: 11px;
         }
-        
-        .summary {
-            font-size: 1.1em;
-            line-height: 1.8;
-            color: rgba(255,255,255,0.95);
-            text-align: justify;
-            min-height: 60px;
+
+        tbody tr {
+            border-bottom: 1px solid var(--b);
+            transition: all 0.15s;
         }
-        
-        .content-section {
-            padding: 10px 20px 10px;
-            position: relative;
+
+        tbody tr:hover {
+            background: rgba(0, 200, 218, 0.05);
         }
-        
-        .section-title {
-            font-size: 1.71em;
-            font-weight: 800;
-            color: #2c2c2c;
-            margin-bottom: 18px;
-            position: relative;
-            padding-bottom: 8px;
+
+        tbody tr:last-child {
+            border-bottom: none;
         }
-        
-        .experience-item {
-            margin-bottom: 10px;
-            position: relative;
-            padding-right: 30px;
+
+        td {
+            padding: 12px 15px;
+            color: var(--t);
         }
-        
-        .exp-header {
+
+        /* LOADING STATE */
+        .loading {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 6px;
-        }
-        
-        .exp-company {
-            font-size: 1.14em;
-            font-weight: 700;
-            color: #2c2c2c;
-            min-height: 22px;
-        }
-        
-        .exp-date {
-            background: #5f6652;
-            color: white;
-            padding: 4px 16px;
-            border-radius: 20px;
-            font-size: 0.86em;
-            font-weight: 600;
-            white-space: nowrap;
-            min-width: 120px;
-            text-align: center;
-        }
-        
-        .exp-position {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #2c2c2c;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            min-height: 20px;
-        }
-        
-        .exp-description {
-            font-size: 1.1em;
-            color: #4a4a4a;
-            line-height: 1.7;
-            padding-left: 0;
-        }
-        
-        .exp-description ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        .exp-description li {
-            position: relative;
-            padding-left: 20px;
-            margin-bottom: 4px;
-        }
-        
-        .exp-description li:before {
-            content: "•";
-            position: absolute;
-            left: 5px;
-            color: #5f6652;
-            font-weight: bold;
-        }
-        
-        /* Editable styles */
-        [contenteditable="true"] {
-            outline: none;
-            cursor: text;
-            transition: all 0.2s;
-            border-radius: 3px;
-            padding: 2px 4px;
-        }
-        
-        [contenteditable="true"]:hover {
-            background-color: rgba(95, 102, 82, 0.05);
-        }
-        
-        [contenteditable="true"]:focus {
-            background-color: rgba(95, 102, 82, 0.1);
-        }
-        
-        [contenteditable="true"]:empty:before {
-            content: attr(data-placeholder);
-            color: #aaa;
-            font-style: italic;
-        }
-        
-        /* Delete buttons */
-        .delete-btn {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 14px;
-            cursor: pointer;
-            display: none;
-            align-items: center;
             justify-content: center;
-            transition: all 0.2s;
-            z-index: 10;
-        }
-        
-        .delete-btn:hover {
-            background: #c82333;
-            transform: translateY(-50%) scale(1.1);
-        }
-        
-        .contact-item:hover .delete-btn,
-        .skill-item:hover .delete-btn,
-        .cert-item:hover .delete-btn,
-        .award-item:hover .delete-btn,
-        .experience-item:hover .delete-btn {
-            display: flex;
-        }
-        
-        .section-delete-btn {
-            position: absolute;
-            right: 30px;
-            top: 20px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 6px 12px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            opacity: 0;
-            transition: all 0.2s;
-            z-index: 100;
-            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
-        }
-        
-        .section-delete-btn:hover {
-            background: #c82333;
-            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
-        }
-        
-        .left-section:hover .section-delete-btn,
-        .content-section:hover .section-delete-btn {
-            opacity: 1;
-        }
-        
-        /* Add buttons */
-        .add-item-btn {
-            width: 100%;
-            padding: 8px;
-            background: transparent;
-            border: 2px dashed #5f6652;
-            border-radius: 6px;
-            color: #5f6652;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s;
-        }
-        
-        .add-item-btn:hover {
-            background: rgba(95, 102, 82, 0.1);
-            border-style: solid;
-        }
-        
-        .add-section-btn {
-            width: calc(100% - 60px);
-            margin: 0 30px 15px;
-            padding: 10px;
-            background: #5f6652;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .add-section-btn:hover {
-            background: #4a5240;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(95, 102, 82, 0.3);
-        }
-        
-        /* Control Panel */
-        .control-panel {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            padding: 20px;
-            z-index: 1000;
-            display: flex;
+            align-items: center;
+            padding: 40px;
             gap: 10px;
         }
-        
-        .control-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--bb);
+            border-top-color: var(--teal);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
-        
-        .btn-primary {
-            background: #5f6652;
-            color: white;
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
-        
-        .btn-primary:hover {
-            background: #4a5240;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(95, 102, 82, 0.3);
+
+        /* ERROR STATE */
+        .error {
+            background: rgba(255, 77, 112, 0.1);
+            border: 1px solid var(--red);
+            color: #ff9da6;
+            padding: 15px;
+            border-radius: var(--r);
+            margin-top: 20px;
         }
-        
-        .btn-secondary {
-            background: #f8f9fa;
-            color: #495057;
-            border: 1px solid #dee2e6;
+
+        /* EMPTY STATE */
+        .empty {
+            padding: 40px;
+            text-align: center;
+            color: var(--td);
         }
-        
-        .btn-secondary:hover {
-            background: #e9ecef;
-        }
-        
-        /* Color Customizer */
-        .color-panel {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            background: white;
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            padding: 20px;
-            width: 320px;
-            max-height: 85vh;
-            overflow-y: auto;
-            z-index: 1000;
-        }
-        
-        .color-panel-header {
-            font-size: 16px;
+            font-size: 11px;
             font-weight: 700;
-            margin-bottom: 15px;
-            color: #2c2c2c;
+            letter-spacing: 0.3px;
         }
-        
-        .color-option {
-            margin-bottom: 12px;
+
+        .status-active {
+            background: rgba(0, 227, 158, 0.2);
+            color: var(--green);
         }
-        
-        .color-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #666;
-            margin-bottom: 6px;
-            display: block;
-        }
-        
-        .color-input-wrapper {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .color-input-wrapper input[type="color"] {
-            width: 50px;
-            height: 35px;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        
-        .color-input-wrapper span {
-            flex: 1;
-            font-size: 12px;
-            color: #495057;
-        }
-        
-        .range-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .range-control input[type="range"] {
-            flex: 1;
-            height: 6px;
-            border-radius: 3px;
-            background: #e9ecef;
-            outline: none;
-            cursor: pointer;
-        }
-        
-        .range-control input[type="range"]::-webkit-slider-thumb {
-            width: 16px;
-            height: 16px;
-            background: #5f6652;
-            border-radius: 50%;
-            cursor: pointer;
-            -webkit-appearance: none;
-        }
-        
-        .range-control input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            background: #5f6652;
-            border-radius: 50%;
-            cursor: pointer;
-            border: none;
-        }
-        
-        .range-value {
-            font-size: 11px;
-            font-weight: 600;
-            color: #5f6652;
-            min-width: 45px;
-            text-align: right;
-        }
-        
-        .panel-select {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            background: white;
-            color: #495057;
-            font-size: 13px;
-            cursor: pointer;
-        }
-        
-        .panel-select:focus {
-            outline: none;
-            border-color: #5f6652;
-        }
-        
-        .divider-small {
-            height: 1px;
-            background: #e9ecef;
-            margin: 15px 0;
-        }
-        
-        .font-preview {
-            margin-top: 8px;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            border: 1px solid #dee2e6;
-        }
-        
-        .font-preview-text {
-            font-size: 14px;
-            color: #2c2c2c;
-            margin-bottom: 4px;
-        }
-        
-        .font-preview-vietnamese {
-            font-size: 12px;
-            color: #666;
-        }
-        
-        /* Print styles */
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            
-            .cv-container {
-                box-shadow: none;
-                max-width: 100%;
-            }
-            
-            .control-panel,
-            .color-panel,
-            .add-item-btn,
-            .add-section-btn,
-            .delete-btn,
-            .section-delete-btn {
-                display: none !important;
-            }
-            
-            .experience-item {
-                page-break-inside: avoid;
-            }
+
+        .status-inactive {
+            background: rgba(255, 77, 112, 0.2);
+            color: var(--red);
         }
     </style>
 </head>
+
 <body>
-    <!-- Color Customizer Panel -->
-    <div class="color-panel">
-        <div class="color-panel-header">Tùy Chỉnh Màu Sắc & Layout</div>
-        
-        <div class="color-option">
-            <label class="color-label">Chiều Rộng Sidebar</label>
-            <div class="range-control">
-                <input type="range" id="sidebarWidth" min="250" max="450" value="355" step="5">
-                <span class="range-value"><span id="sidebarWidthDisplay">355</span>px</span>
-            </div>
+    <header>
+        <div class="logo">📊</div>
+        <h1>Dữ liệu <em>Google Sheet</em></h1>
+        <div class="hdr-r">
+            <div class="badge">LIVE</div>
         </div>
-        
-        <div class="divider-small"></div>
-        
-        <div class="color-option">
-            <label class="color-label">Font Chữ (Tối ưu cho Tiếng Việt)</label>
-            <select class="panel-select" id="fontFamily">
-                <optgroup label="🌟 Được Khuyên Dùng">
-                    <option value="'Inter', sans-serif">Inter - Hiện đại, rõ ràng</option>
-                    <option value="'Roboto', sans-serif">Roboto - Chuyên nghiệp</option>
-                    <option value="'Open Sans', sans-serif">Open Sans - Dễ đọc</option>
-                    <option value="'Lato', sans-serif">Lato - Thanh lịch</option>
-                    <option value="'Poppins', sans-serif">Poppins - Năng động</option>
-                </optgroup>
-                <optgroup label="✨ Phong Cách Độc Đáo">
-                    <option value="'Montserrat', sans-serif">Montserrat - Mạnh mẽ</option>
-                    <option value="'Nunito', sans-serif">Nunito - Thân thiện</option>
-                    <option value="'Work Sans', sans-serif">Work Sans - Hiện đại</option>
-                    <option value="'Source Sans 3', sans-serif">Source Sans 3 - Cân đối</option>
-                    <option value="'Raleway', sans-serif">Raleway - Thanh thoát</option>
-                </optgroup>
-                <optgroup label="💼 Phong Cách Kinh Doanh">
-                    <option value="'Ubuntu', sans-serif">Ubuntu - Công nghệ</option>
-                    <option value="'Quicksand', sans-serif">Quicksand - Nhẹ nhàng</option>
-                    <option value="'Rubik', sans-serif">Rubik - Bo tròn</option>
-                    <option value="'Mulish', sans-serif">Mulish - Truyền thống</option>
-                    <option value="'Barlow', sans-serif">Barlow - Đơn giản</option>
-                </optgroup>
-            </select>
-            <div class="font-preview">
-                <div class="font-preview-text" id="fontPreviewText">Ví dụ: Nguyễn Văn A</div>
-                <div class="font-preview-vietnamese">Chuyên viên phát triển phần mềm</div>
-            </div>
-        </div>
-        
-        <div class="color-option">
-            <label class="color-label">Cỡ Chữ Toàn Trang</label>
-            <div class="range-control">
-                <input type="range" id="baseFontSize" min="12" max="18" value="14" step="0.5">
-                <span class="range-value"><span id="baseFontSizeDisplay">14</span>px</span>
-            </div>
-        </div>
-        
-        <div class="color-option">
-            <label class="color-label">Độ Đậm Chữ</label>
-            <div class="range-control">
-                <input type="range" id="baseFontWeight" min="300" max="700" step="100" value="400">
-                <span class="range-value" id="baseFontWeightDisplay">400</span>
-            </div>
-        </div>
-        
-        <div class="divider-small"></div>
-        
-        <div class="color-option">
-            <label class="color-label">Màu Header</label>
-            <div class="color-input-wrapper">
-                <input type="color" id="headerColor" value="#5f6652">
-                <span>Header background</span>
-            </div>
-        </div>
-        
-        <div class="color-option">
-            <label class="color-label">Màu Phần Trên Sidebar</label>
-            <div class="color-input-wrapper">
-                <input type="color" id="sidebarColor" value="#e8e1d5">
-                <span>Profile & contact area</span>
-            </div>
-        </div>
-        
-        <div class="color-option">
-            <label class="color-label">Màu Icons</label>
-            <div class="color-input-wrapper">
-                <input type="color" id="iconColor" value="#5f6652">
-                <span>Icons & accents</span>
-            </div>
-        </div>
-        
-        <div class="color-option">
-            <label class="color-label">Màu Date Badge</label>
-            <div class="color-input-wrapper">
-                <input type="color" id="badgeColor" value="#5f6652">
-                <span>Date badges</span>
-            </div>
-        </div>
-        
-        <div class="color-option">
-            <label class="color-label">Màu Border Sidebar</label>
-            <div class="color-input-wrapper">
-                <input type="color" id="borderColor" value="#d4cdc0">
-                <span>Section borders</span>
-            </div>
-        </div>
-        
-        <div class="color-option">
-            <label class="color-label">Màu Phần Dưới Sidebar</label>
-            <div class="color-input-wrapper">
-                <input type="color" id="sidebarBottomColor" value="#f5f1eb">
-                <span>Lower sidebar sections</span>
-            </div>
-        </div>
-    </div>
+    </header>
 
-    <!-- CV Container -->
-    <div class="cv-container">
-        <!-- Left Sidebar -->
-        <aside class="cv-left">
-            <div class="profile-section">
-                <div class="profile-photo" onclick="uploadPhoto(this)">
-                    <div class="profile-photo-placeholder">Nhấp để thêm ảnh</div>
+    <div class="container">
+        <div class="table-wrapper">
+            <div id="tableContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Đang tải dữ liệu...</span>
                 </div>
             </div>
-            
-            <div class="contact-info" id="contactContainer">
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
-                    <div class="contact-text" contenteditable="true" data-placeholder="Số điện thoại"></div>
-                    <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
-                    <div class="contact-text" contenteditable="true" data-placeholder="Email"></div>
-                    <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
-                    <div class="contact-text" contenteditable="true" data-placeholder="Địa chỉ"></div>
-                    <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="bi bi-calendar-event"></i></div>
-                    <div class="contact-text" contenteditable="true" data-placeholder="Ngày sinh"></div>
-                    <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                </div>
-                <button class="add-item-btn" onclick="addContact()">+ Thêm Liên Hệ</button>
-            </div>
-            
-            <div class="left-section">
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
-                <h3 class="left-section-title" contenteditable="true">Kỹ năng</h3>
-                <div id="skillsContainer">
-                    <div class="skill-item">
-                        <div class="skill-content">
-                            <i class="bi bi-gear-fill skill-icon"></i>
-                            <div class="skill-text" contenteditable="true" data-placeholder="Mô tả kỹ năng"></div>
-                        </div>
-                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                    </div>
-                </div>
-                <button class="add-item-btn" onclick="addSkill()">+ Thêm Kỹ Năng</button>
-            </div>
-            
-            <div class="left-section">
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
-                <h3 class="left-section-title" contenteditable="true">Chứng chỉ</h3>
-                <div id="certificatesContainer">
-                    <div class="cert-item">
-                        <div class="cert-title" contenteditable="true" data-placeholder="Tên chứng chỉ"></div>
-                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                    </div>
-                </div>
-                <button class="add-item-btn" onclick="addCertificate()">+ Thêm Chứng Chỉ</button>
-            </div>
-            
-            <div class="left-section">
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
-                <h3 class="left-section-title" contenteditable="true">Giải thưởng</h3>
-                <div id="awardsContainer">
-                    <div class="award-item">
-                        <div class="award-title" contenteditable="true" data-placeholder="Tên giải thưởng"></div>
-                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                    </div>
-                </div>
-                <button class="add-item-btn" onclick="addAward()">+ Thêm Giải Thưởng</button>
-            </div>
-            
-            <button class="add-section-btn" onclick="addLeftSection()">+ Thêm Phần Mới</button>
-        </aside>
-        
-        <!-- Right Content -->
-        <main class="cv-right">
-            <div class="header-section">
-                <h1 class="name" contenteditable="true" data-placeholder="Họ và Tên"></h1>
-                <div class="job-title" contenteditable="true" data-placeholder="Chức Danh"></div>
-                <div class="summary" contenteditable="true" data-placeholder="Viết giới thiệu ngắn gọn về bản thân, kinh nghiệm và mục tiêu nghề nghiệp của bạn..."></div>
-            </div>
-            
-            <div class="content-section">
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
-                <h2 class="section-title" contenteditable="true">Kinh nghiệm làm việc</h2>
-                <div id="experienceContainer">
-                    <div class="experience-item">
-                        <div class="exp-header">
-                            <div class="exp-company" contenteditable="true" data-placeholder="Tên Công Ty"></div>
-                            <div class="exp-date" contenteditable="true" data-placeholder="2021 - Nay"></div>
-                        </div>
-                        <div class="exp-position" contenteditable="true" data-placeholder="Vị trí công việc"></div>
-                        <div class="exp-description" contenteditable="true" data-placeholder="Mô tả công việc và thành tích...">
-                            <ul>
-                                <li contenteditable="true">Trách nhiệm và thành tích thứ nhất</li>
-                                <li contenteditable="true">Trách nhiệm và thành tích thứ hai</li>
-                            </ul>
-                        </div>
-                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                    </div>
-                </div>
-                <button class="add-item-btn" onclick="addExperience()">+ Thêm Kinh Nghiệm</button>
-            </div>
-            
-            <button class="add-section-btn" onclick="addRightSection()">+ Thêm Phần Mới</button>
-        </main>
-    </div>
-
-    <!-- Control Panel -->
-    <div class="control-panel">
-        <button class="control-btn btn-primary" onclick="printCV()">
-            <i class="bi bi-printer-fill"></i> In CV
-        </button>
-        <button class="control-btn btn-secondary" onclick="resetCV()">
-            <i class="bi bi-arrow-clockwise"></i> Reset
-        </button>
+        </div>
+        <div id="errorContainer"></div>
     </div>
 
     <script>
-        // Update font preview
-        function updateFontPreview() {
-            const fontFamily = document.getElementById('fontFamily').value;
-            const previewText = document.getElementById('fontPreviewText');
-            const previewVietnamese = document.querySelector('.font-preview-vietnamese');
-            previewText.style.fontFamily = fontFamily;
-            previewVietnamese.style.fontFamily = fontFamily;
-        }
-        
-        // Sidebar width control
-        const sidebarWidthInput = document.getElementById('sidebarWidth');
-        const sidebarWidthDisplay = document.getElementById('sidebarWidthDisplay');
-        
-        sidebarWidthInput.addEventListener('input', function() {
-            const width = this.value;
-            sidebarWidthDisplay.textContent = width;
-            document.querySelector('.cv-left').style.width = width + 'px';
-        });
-        
-        // Font family control
-        document.getElementById('fontFamily').addEventListener('change', function() {
-            document.querySelector('.cv-container').style.fontFamily = this.value;
-            updateFontPreview();
-        });
-        
-        // Base font size control
-        const baseFontSizeInput = document.getElementById('baseFontSize');
-        const baseFontSizeDisplay = document.getElementById('baseFontSizeDisplay');
-        
-        baseFontSizeInput.addEventListener('input', function() {
-            const size = this.value;
-            baseFontSizeDisplay.textContent = size;
-            document.querySelector('.cv-container').style.fontSize = size + 'px';
-        });
-        
-        // Base font weight control
-        const baseFontWeightInput = document.getElementById('baseFontWeight');
-        const baseFontWeightDisplay = document.getElementById('baseFontWeightDisplay');
-        
-        baseFontWeightInput.addEventListener('input', function() {
-            const weight = this.value;
-            baseFontWeightDisplay.textContent = weight;
-            document.querySelector('.cv-container').style.fontWeight = weight;
-        });
-        
-        // Color customization
-        document.getElementById('headerColor').addEventListener('input', function() {
-            document.querySelector('.header-section').style.background = this.value;
-        });
-        
-        document.getElementById('sidebarColor').addEventListener('input', function() {
-            document.querySelector('.profile-section').style.background = this.value;
-            document.querySelector('.contact-info').style.background = this.value;
-        });
-        
-        document.getElementById('iconColor').addEventListener('input', function() {
-            const icons = document.querySelectorAll('.contact-icon');
-            icons.forEach(icon => icon.style.background = this.value);
-            document.querySelectorAll('.skill-icon').forEach(icon => icon.style.color = this.value);
-            document.querySelectorAll('.exp-description li:before').forEach(bullet => {
-                bullet.parentElement.style.setProperty('--bullet-color', this.value);
-            });
-        });
-        
-        document.getElementById('badgeColor').addEventListener('input', function() {
-            document.querySelectorAll('.exp-date').forEach(badge => badge.style.background = this.value);
-        });
-        
-        document.getElementById('borderColor').addEventListener('input', function() {
-            document.querySelectorAll('.contact-item').forEach(item => item.style.borderBottomColor = this.value);
-            document.querySelectorAll('.left-section').forEach(section => section.style.borderTopColor = this.value);
-        });
-        
-        document.getElementById('sidebarBottomColor').addEventListener('input', function() {
-            document.querySelector('.cv-left').style.background = this.value;
-        });
-        
-        // Photo upload
-        function uploadPhoto(element) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        element.innerHTML = `<img src="${event.target.result}" alt="Profile Photo">`;
-                    };
-                    reader.readAsDataURL(file);
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDPWyJRfJ6s_MeAc-m8NvDJuZE8JoVvi0SQNZWsuLDOrwtHbqHjnJ2Qf2xWGs2Phr15g/exec';
+
+        async function loadGoogleSheetData() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+
+                if (!data || data.length === 0) {
+                    showEmpty();
+                    return;
                 }
-            };
-            
-            input.click();
-        }
-        
-        // Delete element
-        function deleteElement(element) {
-            const isSection = element.classList.contains('left-section') || 
-                            element.classList.contains('content-section');
-            const message = isSection ? 
-                'Bạn có chắc muốn xóa toàn bộ phần này?' : 
-                'Bạn có chắc muốn xóa mục này?';
-            
-            if (confirm(message)) {
-                element.remove();
+
+                displayTable(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                showError('Lỗi khi tải dữ liệu. Vui lòng kiểm tra URL hoặc thử lại sau.');
             }
         }
-        
-        // Add contact
-        function addContact() {
-            const container = document.getElementById('contactContainer');
-            const lastBtn = container.querySelector('.add-item-btn');
-            const div = document.createElement('div');
-            div.className = 'contact-item';
-            div.innerHTML = `
-                <div class="contact-icon"><i class="bi bi-link-45deg"></i></div>
-                <div class="contact-text" contenteditable="true" data-placeholder="Thông tin liên hệ"></div>
-                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-            `;
-            container.insertBefore(div, lastBtn);
+
+        function displayTable(data) {
+            const container = document.getElementById('tableContainer');
+
+            // Get headers from first row
+            const headers = Object.keys(data[0]);
+
+            // Build table HTML
+            let tableHTML = '<table><thead><tr>';
+            headers.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+
+            // Add data rows
+            data.forEach(row => {
+                tableHTML += '<tr>';
+                headers.forEach(header => {
+                    let value = row[header] || '';
+                    // Format specific columns if needed
+                    if (header.toLowerCase().includes('status')) {
+                        const status = value.toLowerCase();
+                        const className = status === 'active' || status === 'hoạt động' ? 'status-active' : 'status-inactive';
+                        value = `<span class="status-badge ${className}">${value}</span>`;
+                    }
+                    tableHTML += `<td>${value}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+
+            tableHTML += '</tbody></table>';
+            container.innerHTML = tableHTML;
         }
-        
-        // Add skill
-        function addSkill() {
-            const container = document.getElementById('skillsContainer');
-            const div = document.createElement('div');
-            div.className = 'skill-item';
-            div.innerHTML = `
-                <div class="skill-content">
-                    <i class="bi bi-gear-fill skill-icon"></i>
-                    <div class="skill-text" contenteditable="true" data-placeholder="Mô tả kỹ năng"></div>
-                </div>
-                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-            `;
-            container.appendChild(div);
+
+        function showEmpty() {
+            const container = document.getElementById('tableContainer');
+            container.innerHTML = '<div class="empty">Không có dữ liệu để hiển thị</div>';
         }
-        
-        // Add certificate
-        function addCertificate() {
-            const container = document.getElementById('certificatesContainer');
-            const div = document.createElement('div');
-            div.className = 'cert-item';
-            div.innerHTML = `
-                <div class="cert-title" contenteditable="true" data-placeholder="Tên chứng chỉ"></div>
-                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-            `;
-            container.appendChild(div);
+
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = `<div class="error">❌ ${message}</div>`;
+
+            const tableContainer = document.getElementById('tableContainer');
+            tableContainer.innerHTML = '<div class="empty">Không thể tải dữ liệu</div>';
         }
-        
-        // Add award
-        function addAward() {
-            const container = document.getElementById('awardsContainer');
-            const div = document.createElement('div');
-            div.className = 'award-item';
-            div.innerHTML = `
-                <div class="award-title" contenteditable="true" data-placeholder="Tên giải thưởng"></div>
-                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-            `;
-            container.appendChild(div);
-        }
-        
-        // Add experience
-        function addExperience() {
-            const container = document.getElementById('experienceContainer');
-            const div = document.createElement('div');
-            div.className = 'experience-item';
-            div.innerHTML = `
-                <div class="exp-header">
-                    <div class="exp-company" contenteditable="true" data-placeholder="Tên Công Ty"></div>
-                    <div class="exp-date" contenteditable="true" data-placeholder="2021 - Nay"></div>
-                </div>
-                <div class="exp-position" contenteditable="true" data-placeholder="Vị trí công việc"></div>
-                <div class="exp-description" contenteditable="true" data-placeholder="Mô tả công việc và thành tích...">
-                    <ul>
-                        <li contenteditable="true">Trách nhiệm và thành tích</li>
-                    </ul>
-                </div>
-                <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-            `;
-            container.appendChild(div);
-        }
-        
-        // Add left section
-        function addLeftSection() {
-            const sidebar = document.querySelector('.cv-left');
-            const lastBtn = sidebar.querySelector('.add-section-btn');
-            const section = document.createElement('div');
-            section.className = 'left-section';
-            const containerId = 'section-' + Date.now();
-            section.innerHTML = `
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
-                <h3 class="left-section-title" contenteditable="true">Phần Mới</h3>
-                <div id="${containerId}">
-                    <div class="cert-item">
-                        <div class="cert-year" contenteditable="true" data-placeholder="Năm"></div>
-                        <div class="cert-title" contenteditable="true" data-placeholder="Nội dung"></div>
-                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                    </div>
-                </div>
-                <button class="add-item-btn" onclick="addCertificate()">+ Thêm Mục</button>
-            `;
-            sidebar.insertBefore(section, lastBtn);
-        }
-        
-        // Add right section
-        function addRightSection() {
-            const main = document.querySelector('.cv-right');
-            const lastBtn = main.querySelector('.add-section-btn');
-            const section = document.createElement('div');
-            section.className = 'content-section';
-            const containerId = 'content-' + Date.now();
-            section.innerHTML = `
-                <button class="section-delete-btn" onclick="deleteElement(this.parentElement)">✕ Xóa phần</button>
-                <h2 class="section-title" contenteditable="true">Phần Mới</h2>
-                <div id="${containerId}">
-                    <div class="experience-item">
-                        <div class="exp-header">
-                            <div class="exp-company" contenteditable="true" data-placeholder="Tiêu đề"></div>
-                            <div class="exp-date" contenteditable="true" data-placeholder="Thời gian"></div>
-                        </div>
-                        <div class="exp-position" contenteditable="true" data-placeholder="Phụ đề"></div>
-                        <div class="exp-description" contenteditable="true" data-placeholder="Mô tả..."></div>
-                        <button class="delete-btn" onclick="deleteElement(this.parentElement)">×</button>
-                    </div>
-                </div>
-                <button class="add-item-btn" onclick="addExperience()">+ Thêm Mục</button>
-            `;
-            main.insertBefore(section, lastBtn);
-        }
-        
-        // Print CV
-        function printCV() {
-            window.print();
-        }
-        
-        // Reset CV
-        function resetCV() {
-            if (confirm('Bạn có chắc muốn xóa toàn bộ nội dung và bắt đầu lại?')) {
-                location.reload();
-            }
-        }
-        
-        // Initialize font preview
-        updateFontPreview();
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadGoogleSheetData);
     </script>
 </body>
+
 </html>

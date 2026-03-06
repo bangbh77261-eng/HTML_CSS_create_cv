@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lịch Đào Tạo Lái Xe</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{
+  --bg:#f0f4f9;--surface:#fff;--border:#d0d7e3;--border-light:#e8edf5;
+  --text:#1a2235;--muted:#8896ab;--secondary:#4a5568;
+  --accent:#2563eb;--header:#1e293b;
+  --holiday:#ef4444;--holiday-bg:#fff1f2;--holiday-light:#fecaca;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:22px}
+h1{font-size:21px;font-weight:700;color:var(--header);letter-spacing:-.3px;margin-bottom:3px}
+.sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+.app{max-width:1500px;margin:0 auto}
+.panels{display:grid;grid-template-columns:370px 1fr;gap:18px;align-items:start}
+
+/* ─── PANEL ─── */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.ph{background:var(--header);color:#fff;padding:13px 16px;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.fb{padding:16px}
+
+/* ─── FORM ─── */
+.slabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin:14px 0 7px}
+.slabel:first-child{margin-top:0}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--secondary);margin-bottom:3px}
+.field input[type="date"],.field input[type="text"]{width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px;color:var(--text);background:var(--bg);outline:none;transition:border .15s}
+.field input[type="date"]:focus,.field input[type="text"]:focus{border-color:var(--accent);background:#fff}
+
+/* ─── PHASE ACCORDION ─── */
+.pa{border:1px solid var(--border-light);border-radius:8px;margin-bottom:7px}
+.pa-head{display:flex;align-items:center;gap:7px;padding:9px 11px;cursor:pointer;user-select:none;background:var(--bg);font-size:12px;font-weight:600;border-radius:8px}
+.pdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ptoggle{margin-left:auto;font-size:14px;color:var(--muted);transition:transform .2s}
+.pa.open .ptoggle{transform:rotate(180deg)}
+.pa-ranges{display:none;padding:0 11px 11px}
+.pa.open .pa-ranges{display:block}
+
+/* ─── RANGE ITEM ─── */
+.ri{background:var(--bg);border:1px solid var(--border-light);border-radius:7px;padding:9px 10px;margin-top:7px}
+.ri-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.ri-num{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px}
+.ri-actions{display:flex;gap:4px}
+.btn-icon{width:24px;height:24px;border:1px solid var(--border);border-radius:5px;background:var(--surface);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--secondary)}
+.btn-icon:hover.del{border-color:#dc2626;color:#dc2626;background:#fff5f5}
+.btn-icon:hover.edit{border-color:var(--accent);color:var(--accent);background:#eff6ff}
+.ri .row2{gap:6px}
+.ri-display{font-size:11px;color:var(--secondary)}
+
+/* ─── HOLIDAY SECTION ─── */
+.holiday-pa{border:1px solid #fecaca;border-radius:8px;margin-bottom:7px;overflow:hidden}
+.holiday-pa-head{display:flex;align-items:center;gap:7px;padding:9px 11px;cursor:pointer;user-select:none;background:#fff1f2;font-size:12px;font-weight:600;border-radius:8px}
+.holiday-pa.open .ptoggle{transform:rotate(180deg)}
+.holiday-pa-ranges{display:none;padding:0 11px 11px;background:#fff8f8}
+.holiday-pa.open .holiday-pa-ranges{display:block}
+.hi{background:#fff1f2;border:1px solid #fecaca;border-radius:7px;padding:9px 10px;margin-top:7px}
+.hi-label{font-size:11px;font-weight:600;color:#991b1b}
+.hi-display{font-size:11px;color:#7f1d1d;margin-top:3px}
+.holiday-badge{margin-left:6px;font-size:10px;background:#fee2e2;color:#dc2626;padding:1px 7px;border-radius:10px;font-weight:700}
+.btn-add-holiday{display:flex;align-items:center;gap:5px;width:100%;padding:7px 10px;background:transparent;border:1px dashed #fca5a5;border-radius:6px;cursor:pointer;font-family:inherit;font-size:11px;font-weight:600;color:#dc2626;margin-top:8px;transition:all .15s;justify-content:center}
+.btn-add-holiday:hover{border-color:#dc2626;background:#fff5f5}
+.btn-confirm-holiday{display:flex;align-items:center;gap:5px;padding:6px 11px;background:#dc2626;color:#fff;border:none;border-radius:6px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;margin-top:8px;transition:background .15s}
+.btn-confirm-holiday:hover{background:#b91c1c}
+
+/* ─── ADD / CONFIRM RANGE ─── */
+.btn-add-range{display:flex;align-items:center;gap:5px;width:100%;padding:7px 10px;background:transparent;border:1px dashed var(--border);border-radius:6px;cursor:pointer;font-family:inherit;font-size:11px;font-weight:600;color:var(--muted);margin-top:8px;transition:all .15s;justify-content:center}
+.btn-add-range:hover{border-color:var(--accent);color:var(--accent);background:#eff6ff}
+.btn-confirm{display:flex;align-items:center;gap:5px;padding:6px 11px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s;margin-top:8px}
+.btn-confirm:hover{background:#1d4ed8}
+
+/* ─── APPLY / CLEAR ─── */
+.btn-apply{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;margin-top:14px;transition:background .15s,transform .1s}
+.btn-apply:hover{background:#1d4ed8}
+.btn-apply:active{transform:scale(.98)}
+.btn-ghost{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:11px;cursor:pointer;margin-top:7px;transition:all .15s}
+.btn-ghost:hover{border-color:#dc2626;color:#dc2626;background:#fff5f5}
+
+/* ─── EXPORT ─── */
+.export-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-export{display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 8px;border:none;border-radius:8px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-excel{background:#217346;color:#fff}.btn-excel:hover{background:#1a5c38}
+.btn-word{background:#2b579a;color:#fff}.btn-word:hover{background:#1f4178}
+.btn-export:disabled{opacity:.5;cursor:not-allowed}
+.export-note{font-size:10px;color:var(--muted);text-align:center;margin-top:5px}
+
+/* ─── LEGEND ─── */
+.legend{display:flex;flex-wrap:wrap;gap:8px}
+.li{display:flex;align-items:center;gap:4px;font-size:11px;color:#93afc8}
+.ls{width:14px;height:8px;border-radius:2px}
+
+/* ─── TABLE ─── */
+.schedule-scroll{overflow-x:auto}
+table{border-collapse:collapse;min-width:100%;table-layout:fixed}
+th,td{border:1px solid var(--border);text-align:center;font-size:12px;padding:0;height:44px;white-space:nowrap;overflow:hidden}
+.cl{width:162px;min-width:162px;max-width:162px;font-size:12px;font-weight:600;padding:4px 10px;text-align:left;background:#f8fafc;color:var(--secondary);position:sticky;left:0;z-index:2;border-right:2px solid var(--border)}
+.cl.ph-label{color:var(--text)}
+.cw{width:68px;min-width:68px;max-width:68px}
+tr.rm th{background:var(--header);color:#fff;font-weight:700;font-size:13px;height:34px}
+tr.rw th{background:#263549;color:#93afc8;font-weight:600;font-size:11px;height:27px}
+tr.rd th{background:#2d3f57;color:#b8cfe0;font-size:10px;height:27px;padding:2px;vertical-align:middle}
+.d2{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.5}
+tr.rp td{background:#fff}
+tr.rp:hover td{background:#f8fbff}
+/* holiday column highlight */
+.col-holiday{background:#fff1f2 !important}
+tr.rm th.col-holiday{background:#c0392b !important}
+tr.rw th.col-holiday{background:#7f1d1d !important;color:#fca5a5 !important}
+tr.rd th.col-holiday{background:#991b1b !important;color:#fca5a5 !important}
+td.col-holiday{background:#fff1f2 !important}
+/* holiday row */
+tr.rh td{background:#fff1f2}
+tr.rh:hover td{background:#fee2e2}
+td.bc{padding:0;vertical-align:middle;position:relative;overflow:visible}
+
+/* ─── BAR ─── */
+.bar{position:absolute;top:50%;transform:translateY(-50%);height:20px;z-index:1;cursor:default;display:flex;align-items:center;overflow:hidden;font-size:10px;font-weight:600;color:rgba(255,255,255,.95);transition:filter .15s}
+.bar:hover{filter:brightness(1.1);z-index:5}
+.bl{padding:0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+/* holiday overlay bar */
+.bar-holiday{position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(45deg,rgba(239,68,68,.18),rgba(239,68,68,.18) 4px,rgba(239,68,68,.04) 4px,rgba(239,68,68,.04) 10px);z-index:10;pointer-events:none;display:flex;align-items:center;justify-content:center}
+.bar-holiday-icon{font-size:13px;opacity:.7}
+
+/* ─── EMPTY / TOAST / SPINNER ─── */
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty svg{opacity:.2;margin-bottom:10px}
+.empty p{font-size:13px;margin-bottom:4px}
+.empty small{font-size:11px}
+.toast{position:fixed;bottom:22px;right:22px;background:#1e293b;color:#fff;padding:9px 15px;border-radius:8px;font-size:12px;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:999;transform:translateY(80px);opacity:0;transition:all .25s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{background:#dc2626}
+.toast.ok{background:#16a34a}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:900px){.panels{grid-template-columns:1fr};body{padding:10px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>📅 Lịch Đào Tạo Lái Xe</h1>
+  <p class="sub">Biểu đồ tiến độ · Nhiều khoảng / giai đoạn · Ngày nghỉ ghi đè · Xuất Excel (7 cột/tuần) &amp; Word</p>
+  <div class="panels">
+
+    <!-- ══════ FORM PANEL ══════ -->
+    <div class="panel">
+      <div class="ph">⚙ Thiết lập &amp; Nhập liệu</div>
+      <div class="fb">
+
+        <div class="slabel">📆 Khung thời gian</div>
+        <div class="row2">
+          <div class="field"><label>Từ ngày</label><input type="date" id="rangeStart" value="2026-01-26"></div>
+          <div class="field"><label>Đến ngày</label><input type="date" id="rangeEnd" value="2026-05-10"></div>
+        </div>
+
+        <div class="slabel">📋 Phân giai đoạn</div>
+        <div id="phaseList"></div>
+
+        <div class="slabel" style="margin-top:14px">🚫 Ngày nghỉ</div>
+        <div id="holidaySection"></div>
+
+        <button class="btn-apply" onclick="applySchedule()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+          Áp dụng &amp; Cập nhật bảng
+        </button>
+        <button class="btn-ghost" onclick="clearAll()">✕ Xóa tất cả dữ liệu</button>
+
+        <div class="slabel" style="margin-top:16px">📤 Xuất file</div>
+        <div class="export-row">
+          <button class="btn-export btn-excel" id="btnExcel" onclick="exportExcel()">
+            <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 18l2-3-2-3H10l1.5 2.25L13 12h1.5l-2 3 2 3H13l-1.5-2.25L10 18H8.5z"/></svg>
+            Xuất Excel
+          </button>
+          <button class="btn-export btn-word" id="btnWord" onclick="exportWord()">
+            <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM7 12h10v1.5H7V12zm0 3h10v1.5H7V15zm0-6h4v1.5H7V9z"/></svg>
+            Xuất Word
+          </button>
+        </div>
+        <p class="export-note">Excel: mỗi tuần = 7 cột ngày · Ngày nghỉ hiển thị gạch chéo đỏ</p>
+      </div>
+    </div>
+
+    <!-- ══════ SCHEDULE PANEL ══════ -->
+    <div class="panel">
+      <div class="ph">
+        <span>📊 Biểu Đồ Tiến Độ</span>
+        <div class="legend">
+          <span class="li"><span class="ls" style="background:#2563eb"></span>Lý thuyết</span>
+          <span class="li"><span class="ls" style="background:#16a34a"></span>TH Hình</span>
+          <span class="li"><span class="ls" style="background:#d97706"></span>TH Đường</span>
+          <span class="li"><span class="ls" style="background:#dc2626"></span>Kiểm tra</span>
+          <span class="li"><span class="ls" style="background:#7c3aed"></span>Dự phòng</span>
+          <span class="li"><span class="ls" style="background:repeating-linear-gradient(45deg,#ef4444,#ef4444 3px,#fecaca 3px,#fecaca 7px)"></span>Nghỉ</span>
+        </div>
+      </div>
+      <div class="schedule-scroll">
+        <div id="tableContainer">
+          <div class="empty">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <p>Chưa có dữ liệu biểu đồ</p>
+            <small>Nhập dữ liệu bên trái và nhấn "Áp dụng"</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+const PHASES = [
+  { key:'ly-thuyet',       label:'Lý thuyết',            color:'#2563eb', shortLabel:'LT' },
+  { key:'thuc-hanh-hinh',  label:'Thực hành trong hình', color:'#16a34a', shortLabel:'THH' },
+  { key:'thuc-hanh-duong', label:'Thực hành trên đường', color:'#d97706', shortLabel:'THĐ' },
+  { key:'kiem-tra',        label:'Kiểm tra',              color:'#dc2626', shortLabel:'KT' },
+  { key:'du-phong',        label:'Dự phòng',             color:'#7c3aed', shortLabel:'DP' },
+];
+
+// Phase state: { [key]: [{id,start,end}] }
+const state = {};
+PHASES.forEach(p => state[p.key] = []);
+
+// Holiday state: [{id, start, end, label}]
+const holidays = [];
+
+let appliedWeeks = [];
+let appliedPhaseData = [];
+let appliedHolidays = [];
+
+let editingId = null;
+let editingHolidayId = null;
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+let _uid = 0;
+const uid = () => ++_uid;
+
+function parseDate(s) {
+  if (!s) return null;
+  const [y,m,d] = s.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function toIso(d) {
+  if (!d) return '';
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function fmtVi(d) {
+  if (!d) return '';
+  return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+}
+function monday(d) {
+  const dt = new Date(d); dt.setHours(0,0,0,0);
+  const day = dt.getDay();
+  dt.setDate(dt.getDate() + (day===0 ? -6 : 1-day));
+  return dt;
+}
+function addDays(d,n) { const dt=new Date(d); dt.setDate(dt.getDate()+n); return dt; }
+function fmt2(d) { return String(d.getDate()).padStart(2,'0'); }
+function fmtMonth(d) { return String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
+function isoWeek(d) {
+  const tmp=new Date(d); tmp.setHours(0,0,0,0);
+  tmp.setDate(tmp.getDate()+3-(tmp.getDay()+6)%7);
+  const w1=new Date(tmp.getFullYear(),0,4);
+  return 1+Math.round(((tmp-w1)/86400000-3+(w1.getDay()+6)%7)/7);
+}
+// Check if a Date falls within any holiday range
+function isHoliday(date) {
+  const ts = date.getTime();
+  return appliedHolidays.some(h => h.start && h.end && ts >= h.start.getTime() && ts <= h.end.getTime());
+}
+function holidayLabel(date) {
+  const ts = date.getTime();
+  const h = appliedHolidays.find(h => h.start && h.end && ts >= h.start.getTime() && ts <= h.end.getTime());
+  return h ? (h.label || 'Nghỉ') : '';
+}
+// Check if a week overlaps any holiday
+function weekHasHoliday(wStart) {
+  const wEnd = addDays(wStart,6);
+  return appliedHolidays.some(h => h.start && h.end && h.start <= wEnd && h.end >= wStart);
+}
+
+function showToast(msg, type='') {
+  const t=$('toast');
+  t.textContent=msg;
+  t.className='toast'+(type?' '+type:'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ══════════════════════════════════════════════
+// RENDER PHASE FORM
+// ══════════════════════════════════════════════
+function renderPhaseList() {
+  const el=$('phaseList');
+  el.innerHTML=PHASES.map(p=>`
+    <div class="pa ${state[p.key].length?'open':''}" id="pa-${p.key}">
+      <div class="pa-head" onclick="togglePa('${p.key}')">
+        <span class="pdot" style="background:${p.color}"></span>
+        ${p.label}
+        <span style="margin-left:6px;font-size:10px;background:${p.color}22;color:${p.color};padding:1px 7px;border-radius:10px;font-weight:700">${state[p.key].length}</span>
+        <span class="ptoggle">▾</span>
+      </div>
+      <div class="pa-ranges">
+        <div id="ranges-${p.key}">
+          ${state[p.key].map((r,i)=>renderRangeItem(p,r,i)).join('')}
+        </div>
+        <button class="btn-add-range" onclick="startAddRange('${p.key}')">+ Thêm khoảng thời gian</button>
+        <div id="addform-${p.key}" style="display:none">${renderAddForm(p.key)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderRangeItem(p, r, i) {
+  const isEditing = editingId && editingId.phaseKey===p.key && editingId.id===r.id;
+  if (isEditing) return `
+    <div class="ri" id="ri-${r.id}">
+      <div class="ri-head"><span class="ri-num">KHOẢNG ${i+1}</span>
+        <div class="ri-actions"><button class="btn-icon" onclick="cancelEdit()">✕</button></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Từ ngày</label><input type="date" id="edit-start-${r.id}" value="${toIso(r.start)}"></div>
+        <div class="field"><label>Đến ngày</label><input type="date" id="edit-end-${r.id}" value="${toIso(r.end)}"></div>
+      </div>
+      <button class="btn-confirm" onclick="saveEdit('${p.key}','${r.id}')">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Lưu
+      </button>
+    </div>`;
+  return `
+  <div class="ri" id="ri-${r.id}">
+    <div class="ri-head"><span class="ri-num">KHOẢNG ${i+1}</span>
+      <div class="ri-actions">
+        <button class="btn-icon edit" onclick="startEdit('${p.key}','${r.id}')">✎</button>
+        <button class="btn-icon del" onclick="deleteRange('${p.key}','${r.id}')">🗑</button>
+      </div>
+    </div>
+    <div class="ri-display">
+      <span style="color:${p.color}">●</span>
+      <span>${fmtVi(r.start)}</span><span style="color:var(--muted)"> → </span><span>${fmtVi(r.end)}</span>
+    </div>
+  </div>`;
+}
+
+function renderAddForm(phaseKey) {
+  return `<div class="ri" style="margin-top:7px;border:1px dashed var(--accent)">
+    <div class="ri-head"><span class="ri-num" style="color:var(--accent)">MỚI</span></div>
+    <div class="row2">
+      <div class="field"><label>Từ ngày</label><input type="date" id="new-start-${phaseKey}"></div>
+      <div class="field"><label>Đến ngày</label><input type="date" id="new-end-${phaseKey}"></div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn-confirm" onclick="confirmAdd('${phaseKey}')">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Xác nhận
+      </button>
+      <button class="btn-icon del" onclick="cancelAdd('${phaseKey}')" style="width:auto;padding:4px 10px;font-size:11px">✕ Hủy</button>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+// RENDER HOLIDAY FORM
+// ══════════════════════════════════════════════
+function renderHolidaySection() {
+  const el=$('holidaySection');
+  el.innerHTML=`
+    <div class="holiday-pa ${holidays.length?'open':''}" id="pa-holiday">
+      <div class="holiday-pa-head" onclick="togglePa('holiday')">
+        <span class="pdot" style="background:#ef4444"></span>
+        Ngày nghỉ
+        <span class="holiday-badge">${holidays.length}</span>
+        <span class="ptoggle" style="margin-left:auto;font-size:14px;color:#dc2626;transition:transform .2s">▾</span>
+      </div>
+      <div class="holiday-pa-ranges">
+        <div id="holiday-list">
+          ${holidays.map((h,i)=>renderHolidayItem(h,i)).join('')}
+        </div>
+        <button class="btn-add-holiday" onclick="startAddHoliday()">+ Thêm ngày / khoảng nghỉ</button>
+        <div id="holiday-addform" style="display:none">${renderHolidayAddForm()}</div>
+      </div>
+    </div>`;
+}
+
+function renderHolidayItem(h, i) {
+  const isEditing = editingHolidayId === h.id;
+  const isSingle = toIso(h.start) === toIso(h.end);
+  const dateStr = isSingle ? fmtVi(h.start) : `${fmtVi(h.start)} → ${fmtVi(h.end)}`;
+  if (isEditing) return `
+    <div class="hi" id="hi-${h.id}">
+      <div class="ri-head">
+        <span class="ri-num" style="color:#dc2626">NGHỈ ${i+1}</span>
+        <button class="btn-icon" onclick="cancelEditHoliday()">✕</button>
+      </div>
+      <div class="field" style="margin-bottom:7px"><label>Tên / ghi chú</label><input type="text" id="hedit-label-${h.id}" value="${h.label||''}" placeholder="VD: Tết Nguyên Đán..."></div>
+      <div class="row2">
+        <div class="field"><label>Từ ngày</label><input type="date" id="hedit-start-${h.id}" value="${toIso(h.start)}"></div>
+        <div class="field"><label>Đến ngày</label><input type="date" id="hedit-end-${h.id}" value="${toIso(h.end)}"></div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+        <button class="btn-confirm-holiday" onclick="saveEditHoliday('${h.id}')">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Lưu
+        </button>
+        <button class="btn-icon del" onclick="cancelEditHoliday()" style="width:auto;padding:4px 10px;font-size:11px">✕ Hủy</button>
+      </div>
+    </div>`;
+  return `
+  <div class="hi" id="hi-${h.id}">
+    <div class="ri-head">
+      <span class="ri-num" style="color:#dc2626">NGHỈ ${i+1}</span>
+      <div class="ri-actions">
+        <button class="btn-icon edit" onclick="startEditHoliday('${h.id}')" title="Sửa">✎</button>
+        <button class="btn-icon del" onclick="deleteHoliday('${h.id}')" title="Xóa">🗑</button>
+      </div>
+    </div>
+    <div class="hi-label">🚫 ${h.label || 'Ngày nghỉ'}</div>
+    <div class="hi-display">${dateStr}</div>
+  </div>`;
+}
+
+function renderHolidayAddForm() {
+  return `<div class="hi" style="border:1px dashed #dc2626;background:#fff">
+    <div class="ri-head"><span class="ri-num" style="color:#dc2626">THÊM MỚI</span></div>
+    <div class="field" style="margin-bottom:7px"><label>Tên / ghi chú</label><input type="text" id="hnew-label" placeholder="VD: Tết Nguyên Đán, Quốc khánh..."></div>
+    <div class="row2">
+      <div class="field"><label>Từ ngày</label><input type="date" id="hnew-start"></div>
+      <div class="field"><label>Đến ngày</label><input type="date" id="hnew-end"></div>
+    </div>
+    <p style="font-size:10px;color:var(--muted);margin-top:5px">💡 Nghỉ 1 ngày: nhập cùng ngày cho cả hai ô</p>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+      <button class="btn-confirm-holiday" onclick="confirmAddHoliday()">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Xác nhận
+      </button>
+      <button class="btn-icon del" onclick="cancelAddHoliday()" style="width:auto;padding:4px 10px;font-size:11px">✕ Hủy</button>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+// PHASE ACTIONS
+// ══════════════════════════════════════════════
+function togglePa(key) {
+  const id = key==='holiday' ? 'pa-holiday' : 'pa-'+key;
+  $( id )?.classList.toggle('open');
+}
+function startAddRange(key) {
+  const f=$('addform-'+key);
+  if(f){f.style.display='block';f.innerHTML=renderAddForm(key);}
+  $('pa-'+key)?.classList.add('open');
+}
+function cancelAdd(key){const f=$('addform-'+key);if(f)f.style.display='none';}
+function confirmAdd(key){
+  const s=$('new-start-'+key)?.value, e=$('new-end-'+key)?.value;
+  const sd=parseDate(s),ed=parseDate(e);
+  if(!sd||!ed){showToast('Vui lòng nhập đủ ngày','err');return;}
+  if(sd>ed){showToast('Ngày bắt đầu phải trước ngày kết thúc','err');return;}
+  state[key].push({id:uid(),start:sd,end:ed});
+  editingId=null; renderPhaseList(); showToast('Đã thêm khoảng thời gian','ok');
+}
+function startEdit(phaseKey,id){editingId={phaseKey,id:parseInt(id)};renderPhaseList();$('pa-'+phaseKey)?.classList.add('open');}
+function cancelEdit(){editingId=null;renderPhaseList();}
+function saveEdit(phaseKey,id){
+  const rid=parseInt(id);
+  const s=$('edit-start-'+rid)?.value,e=$('edit-end-'+rid)?.value;
+  const sd=parseDate(s),ed=parseDate(e);
+  if(!sd||!ed){showToast('Vui lòng nhập đủ ngày','err');return;}
+  if(sd>ed){showToast('Ngày bắt đầu phải trước ngày kết thúc','err');return;}
+  const r=state[phaseKey].find(x=>x.id===rid);
+  if(r){r.start=sd;r.end=ed;}
+  editingId=null; renderPhaseList(); showToast('Đã lưu chỉnh sửa','ok');
+}
+function deleteRange(phaseKey,id){
+  const rid=parseInt(id);
+  state[phaseKey]=state[phaseKey].filter(x=>x.id!==rid);
+  if(editingId?.phaseKey===phaseKey&&editingId?.id===rid) editingId=null;
+  renderPhaseList(); showToast('Đã xóa khoảng thời gian');
+}
+
+// ══════════════════════════════════════════════
+// HOLIDAY ACTIONS
+// ══════════════════════════════════════════════
+function startAddHoliday(){
+  const f=$('holiday-addform');
+  if(f){f.style.display='block';f.innerHTML=renderHolidayAddForm();}
+  $('pa-holiday')?.classList.add('open');
+}
+function cancelAddHoliday(){const f=$('holiday-addform');if(f)f.style.display='none';}
+function confirmAddHoliday(){
+  const lbl=$('hnew-label')?.value.trim()||'';
+  const s=$('hnew-start')?.value, e=$('hnew-end')?.value;
+  const sd=parseDate(s),ed=parseDate(e);
+  if(!sd||!ed){showToast('Vui lòng nhập đủ ngày nghỉ','err');return;}
+  if(sd>ed){showToast('Ngày bắt đầu phải trước ngày kết thúc','err');return;}
+  holidays.push({id:uid(),start:sd,end:ed,label:lbl});
+  editingHolidayId=null; renderHolidaySection(); showToast('Đã thêm ngày nghỉ','ok');
+}
+function startEditHoliday(id){
+  editingHolidayId=parseInt(id);
+  renderHolidaySection(); $('pa-holiday')?.classList.add('open');
+}
+function cancelEditHoliday(){editingHolidayId=null;renderHolidaySection();}
+function saveEditHoliday(id){
+  const rid=parseInt(id);
+  const lbl=$('hedit-label-'+rid)?.value.trim()||'';
+  const s=$('hedit-start-'+rid)?.value,e=$('hedit-end-'+rid)?.value;
+  const sd=parseDate(s),ed=parseDate(e);
+  if(!sd||!ed){showToast('Vui lòng nhập đủ ngày','err');return;}
+  if(sd>ed){showToast('Ngày bắt đầu phải trước ngày kết thúc','err');return;}
+  const h=holidays.find(x=>x.id===rid);
+  if(h){h.start=sd;h.end=ed;h.label=lbl;}
+  editingHolidayId=null; renderHolidaySection(); showToast('Đã lưu ngày nghỉ','ok');
+}
+function deleteHoliday(id){
+  const rid=parseInt(id);
+  holidays.splice(holidays.findIndex(x=>x.id===rid),1);
+  if(editingHolidayId===rid) editingHolidayId=null;
+  renderHolidaySection(); showToast('Đã xóa ngày nghỉ');
+}
+
+// ══════════════════════════════════════════════
+// CLEAR ALL
+// ══════════════════════════════════════════════
+function clearAll(){
+  PHASES.forEach(p=>state[p.key]=[]);
+  holidays.length=0;
+  editingId=null; editingHolidayId=null;
+  appliedWeeks=[]; appliedPhaseData=[]; appliedHolidays=[];
+  renderPhaseList(); renderHolidaySection();
+  $('tableContainer').innerHTML=`<div class="empty">
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <p>Chưa có dữ liệu biểu đồ</p><small>Nhập dữ liệu bên trái và nhấn "Áp dụng"</small>
+  </div>`;
+  showToast('Đã xóa toàn bộ dữ liệu');
+}
+
+// ══════════════════════════════════════════════
+// APPLY / RENDER TABLE
+// ══════════════════════════════════════════════
+function applySchedule(){
+  const rs=parseDate($('rangeStart').value);
+  const re=parseDate($('rangeEnd').value);
+  if(!rs||!re||rs>=re){showToast('Vui lòng chọn khung thời gian hợp lệ','err');return;}
+
+  const weeks=[];
+  let cur=monday(rs);
+  const last=monday(re);
+  while(cur<=last){weeks.push(new Date(cur));cur=addDays(cur,7);}
+  if(!weeks.length){showToast('Không có tuần nào trong khoảng','err');return;}
+
+  appliedWeeks=weeks;
+  appliedPhaseData=PHASES.map(p=>({...p,ranges:[...state[p.key]]}));
+  appliedHolidays=[...holidays];
+
+  // Month groups
+  const mGroups=[];
+  weeks.forEach(w=>{
+    const mo=fmtMonth(w);
+    if(!mGroups.length||mGroups[mGroups.length-1].label!==mo) mGroups.push({label:mo,count:1});
+    else mGroups[mGroups.length-1].count++;
+  });
+
+  // Determine which weeks have holidays (for column highlight)
+  const weekHolidaySet=new Set();
+  weeks.forEach((w,i)=>{ if(weekHasHoliday(w)) weekHolidaySet.add(i); });
+
+  // ── Header rows ──
+  let rMonths=`<tr class="rm"><th class="cl" style="color:#93afc8;font-size:10px;text-align:center">Tháng</th>`;
+  mGroups.forEach(g=>rMonths+=`<th class="cw" colspan="${g.count}">${g.label}</th>`);
+  rMonths+='</tr>';
+
+  let rWeeks=`<tr class="rw"><th class="cl" style="color:#93afc8;font-size:10px;text-align:center">Tuần</th>`;
+  weeks.forEach((w,i)=>rWeeks+=`<th class="cw${weekHolidaySet.has(i)?' col-holiday':''}">${isoWeek(w)}</th>`);
+  rWeeks+='</tr>';
+
+  let rDates=`<tr class="rd"><th class="cl" style="color:#93afc8;font-size:10px;text-align:center"><div class="d2"><span>Từ</span><span>Đến</span></div></th>`;
+  weeks.forEach((w,i)=>{
+    const sun=addDays(w,6);
+    rDates+=`<th class="cw${weekHolidaySet.has(i)?' col-holiday':''}"><div class="d2"><span>${fmt2(w)}</span><span>${fmt2(sun)}</span></div></th>`;
+  });
+  rDates+='</tr>';
+
+  // ── Phase data rows ──
+  let dataRows='';
+  appliedPhaseData.forEach(p=>{
+    dataRows+=`<tr class="rp"><td class="cl ph-label" style="border-left:3px solid ${p.color}">${p.label}</td>`;
+    weeks.forEach((wStart,wi)=>{
+      const wEnd=addDays(wStart,6);
+      const bars=[];
+
+      // Phase bars
+      p.ranges.forEach(r=>{
+        if(!r.start||!r.end||r.start>wEnd||r.end<wStart) return;
+        const cellMs=wEnd.getTime()-wStart.getTime()+86400000;
+        const barS=Math.max(r.start.getTime(),wStart.getTime());
+        const barE=Math.min(r.end.getTime()+86399999,wEnd.getTime()+86399999);
+        const left=((barS-wStart.getTime())/cellMs)*100;
+        const width=((barE-barS+1)/cellMs)*100;
+        const isFirst=r.start>=wStart&&r.start<=wEnd;
+        const isLast=r.end>=wStart&&r.end<=wEnd;
+        const rad=isFirst&&isLast?'4px':isFirst?'4px 0 0 4px':isLast?'0 4px 4px 0':'0';
+        const lbl=isFirst?`<span class="bl">${p.shortLabel}</span>`:'';
+        bars.push(`<div class="bar" title="${p.label}: ${fmtVi(r.start)} → ${fmtVi(r.end)}" style="left:${left.toFixed(2)}%;width:${Math.min(width,100).toFixed(2)}%;background:${p.color};border-radius:${rad};opacity:.9">${lbl}</div>`);
+      });
+
+      // Holiday overlays (per overlapping holiday range in this week)
+      appliedHolidays.forEach(h=>{
+        if(!h.start||!h.end||h.start>wEnd||h.end<wStart) return;
+        const cellMs=wEnd.getTime()-wStart.getTime()+86400000;
+        const hS=Math.max(h.start.getTime(),wStart.getTime());
+        const hE=Math.min(h.end.getTime()+86399999,wEnd.getTime()+86399999);
+        const left=((hS-wStart.getTime())/cellMs)*100;
+        const width=((hE-hS+1)/cellMs)*100;
+        const lbl=h.label||'Nghỉ';
+        bars.push(`<div class="bar-holiday" title="🚫 ${lbl}" style="left:${left.toFixed(2)}%;width:${Math.min(width,100).toFixed(2)}%;position:absolute;top:0;height:100%;background:repeating-linear-gradient(45deg,rgba(239,68,68,.25),rgba(239,68,68,.25) 3px,rgba(255,255,255,.0) 3px,rgba(255,255,255,.0) 8px);z-index:10;border-left:2px solid rgba(239,68,68,.6);border-right:2px solid rgba(239,68,68,.6)"><span style="font-size:10px;font-weight:700;color:#b91c1c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 3px;background:rgba(255,255,255,.7);border-radius:2px">${lbl}</span></div>`);
+      });
+
+      const cellClass=`bc${weekHolidaySet.has(wi)?' col-holiday':''}`;
+      dataRows+=`<td class="${cellClass}">${bars.join('')}</td>`;
+    });
+    dataRows+='</tr>';
+  });
+
+  // ── Holiday summary row ──
+  if(appliedHolidays.length){
+    dataRows+=`<tr class="rh"><td class="cl" style="color:#dc2626;font-weight:700;border-left:3px solid #ef4444">🚫 Ngày nghỉ</td>`;
+    weeks.forEach((wStart,wi)=>{
+      const wEnd=addDays(wStart,6);
+      const bars=[];
+      appliedHolidays.forEach(h=>{
+        if(!h.start||!h.end||h.start>wEnd||h.end<wStart) return;
+        const cellMs=wEnd.getTime()-wStart.getTime()+86400000;
+        const hS=Math.max(h.start.getTime(),wStart.getTime());
+        const hE=Math.min(h.end.getTime()+86399999,wEnd.getTime()+86399999);
+        const left=((hS-wStart.getTime())/cellMs)*100;
+        const width=((hE-hS+1)/cellMs)*100;
+        const isFirst=h.start>=wStart&&h.start<=wEnd;
+        const isLast=h.end>=wStart&&h.end<=wEnd;
+        const rad=isFirst&&isLast?'4px':isFirst?'4px 0 0 4px':isLast?'0 4px 4px 0':'0';
+        const lbl=h.label||'Nghỉ';
+        bars.push(`<div class="bar" title="🚫 ${lbl}: ${fmtVi(h.start)} → ${fmtVi(h.end)}" style="left:${left.toFixed(2)}%;width:${Math.min(width,100).toFixed(2)}%;background:#ef4444;border-radius:${rad};opacity:.85">${isFirst?`<span class="bl">🚫 ${lbl}</span>`:''}</div>`);
+      });
+      const cellClass=`bc${weekHolidaySet.has(wi)?' col-holiday':''}`;
+      dataRows+=`<td class="${cellClass}">${bars.join('')}</td>`;
+    });
+    dataRows+='</tr>';
+  }
+
+  const cols=`<col style="width:162px;">${weeks.map(()=>`<col style="width:68px;">`).join('')}`;
+  $('tableContainer').innerHTML=`<table><colgroup>${cols}</colgroup><thead>${rMonths}${rWeeks}${rDates}</thead><tbody>${dataRows}</tbody></table>`;
+  showToast(`✓ Biểu đồ cập nhật — ${weeks.length} tuần · ${appliedHolidays.length} khoảng nghỉ`,'ok');
+}
+
+// ══════════════════════════════════════════════
+// EXPORT EXCEL  (mỗi tuần = 7 cột, ngày nghỉ ghi đè)
+// ══════════════════════════════════════════════
+function exportExcel(){
+  if(!appliedWeeks.length){showToast('Hãy áp dụng bảng trước khi xuất','err');return;}
+  const btn=$('btnExcel');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Đang tạo...';
+  setTimeout(()=>{
+    try{buildDailyExcel();showToast('Xuất Excel thành công!','ok');}
+    catch(e){showToast('Lỗi: '+e.message,'err');console.error(e);}
+    finally{
+      btn.disabled=false;
+      btn.innerHTML='<svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 18l2-3-2-3H10l1.5 2.25L13 12h1.5l-2 3 2 3H13l-1.5-2.25L10 18H8.5z"/></svg> Xuất Excel';
+    }
+  },50);
+}
+
+function buildDailyExcel(){
+  /*
+   * LAYOUT:
+   *   Cột A    = Nhãn hàng  (hàng 1-3: "Tháng","Tuần","Từ/Đến"; hàng 4+: tên giai đoạn)
+   *   Cột B+   = 7 cột/tuần × số tuần  (T2 T3 T4 T5 T6 T7 CN)
+   *
+   *   Hàng 1   = Tháng   — merge ngang theo tháng (spanning all days in that month)
+   *   Hàng 2   = Tuần    — "T5","T6"... mỗi tuần merge 7 ô
+   *   Hàng 3   = Từ/Đến  — "26/01-01/02" mỗi tuần merge 7 ô
+   *   Hàng 4+  = giai đoạn: Lý thuyết / TH Hình / TH Đường / Kiểm tra / Dự phòng / Ngày nghỉ
+   *              mỗi hàng đánh dấu ngày theo từng ô (1 ô = 1 ngày)
+   */
+  const weeks  = appliedWeeks;
+  const phases = appliedPhaseData;
+  const hols   = appliedHolidays;
+
+  // ── Danh sách tất cả các ngày ──
+  const allDays=[];
+  weeks.forEach(mon=>{for(let d=0;d<7;d++) allDays.push(addDays(mon,d));});
+
+  // ── Holiday lookup {isoDate → label} ──
+  const holMap={};
+  allDays.forEach(day=>{
+    const h=hols.find(h=>h.start&&h.end&&day>=h.start&&day<=h.end);
+    if(h) holMap[toIso(day)]=h.label||'Nghỉ';
+  });
+
+  const PALETTE={
+    '#2563eb':{bg:'C7D9FF',fg:'1E3A8A'},
+    '#16a34a':{bg:'BBF7D0',fg:'14532D'},
+    '#d97706':{bg:'FDE68A',fg:'78350F'},
+    '#dc2626':{bg:'FECACA',fg:'7F1D1D'},
+    '#7c3aed':{bg:'DDD6FE',fg:'4C1D95'},
+  };
+  const HOL_BG='FFD7D7', HOL_FG='991B1B';
+  const DOW_LBL=['T2','T3','T4','T5','T6','T7','CN'];
+
+  // ── Style registry ──
+  const fills=['none','gray125']; const fillIdx={};
+  function getFill(h6){
+    if(!h6||h6==='FFFFFF') return 0;
+    const k=h6.toUpperCase();
+    if(!(k in fillIdx)){fillIdx[k]=fills.length;fills.push(k);}
+    return fillIdx[k];
+  }
+  const fonts=[]; const fontIdx={};
+  function getFont(fg,bold,sz){
+    const k=`${fg}_${bold}_${sz}`;
+    if(!(k in fontIdx)){fontIdx[k]=fonts.length;fonts.push({fg,bold,sz});}
+    return fontIdx[k];
+  }
+  const dynBorders=[]; const dynBordIdx={};
+  function getDynBorder(lc){
+    if(!lc) return 1;
+    const k=lc.replace('#','').toUpperCase();
+    if(!(k in dynBordIdx)){dynBordIdx[k]=2+dynBorders.length;dynBorders.push(k);}
+    return dynBordIdx[k];
+  }
+  const xfs2=[]; const xf2Idx={};
+  function getXf2(fg,bold,sz,bg,halign,lc,wrap){
+    const bord=getDynBorder(lc);
+    const k=`${fg}|${bold}|${sz}|${bg}|${halign}|${bord}|${!!wrap}`;
+    if(!(k in xf2Idx)){
+      xf2Idx[k]=xfs2.length;
+      xfs2.push({fi:getFont(fg,bold,sz),filli:getFill(bg),halign,bord,wrap:!!wrap});
+    }
+    return xf2Idx[k];
+  }
+  const cells=[]; const merges=[];
+  function C(r,c,v,bg,fg,bold,sz,halign,lc,wrap){
+    cells.push({r,c,v,xf:getXf2(fg,bold||false,sz||10,bg,halign||'center',lc||null,wrap||false)});
+  }
+
+  // ── Cột layout ──
+  const COL_LABEL = 1;              // cột A = nhãn hàng
+  const COL_DATA  = 2;              // cột B = bắt đầu dữ liệu ngày
+  // Cột của ngày thứ i: COL_DATA + i
+  const totalDays = allDays.length; // = weeks.length * 7
+
+  // ── Hàng layout ──
+  const ROW_MONTH = 1;
+  const ROW_WEEK  = 2;
+  const ROW_DATES = 3;
+  const ROW_DATA  = 4; // bắt đầu dữ liệu giai đoạn
+
+  // ════════════════════════════════
+  // HÀNG 1 — THÁNG (merge ngang theo tháng)
+  // ════════════════════════════════
+  C(ROW_MONTH,COL_LABEL,'Tháng','1E293B','FFFFFF',true,10,'center');
+
+  // Nhóm theo tháng dựa trên ngày thực tế
+  const mGroups=[];
+  allDays.forEach((day,i)=>{
+    const mo=`${String(day.getMonth()+1).padStart(2,'0')}/${day.getFullYear()}`;
+    const col=COL_DATA+i;
+    if(!mGroups.length||mGroups[mGroups.length-1].label!==mo)
+      mGroups.push({label:mo,startCol:col,endCol:col});
+    else
+      mGroups[mGroups.length-1].endCol=col;
+  });
+  mGroups.forEach(g=>{
+    C(ROW_MONTH,g.startCol,g.label,'1E293B','FFFFFF',true,11,'center');
+    for(let c=g.startCol+1;c<=g.endCol;c++) C(ROW_MONTH,c,'','1E293B','FFFFFF',false,9,'center');
+    if(g.endCol>g.startCol) merges.push({rs:ROW_MONTH,re:ROW_MONTH,cs:g.startCol,ce:g.endCol});
+  });
+
+  // ════════════════════════════════
+  // HÀNG 2 — TUẦN (merge 7 ô mỗi tuần)
+  // ════════════════════════════════
+  C(ROW_WEEK,COL_LABEL,'Tuần','263549','93AFC8',true,10,'center');
+  weeks.forEach((mon,wi)=>{
+    const wn=isoWeek(mon);
+    const sc=COL_DATA+wi*7, ec=sc+6;
+    const isHolWeek=weekHasHoliday(mon);
+    const bg=isHolWeek?'7F1D1D':'263549';
+    C(ROW_WEEK,sc,`T${wn}`,bg,'93AFC8',true,10,'center');
+    for(let c=sc+1;c<=ec;c++) C(ROW_WEEK,c,'',bg,'93AFC8',false,9,'center');
+    merges.push({rs:ROW_WEEK,re:ROW_WEEK,cs:sc,ce:ec});
+  });
+
+  // ════════════════════════════════
+  // HÀNG 3 — TỪ NGÀY - ĐẾN NGÀY (merge 7 ô mỗi tuần)
+  // ════════════════════════════════
+  C(ROW_DATES,COL_LABEL,'Từ ngày - Đến ngày','2D3F57','B8CFE0',true,9,'center',null,true);
+  weeks.forEach((mon,wi)=>{
+    const sun=addDays(mon,6);
+    const f=`${String(mon.getDate()).padStart(2,'0')}/${String(mon.getMonth()+1).padStart(2,'0')}`;
+    const t=`${String(sun.getDate()).padStart(2,'0')}/${String(sun.getMonth()+1).padStart(2,'0')}`;
+    const sc=COL_DATA+wi*7, ec=sc+6;
+    const isHolWeek=weekHasHoliday(mon);
+    const bg=isHolWeek?'4C0519':'2D3F57';
+    C(ROW_DATES,sc,`${f} - ${t}`,bg,'B8CFE0',false,9,'center');
+    for(let c=sc+1;c<=ec;c++) C(ROW_DATES,c,'',bg,'B8CFE0',false,9,'center');
+    merges.push({rs:ROW_DATES,re:ROW_DATES,cs:sc,ce:ec});
+  });
+
+  // ════════════════════════════════
+  // HÀNG 4+ — DỮ LIỆU GIAI ĐOẠN
+  // Mỗi giai đoạn 1 hàng; mỗi ô = 1 ngày trong allDays
+  // ════════════════════════════════
+  phases.forEach((p,pi)=>{
+    const row=ROW_DATA+pi;
+    const pal=PALETTE[p.color]||{bg:'F1F5F9',fg:'334155'};
+    // Cột A: tên giai đoạn với viền trái màu giai đoạn
+    C(row,COL_LABEL,p.label,'F8FAFC','1A2235',true,9,'left',p.color);
+    // Cột dữ liệu ngày
+    allDays.forEach((day,i)=>{
+      const iso=toIso(day);
+      const col=COL_DATA+i;
+      const di=day.getDay()===0?6:day.getDay()-1; // 0=T2..6=CN
+      const isSat=di===5, isSun=di===6;
+
+      if(iso in holMap){
+        // Ngày nghỉ ghi đè
+        C(row,col,'✕',HOL_BG,HOL_FG,true,11,'center','#ef4444');
+      } else {
+        const ts=day.getTime();
+        let inRange=false,isStart=false,isEnd=false;
+        (p.ranges||[]).forEach(r=>{
+          if(!r.start||!r.end) return;
+          if(ts>=r.start.getTime()&&ts<=r.end.getTime()){
+            inRange=true;
+            if(ts===r.start.getTime()) isStart=true;
+            if(ts===r.end.getTime()) isEnd=true;
+          }
+        });
+        if(inRange){
+          const mark=isStart&&isEnd?'◆':isStart?'▶':isEnd?'◀':'█';
+          C(row,col,mark,pal.bg,pal.fg,true,12,'center',isStart?p.color:null);
+        } else {
+          const emptyBg=isSun?'FEF2F2':isSat?'FAF5FF':'FFFFFF';
+          C(row,col,'',emptyBg,'FFFFFF',false,9,'center');
+        }
+      }
+    });
+  });
+
+  // ── Hàng ngày nghỉ (sau các giai đoạn) ──
+  if(hols.length){
+    const row=ROW_DATA+phases.length;
+    C(row,COL_LABEL,'Ngày nghỉ','FFF1F2','991B1B',true,9,'left','#ef4444');
+    allDays.forEach((day,i)=>{
+      const iso=toIso(day);
+      const col=COL_DATA+i;
+      const di=day.getDay()===0?6:day.getDay()-1;
+      const isSat=di===5,isSun=di===6;
+      if(iso in holMap){
+        C(row,col,'✕',HOL_BG,HOL_FG,true,11,'center','#ef4444');
+      } else {
+        const emptyBg=isSun?'FEF2F2':isSat?'FAF5FF':'FFFFFF';
+        C(row,col,'',emptyBg,'FFFFFF',false,9,'center');
+      }
+    });
+  }
+
+  // ════════════════════════
+  // Build XLSX binary
+  // ════════════════════════
+  function colLetter(n){
+    let s='';
+    while(n>0){s=String.fromCharCode(64+(n%26||26))+s;n=Math.floor((n-1)/26);}
+    return s;
+  }
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  const fillsXml=fills.map(f=>{
+    if(f==='none') return `<fill><patternFill patternType="none"/></fill>`;
+    if(f==='gray125') return `<fill><patternFill patternType="gray125"/></fill>`;
+    return `<fill><patternFill patternType="solid"><fgColor rgb="FF${f}"/><bgColor indexed="64"/></patternFill></fill>`;
+  }).join('');
+
+  const fontsXml=
+    `<font><sz val="10"/><color rgb="FF1A2235"/><name val="Arial"/></font>`+
+    fonts.map(f=>`<font><sz val="${f.sz}"/><color rgb="FF${f.fg}"/><name val="Arial"/>${f.bold?'<b/>':''}</font>`).join('');
+
+  const bordersXml=
+    `<border><left/><right/><top/><bottom/><diagonal/></border>`+
+    `<border>`+
+      `<left style="thin"><color rgb="FFD0D7E3"/></left>`+
+      `<right style="thin"><color rgb="FFD0D7E3"/></right>`+
+      `<top style="thin"><color rgb="FFD0D7E3"/></top>`+
+      `<bottom style="thin"><color rgb="FFD0D7E3"/></bottom>`+
+      `<diagonal/>`+
+    `</border>`+
+    dynBorders.map(hx=>
+      `<border>`+
+        `<left style="medium"><color rgb="FF${hx}"/></left>`+
+        `<right style="thin"><color rgb="FFD0D7E3"/></right>`+
+        `<top style="thin"><color rgb="FFD0D7E3"/></top>`+
+        `<bottom style="thin"><color rgb="FFD0D7E3"/></bottom>`+
+        `<diagonal/>`+
+      `</border>`
+    ).join('');
+
+  const cellXfsXml=
+    `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>`+
+    xfs2.map(x=>
+      `<xf numFmtId="0" fontId="${x.fi+1}" fillId="${x.filli}" borderId="${x.bord}" xfId="0"`+
+      ` applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">`+
+      `<alignment horizontal="${x.halign}" vertical="center" wrapText="${x.wrap?1:0}"/>`+
+      `</xf>`
+    ).join('');
+
+  const byRow={};
+  cells.forEach(ce=>{(byRow[ce.r]=byRow[ce.r]||[]).push(ce);});
+  const totalDataRows=phases.length+(hols.length?1:0);
+  const rowsXml=Object.keys(byRow).sort((a,b)=>+a-+b).map(r=>{
+    const ri=+r;
+    const ht=ri===1?20:ri===2?18:ri===3?18:22;
+    const rc=byRow[r].sort((a,b)=>a.c-b.c).map(ce=>{
+      const addr=`${colLetter(ce.c)}${ce.r}`;
+      const t=typeof ce.v==='number'?'n':'inlineStr';
+      const vXml=ce.v===''?'':(t==='n'?`<v>${ce.v}</v>`:`<is><t>${esc(String(ce.v))}</t></is>`);
+      return `<c r="${addr}" s="${ce.xf+1}" t="${t}">${vXml}</c>`;
+    }).join('');
+    return `<row r="${r}" ht="${ht}" customHeight="1">${rc}</row>`;
+  }).join('');
+
+  const mergesXml=merges.length
+    ?`<mergeCells count="${merges.length}">`+
+      merges.map(m=>`<mergeCell ref="${colLetter(m.cs)}${m.rs}:${colLetter(m.ce)}${m.re}"/>`).join('')+
+      `</mergeCells>`
+    :'';
+
+  // Độ rộng cột: A=22, các cột ngày=3.5
+  const lastDataCol=COL_DATA+totalDays-1;
+  const colsXml=
+    `<cols>`+
+    `<col min="1" max="1" width="22" customWidth="1"/>`+
+    `<col min="${COL_DATA}" max="${lastDataCol}" width="3.5" customWidth="1"/>`+
+    `</cols>`;
+
+  const sheetXml=
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
+    `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"`+
+    ` xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">`+
+    `<sheetViews><sheetView workbookViewId="0" tabSelected="1">`+
+    `<pane xSplit="1" ySplit="3" topLeftCell="B4" activePane="bottomRight" state="frozen"/>`+
+    `</sheetView></sheetViews>`+
+    colsXml+
+    `<sheetData>${rowsXml}</sheetData>`+
+    mergesXml+
+    `</worksheet>`;
+
+  const stylesXml=
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
+    `<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">`+
+    `<fonts count="${fonts.length+1}">${fontsXml}</fonts>`+
+    `<fills count="${fills.length}">${fillsXml}</fills>`+
+    `<borders count="${2+dynBorders.length}">${bordersXml}</borders>`+
+    `<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>`+
+    `<cellXfs count="${xfs2.length+1}">${cellXfsXml}</cellXfs>`+
+    `</styleSheet>`;
+
+  const wbXml=
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
+    `<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"`+
+    ` xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">`+
+    `<sheets><sheet name="Lịch Đào Tạo" sheetId="1" r:id="rId1"/></sheets>`+
+    `</workbook>`;
+
+  const wbRels=
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
+    `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">`+
+    `<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>`+
+    `<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>`+
+    `</Relationships>`;
+
+  const rels=
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
+    `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">`+
+    `<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>`+
+    `</Relationships>`;
+
+  const ct=
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
+    `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">`+
+    `<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>`+
+    `<Default Extension="xml" ContentType="application/xml"/>`+
+    `<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>`+
+    `<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`+
+    `<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>`+
+    `</Types>`;
+
+  function doZip(){
+    const zip=new JSZip();
+    zip.file('[Content_Types].xml',ct);
+    zip.file('_rels/.rels',rels);
+    zip.file('xl/workbook.xml',wbXml);
+    zip.file('xl/_rels/workbook.xml.rels',wbRels);
+    zip.file('xl/worksheets/sheet1.xml',sheetXml);
+    zip.file('xl/styles.xml',stylesXml);
+    zip.generateAsync({
+      type:'blob',
+      mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    }).then(blob=>downloadBlob(blob,'Lich_Dao_Tao.xlsx'));
+  }
+
+  if(typeof JSZip!=='undefined') doZip();
+  else{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    s.onload=doZip;
+    s.onerror=()=>showToast('Không tải được JSZip','err');
+    document.head.appendChild(s);
+  }
+}
+
+
+
+
+
+// ══════════════════════════════════════════════
+// EXPORT WORD
+// ══════════════════════════════════════════════
+function exportWord(){
+  if(!appliedWeeks.length){showToast('Hãy áp dụng bảng trước khi xuất','err');return;}
+  const btn=$('btnWord');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Đang tạo...';
+  setTimeout(()=>{
+    try{buildWordDoc();}
+    catch(e){showToast('Lỗi: '+e.message,'err');}
+    finally{
+      btn.disabled=false;
+      btn.innerHTML='<svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM7 12h10v1.5H7V12zm0 3h10v1.5H7V15zm0-6h4v1.5H7V9z"/></svg> Xuất Word';
+    }
+  },50);
+}
+
+function buildWordDoc(){
+  const weeks=appliedWeeks;
+  const phases=appliedPhaseData;
+  const hols=appliedHolidays;
+
+  const allDays=[];
+  weeks.forEach(mon=>{for(let d=0;d<7;d++) allDays.push(addDays(mon,d));});
+
+  const holMap={};
+  allDays.forEach(day=>{
+    const h=hols.find(h=>h.start&&h.end&&day>=h.start&&day<=h.end);
+    if(h) holMap[toIso(day)]=h.label||'Nghỉ';
+  });
+
+  const PALETTE={
+    '#2563eb':{bg:'#C7D9FF',color:'#1E3A8A'},
+    '#16a34a':{bg:'#BBF7D0',color:'#14532D'},
+    '#d97706':{bg:'#FDE68A',color:'#78350F'},
+    '#dc2626':{bg:'#FECACA',color:'#7F1D1D'},
+    '#7c3aed':{bg:'#DDD6FE',color:'#4C1D95'},
+  };
+  const DOW_LBL=['T2','T3','T4','T5','T6','T7','CN'];
+  const DOW_BG=['#EFF6FF','#EFF6FF','#EFF6FF','#EFF6FF','#EFF6FF','#F5F3FF','#FFF1F2'];
+
+  const mGroups=[];
+  allDays.forEach((day,i)=>{
+    const mo=`${String(day.getMonth()+1).padStart(2,'0')}/${day.getFullYear()}`;
+    if(!mGroups.length||mGroups[mGroups.length-1].label!==mo) mGroups.push({label:mo,count:1});
+    else mGroups[mGroups.length-1].count++;
+  });
+
+  const DAY_W=13,LBL_W=130,totalW=LBL_W+allDays.length*DAY_W;
+
+  let html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+body{font-family:Arial,sans-serif;font-size:7pt;margin:.5cm}
+h2{color:#1e293b;font-size:12pt;margin-bottom:4pt}
+.legend{display:flex;gap:10px;margin:5px 0;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:3px;font-size:7pt}
+.ls{display:inline-block;width:12px;height:8px;border-radius:2px}
+table{border-collapse:collapse;table-layout:fixed;width:${totalW}px}
+td,th{border:1px solid #D0D7E3;padding:0;height:15px;overflow:hidden;text-align:center;font-size:7pt}
+.lbl{width:${LBL_W}px;text-align:left;padding:0 4px;font-weight:bold;font-size:8pt}
+.day{width:${DAY_W}px}
+.hol-cell{background:#FECACA !important;color:#991B1B !important;font-weight:bold}
+.detail{margin-top:8pt}.detail table{width:auto;table-layout:auto}
+.detail td,.detail th{padding:2px 6px;font-size:8pt;height:auto}
+</style></head><body>
+<h2>📅 Lịch Đào Tạo Lái Xe</h2>
+<div class="legend">`;
+  phases.forEach(p=>html+=`<span class="li"><span class="ls" style="background:${p.color}"></span>${p.label}</span>`);
+  if(hols.length) html+=`<span class="li"><span class="ls" style="background:repeating-linear-gradient(45deg,#ef4444,#ef4444 3px,#fecaca 3px,#fecaca 6px)"></span>Nghỉ</span>`;
+  html+=`</div><table>`;
+
+  html+=`<tr><td class="lbl" style="background:#1e293b;color:#fff">Tháng</td>`;
+  mGroups.forEach(g=>html+=`<td class="day" colspan="${g.count}" style="background:#1e293b;color:#fff;font-weight:bold">${g.label}</td>`);
+  html+=`</tr>`;
+
+  html+=`<tr><td class="lbl" style="background:#263549;color:#93afc8;font-weight:bold">Tuần</td>`;
+  weeks.forEach(mon=>{
+    const isHolWeek=weekHasHoliday(mon);
+    html+=`<td class="day" colspan="7" style="background:${isHolWeek?'#7f1d1d':'#263549'};color:#93afc8;font-weight:bold">T${isoWeek(mon)}</td>`;
+  });
+  html+=`</tr>`;
+
+  html+=`<tr><td class="lbl" style="background:#2d3f57;color:#b8cfe0">Thứ</td>`;
+  allDays.forEach((day,i)=>{
+    const di=day.getDay()===0?6:day.getDay()-1;
+    const iso=toIso(day);
+    const isHol=iso in holMap;
+    const bg=isHol?'#991b1b':DOW_BG[di];
+    const color=isHol?'#fff':(di===6?'#9f1239':di===5?'#5b21b6':'#1e3a8a');
+    html+=`<td class="day" style="background:${bg};font-weight:bold;color:${color}">${DOW_LBL[di]}</td>`;
+  });
+  html+=`</tr>`;
+
+  html+=`<tr><td class="lbl" style="background:#2d3f57;color:#b8cfe0">Ngày</td>`;
+  allDays.forEach((day,i)=>{
+    const di=day.getDay()===0?6:day.getDay()-1;
+    const iso=toIso(day);
+    const isHol=iso in holMap;
+    const bg=isHol?'#fecaca':(di===6?'#ffe4e6':di===5?'#ede9fe':'#eff6ff');
+    const color=isHol?'#991b1b':'#64748b';
+    html+=`<td class="day" style="background:${bg};color:${color};font-weight:${isHol?'bold':'normal'}">${day.getDate()}</td>`;
+  });
+  html+=`</tr>`;
+
+  // Phase rows
+  phases.forEach(p=>{
+    const pal=PALETTE[p.color]||{bg:'#F1F5F9',color:'#334155'};
+    html+=`<tr><td class="lbl" style="border-left:3px solid ${p.color}">${p.label}</td>`;
+    allDays.forEach((day,i)=>{
+      const iso=toIso(day);
+      const di=day.getDay()===0?6:day.getDay()-1;
+      const isHol=iso in holMap;
+      if(isHol){
+        html+=`<td class="day hol-cell" title="🚫 ${holMap[iso]}" style="background:#fecaca;color:#991b1b;font-weight:bold;border:1px solid #fca5a5">✕</td>`;
+      } else {
+        const ts=day.getTime();
+        let inRange=false,isStart=false,isEnd=false;
+        (p.ranges||[]).forEach(r=>{
+          if(!r.start||!r.end) return;
+          if(ts>=r.start.getTime()&&ts<=r.end.getTime()){inRange=true;if(ts===r.start.getTime())isStart=true;if(ts===r.end.getTime())isEnd=true;}
+        });
+        if(inRange){
+          const mark=isStart&&isEnd?'◆':isStart?'▶':isEnd?'◀':'█';
+          const bl=isStart?`border-left:2px solid ${p.color};`:'';
+          const br=isEnd?`border-right:2px solid ${p.color};`:'';
+          html+=`<td class="day" style="background:${pal.bg};color:${pal.color};${bl}${br}font-weight:bold">${mark}</td>`;
+        } else {
+          const bg=di===6?'#fef2f2':di===5?'#faf5ff':'#fff';
+          html+=`<td class="day" style="background:${bg}"></td>`;
+        }
+      }
+    });
+    html+=`</tr>`;
+  });
+
+  // Holiday row
+  if(hols.length){
+    html+=`<tr><td class="lbl" style="border-left:3px solid #ef4444;color:#dc2626">🚫 Ngày nghỉ</td>`;
+    allDays.forEach((day,i)=>{
+      const iso=toIso(day);
+      const di=day.getDay()===0?6:day.getDay()-1;
+      if(iso in holMap){
+        html+=`<td class="day hol-cell" style="background:#fecaca;color:#991b1b;font-weight:bold;border:1px solid #ef4444">✕</td>`;
+      } else {
+        html+=`<td class="day" style="background:#fff"></td>`;
+      }
+    });
+    html+=`</tr>`;
+  }
+
+  html+=`</table>`;
+
+  // Detail
+  html+=`<div class="detail"><h3 style="font-size:9pt;color:#1e293b;margin:6pt 0 3pt">Chi tiết giai đoạn &amp; ngày nghỉ</h3>
+  <table border="1"><tr style="background:#1e293b;color:#fff">
+  <th>Giai đoạn</th><th>Khoảng</th><th>Từ ngày</th><th>Đến ngày</th><th>Số ngày</th></tr>`;
+  phases.forEach(p=>{
+    const pal=PALETTE[p.color]||{bg:'#F1F5F9'};
+    if(!p.ranges.length){
+      html+=`<tr><td style="border-left:3px solid ${p.color};background:${pal.bg};font-weight:bold">${p.label}</td><td colspan="4" style="background:${pal.bg};color:#94a3b8;text-align:center">Chưa có dữ liệu</td></tr>`;
+    } else {
+      p.ranges.forEach((r,i)=>{
+        const days=r.start&&r.end?Math.round((r.end.getTime()-r.start.getTime())/86400000)+1:'-';
+        html+=`<tr>${i===0?`<td rowspan="${p.ranges.length}" style="border-left:3px solid ${p.color};background:${pal.bg};font-weight:bold;vertical-align:middle">${p.label}</td>`:''}
+          <td style="background:${pal.bg}">Khoảng ${i+1}</td>
+          <td style="background:${pal.bg}">${r.start?fmtVi(r.start):'-'}</td>
+          <td style="background:${pal.bg}">${r.end?fmtVi(r.end):'-'}</td>
+          <td style="background:${pal.bg};text-align:center">${days}</td></tr>`;
+      });
+    }
+  });
+  if(hols.length){
+    html+=`<tr><td colspan="5" style="background:#fff1f2;color:#991b1b;font-weight:bold;border-left:3px solid #ef4444">🚫 Danh sách ngày nghỉ</td></tr>`;
+    hols.forEach((h,i)=>{
+      const days=h.start&&h.end?Math.round((h.end.getTime()-h.start.getTime())/86400000)+1:1;
+      html+=`<tr>
+        <td style="background:#fff1f2;border-left:3px solid #ef4444">Nghỉ ${i+1}</td>
+        <td style="background:#fff1f2;font-weight:bold;color:#991b1b">${h.label||'Ngày nghỉ'}</td>
+        <td style="background:#fff1f2">${fmtVi(h.start)}</td>
+        <td style="background:#fff1f2">${fmtVi(h.end)}</td>
+        <td style="background:#fff1f2;text-align:center">${days}</td></tr>`;
+    });
+  }
+  html+=`</table></div></body></html>`;
+
+  const blob=new Blob(['\ufeff'+html],{type:'application/msword;charset=utf-8'});
+  downloadBlob(blob,'Lich_Dao_Tao.doc');
+  showToast('Xuất Word thành công!','ok');
+}
+
+function downloadBlob(blob,filename){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
+  const defaults={
+    'ly-thuyet':      [{start:'2026-02-09',end:'2026-03-08'}],
+    'thuc-hanh-hinh': [{start:'2026-03-09',end:'2026-04-05'},{start:'2026-04-20',end:'2026-05-02'}],
+    'thuc-hanh-duong':[{start:'2026-04-06',end:'2026-04-19'}],
+    'kiem-tra':       [],
+    'du-phong':       [{start:'2026-04-27',end:'2026-05-03'}],
+  };
+  Object.entries(defaults).forEach(([k,arr])=>{
+    arr.forEach(({start,end})=>state[k].push({id:uid(),start:parseDate(start),end:parseDate(end)}));
+  });
+
+  // Sample holidays
+  holidays.push({id:uid(),start:parseDate('2026-02-17'),end:parseDate('2026-02-25'),label:'Tết Nguyên Đán'});
+  holidays.push({id:uid(),start:parseDate('2026-04-30'),end:parseDate('2026-05-01'),label:'30/4 - 1/5'});
+
+  renderPhaseList();
+  renderHolidaySection();
+  applySchedule();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Studio — Supabase Multi-User</title>
+
+<!-- ============================================================
+  ⚙️ SETUP SUPABASE STORAGE CHO AVATAR (chạy 1 lần trong SQL Editor):
+
+  -- 1. Tạo bucket công khai 'avatars'
+  INSERT INTO storage.buckets (id, name, public)
+  VALUES ('avatars', 'avatars', true)
+  ON CONFLICT (id) DO NOTHING;
+
+  -- 2. Mở policy cho phép upload / đọc / sửa / xóa ảnh
+  CREATE POLICY "avatars_public_read" ON storage.objects
+    FOR SELECT USING (bucket_id = 'avatars');
+  CREATE POLICY "avatars_insert" ON storage.objects
+    FOR INSERT WITH CHECK (bucket_id = 'avatars');
+  CREATE POLICY "avatars_update" ON storage.objects
+    FOR UPDATE USING (bucket_id = 'avatars');
+  CREATE POLICY "avatars_delete" ON storage.objects
+    FOR DELETE USING (bucket_id = 'avatars');
+
+  ➜ Ảnh lưu theo đường dẫn: avatars/{user_id}/avatar.{ext}
+============================================================ -->
+
+<!-- Fonts -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/plus-jakarta-sans@latest/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/plus-jakarta-sans@latest/800.css">
+
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+  /* ============ TOKENS & RESET ============ */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink:       #1E293B;
+    --heading:   #0F172A;
+    --accent:    #1E3A8A;
+    --muted:     #64748B;
+    --faint:     #94A3B8;
+    --side-bg:   #F8FAFC;
+    --main-bg:   #FFFFFF;
+    --badge-bg:  #E2E8F0;
+    --line:      #E2E8F0;
+    --font-head: 'Plus Jakarta Sans','Inter',sans-serif;
+    --font-body: 'Inter',sans-serif;
+  }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--ink);
+    background: #E2E8F0;
+    display: flex;
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  /* ============ SIDEBAR (EDITOR PANEL) ============ */
+  #sidebar {
+    width: 350px; flex-shrink: 0;
+    height: 100vh; position: sticky; top: 0;
+    overflow-y: auto;
+    background: #0F172A; color: #E2E8F0;
+    padding: 22px 18px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .brand { display:flex; align-items:center; gap:10px; }
+  .brand-logo {
+    width:36px;height:36px;border-radius:10px;
+    background:linear-gradient(135deg,#1E3A8A,#3B5BDB);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-head);font-weight:800;font-size:15px;color:#fff;
+  }
+  .brand h1 { font-family:var(--font-head); font-size:16px; font-weight:800; color:#fff; letter-spacing:.02em; }
+  .brand small { display:block; font-size:10.5px; color:#94A3B8; font-weight:500; }
+
+  .conn { display:flex; align-items:center; gap:7px; font-size:11px; color:#94A3B8;
+          background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+          border-radius:8px; padding:8px 10px; }
+  .dot { width:8px;height:8px;border-radius:50%;background:#F59E0B;flex-shrink:0; }
+  .dot.ok { background:#10B981; box-shadow:0 0 0 3px rgba(16,185,129,.18); }
+  .dot.err { background:#EF4444; box-shadow:0 0 0 3px rgba(239,68,68,.18); }
+
+  .panel-label { font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#64748B; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; }
+  .icon-btn {
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:#CBD5E1;
+    border-radius:6px; width:24px;height:24px; cursor:pointer; font-size:12px; line-height:1;
+    display:inline-flex;align-items:center;justify-content:center; transition:.15s;
+  }
+  .icon-btn:hover { background:rgba(255,255,255,.14); color:#fff; }
+
+  #userList { display:flex; flex-direction:column; gap:8px; max-height:270px; overflow-y:auto; padding-right:2px; }
+  .user-item {
+    display:flex; align-items:center; gap:10px; text-align:left;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+    border-radius:10px; padding:9px 10px; cursor:pointer; color:#E2E8F0; font-family:var(--font-body);
+    transition:.15s; width:100%;
+  }
+  .user-item:hover { background:rgba(255,255,255,.09); }
+  .user-item.active { border-color:#3B5BDB; background:rgba(59,91,219,.16); box-shadow:0 0 0 1px rgba(59,91,219,.4); }
+  .u-mono {
+    width:32px;height:32px;border-radius:50%;flex-shrink:0;
+    background:#1E3A8A;color:#fff;font-family:var(--font-head);font-weight:800;font-size:12px;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .u-mono img { width:100%; height:100%; object-fit:cover; }
+  .u-info { flex:1; min-width:0; }
+  .u-name { display:block; font-size:12.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .u-role { display:block; font-size:10.5px; color:#94A3B8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .u-time { font-size:9.5px; color:#64748B; flex-shrink:0; }
+  .empty-list { font-size:11.5px; color:#64748B; padding:14px 10px; text-align:center; border:1px dashed rgba(255,255,255,.15); border-radius:10px; }
+
+  .sb-btn {
+    width:100%; padding:10px 12px; border-radius:9px; font-family:var(--font-body);
+    font-size:12.5px; font-weight:600; cursor:pointer; transition:.15s; border:1px solid transparent;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .sb-btn.primary { background:#1E3A8A; color:#fff; }
+  .sb-btn.primary:hover { background:#2547A8; }
+  .sb-btn.ghost { background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.12); color:#CBD5E1; }
+  .sb-btn.ghost:hover { background:rgba(255,255,255,.1); color:#fff; }
+  .sb-btn.danger { background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.35); color:#FCA5A5; }
+  .sb-btn.danger:hover:not(:disabled) { background:rgba(239,68,68,.22); }
+  .sb-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+  .meta-box { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:10px; }
+  .meta-box label { font-size:10.5px; font-weight:600; color:#94A3B8; text-transform:uppercase; letter-spacing:.08em; }
+  .meta-box input {
+    width:100%; background:#1E293B; border:1px solid rgba(255,255,255,.12); border-radius:7px;
+    color:#F1F5F9; font-family:var(--font-body); font-size:12px; padding:8px 10px; outline:none;
+  }
+  .meta-box input:focus { border-color:#3B5BDB; }
+  .meta-box input:disabled { opacity:.4; }
+
+  #saveStatus { font-size:11px; color:#64748B; text-align:center; min-height:16px; }
+  #saveStatus.saving { color:#F59E0B; }
+  #saveStatus.saved { color:#10B981; }
+  #saveStatus.error { color:#EF4444; }
+
+  /* ============ STAGE (A4) ============ */
+  #stage { flex:1; overflow:auto; padding:36px 28px; display:flex; justify-content:center; align-items:flex-start; }
+
+  #emptyState {
+    max-width:420px; background:#fff; border-radius:16px; padding:48px 40px; text-align:center;
+    box-shadow:0 12px 45px rgba(15,23,42,.15); margin-top:60px;
+  }
+  #emptyState .big { font-size:40px; margin-bottom:14px; }
+  #emptyState h2 { font-family:var(--font-head); font-size:17px; color:var(--heading); margin-bottom:8px; }
+  #emptyState p { font-size:13px; color:var(--muted); }
+
+  .page {
+    width: 210mm; min-height: 297mm;
+    background: var(--main-bg);
+    box-shadow: 0 12px 45px rgba(15,23,42,.22);
+    display: flex; flex-direction: column;
+  }
+  .topbar { height:1.8mm; background:linear-gradient(90deg,var(--heading) 0%,var(--accent) 60%,#2B4EA0 100%); flex-shrink:0; }
+  .columns { display:flex; flex:1; }
+
+  .col-left { width:32%; flex-shrink:0; background:var(--side-bg); padding:9mm 6.5mm 10mm; border-right:0.4mm solid var(--line); }
+  .col-right { width:68%; background:var(--main-bg); padding:9mm 9mm 10mm 8mm; }
+
+  /* ---- Avatar / Monogram ---- */
+  .avatar-wrap { display:flex; justify-content:center; margin-bottom:7mm; }
+  .avatar-stack { display:flex; flex-direction:column; align-items:center; }
+  .avatar-ring {
+    border-radius:50%;
+    border:0.8mm solid var(--accent);
+    box-shadow:0 0 0 1.2mm #FFFFFF, 0 0 0 1.7mm var(--badge-bg);
+    background:#fff;
+    width:34mm; height:34mm;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .monogram {
+    width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+    color:var(--accent); font-family:var(--font-head); font-weight:800; font-size:21pt; letter-spacing:.02em;
+  }
+  .avatar-img { width:100%; height:100%; object-fit:cover; display:block; }
+
+  .av-actions { display:flex; gap:2mm; margin-top:3mm; flex-wrap:wrap; justify-content:center; }
+  .av-btn {
+    font-family:var(--font-body); font-size:7pt; font-weight:600; color:var(--accent);
+    background:#fff; border:0.3mm solid #B6C2D6; border-radius:999px;
+    padding:1.4mm 3mm; cursor:pointer; display:inline-flex; gap:1.5mm; align-items:center; transition:.15s;
+  }
+  .av-btn:hover:not(:disabled) { border-color:var(--accent); background:rgba(30,58,138,.07); }
+  .av-btn.danger { color:#B91C1C; }
+  .av-btn.danger:hover:not(:disabled) { border-color:#DC2626; background:rgba(220,38,38,.06); }
+  .av-btn:disabled { opacity:.55; cursor:wait; }
+
+  .side-title, .main-title {
+    font-family:var(--font-head); font-weight:800; text-transform:uppercase; letter-spacing:.14em;
+    color:var(--heading); padding-bottom:1.6mm; border-bottom:2px solid var(--accent); margin-bottom:4mm;
+    break-after:avoid; page-break-after:avoid;
+  }
+  .side-title { font-size:9pt; }
+  .main-title { font-size:9.5pt; }
+
+  .side-section { margin-bottom:7mm; break-inside:avoid; page-break-inside:avoid; position:relative; }
+  .side-section:last-child { margin-bottom:0; }
+
+  .contact-list { list-style:none; }
+  .contact-list li { display:flex; align-items:flex-start; gap:2.4mm; font-size:7.8pt; margin-bottom:2.6mm; word-break:break-word; line-height:1.45; }
+  .contact-list li:last-child { margin-bottom:0; }
+  .contact-list svg { width:3.4mm; height:3.4mm; flex-shrink:0; margin-top:0.4mm; stroke:var(--accent); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .contact-list [contenteditable] { flex:1; min-width:0; }
+
+  .skill-group { margin-bottom:4mm; position:relative; }
+  .skill-group:last-of-type { margin-bottom:2mm; }
+  .sg-name { font-size:7.4pt; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--accent); display:inline-block; margin-bottom:1.8mm; }
+  .badges { display:flex; flex-wrap:wrap; gap:1.6mm; }
+  .badge {
+    background:var(--badge-bg); border-radius:4px; padding:1.1mm 2.3mm;
+    font-size:7.3pt; font-weight:500; color:var(--ink); position:relative; white-space:nowrap;
+  }
+  .rm-dot {
+    position:absolute; top:-2mm; right:-1.6mm; width:3.4mm; height:3.4mm; border-radius:50%;
+    background:#DC2626; color:#fff; border:none; font-size:6pt; line-height:1; cursor:pointer;
+    display:none; align-items:center; justify-content:center; padding:0;
+  }
+  .badge:hover .rm-dot { display:flex; }
+
+  .edu-item, .cert-item, .lang-item { margin-bottom:4.5mm; position:relative; }
+  .edu-item:last-child, .cert-item:last-child, .lang-item:last-child { margin-bottom:0; }
+  .edu-degree { font-size:8.3pt; font-weight:600; color:var(--heading); line-height:1.4; }
+  .edu-school { font-size:7.8pt; font-weight:500; color:var(--accent); margin-top:0.6mm; }
+  .edu-meta, .cert-meta { font-size:7.3pt; color:var(--muted); margin-top:0.6mm; }
+  .cert-name { font-size:8pt; font-weight:600; color:var(--heading); }
+  .lang-row { font-size:8pt; }
+  .lang-row .lvl { color:var(--muted); }
+
+  /* ---- Cột phải ---- */
+  .header { margin-bottom:6mm; }
+  .name { font-family:var(--font-head); font-size:20.5pt; font-weight:800; letter-spacing:-.01em; color:var(--heading); line-height:1.15; text-transform:uppercase; }
+  .role { font-family:var(--font-head); font-size:9.5pt; font-weight:700; text-transform:uppercase; letter-spacing:.22em; color:var(--accent); margin-top:1.6mm; }
+
+  .main-section { margin-bottom:6.5mm; }
+  .main-section:last-child { margin-bottom:0; }
+  .summary { font-size:8.6pt; line-height:1.55; text-align:justify; }
+
+  .timeline { position:relative; padding-left:6mm; margin-left:1mm; }
+  .timeline::before { content:''; position:absolute; left:1mm; top:1mm; bottom:1.5mm; width:0.5mm; background:#D7DEE9; border-radius:1mm; }
+  .timeline-item { position:relative; padding-bottom:5.5mm; break-inside:avoid; page-break-inside:avoid; }
+  .timeline-item:last-child { padding-bottom:0; }
+  .timeline-item::before {
+    content:''; position:absolute; left:-6mm; top:1mm; width:2.5mm; height:2.5mm; border-radius:50%;
+    background:var(--accent); border:0.5mm solid #fff; box-shadow:0 0 0 0.4mm rgba(30,58,138,.18);
+  }
+
+  .job-head { display:flex; justify-content:space-between; align-items:baseline; gap:4mm; padding-right:5mm; }
+  .job-role { font-size:9.6pt; font-weight:600; color:var(--heading); }
+  .job-date {
+    font-size:7.3pt; font-weight:600; color:var(--accent);
+    background:var(--side-bg); border:0.3mm solid var(--line); border-radius:4px;
+    padding:0.8mm 2.2mm; white-space:nowrap; display:flex; gap:1.2mm; align-items:baseline; flex-shrink:0;
+  }
+  .job-date .sep { color:var(--muted); }
+  .job-company { font-size:8.3pt; font-weight:500; color:var(--accent); margin-top:0.8mm; }
+  .job-company .dim { color:var(--muted); font-weight:400; }
+
+  .job-points { list-style:none; margin-top:2mm; }
+  .job-points li { position:relative; padding-left:4mm; padding-right:4mm; font-size:8.3pt; line-height:1.5; margin-bottom:1.6mm; }
+  .job-points li::before { content:''; position:absolute; left:0.4mm; top:1.7mm; width:1.3mm; height:1.3mm; background:var(--accent); opacity:.55; transform:rotate(45deg); }
+  .job-points li:last-child { margin-bottom:0; }
+
+  .project { margin-bottom:5mm; break-inside:avoid; page-break-inside:avoid; position:relative; padding-right:5mm; }
+  .project:last-of-type { margin-bottom:2mm; }
+  .project-head { display:flex; justify-content:space-between; align-items:baseline; gap:4mm; }
+  .project-name { font-size:9.2pt; font-weight:600; color:var(--heading); }
+  .project-name::before { content:''; display:inline-block; width:1.8mm; height:1.8mm; background:var(--accent); border-radius:50%; margin-right:2mm; vertical-align:1mm; }
+  .proj-meta { white-space:nowrap; flex-shrink:0; }
+  .proj-role { font-size:7.4pt; font-weight:600; color:var(--accent); margin-right:2mm; }
+  .project-year { font-size:7.3pt; font-weight:600; color:var(--muted); }
+  .project-desc { font-size:8.3pt; line-height:1.5; margin-top:1.2mm; }
+  .project-result { font-size:7.9pt; color:var(--ink); margin-top:1mm; }
+  .project-result em { font-style:normal; font-weight:600; color:var(--accent); }
+
+  /* ============ EDIT MODE (controls) ============ */
+  [contenteditable] { border-radius:2px; transition:box-shadow .12s; }
+  [contenteditable]:hover { box-shadow:0 0 0 1px rgba(30,58,138,.30); }
+  [contenteditable]:focus { outline:2px solid var(--accent); outline-offset:1px; background:rgba(30,58,138,.05); box-shadow:none; }
+  [contenteditable][data-ph]:empty::before { content:attr(data-ph); color:var(--faint); font-style:italic; }
+
+  .ctl {
+    position:absolute; top:-2mm; right:-1mm; width:5mm; height:5mm; border-radius:50%;
+    background:#fff; color:#64748B; border:0.3mm solid var(--line); font-size:7pt; cursor:pointer;
+    display:none; align-items:center; justify-content:center; padding:0; z-index:5; line-height:1;
+  }
+  .ctl:hover { background:#DC2626; color:#fff; border-color:#DC2626; }
+  .hoverable:hover > .ctl { display:flex; }
+
+  .add-btn {
+    display:inline-flex; align-items:center; gap:1.5mm; margin-top:2.5mm;
+    background:transparent; border:0.35mm dashed #B6C2D6; border-radius:4px;
+    color:var(--accent); font-family:var(--font-body); font-size:7.2pt; font-weight:600;
+    padding:1.2mm 2.6mm; cursor:pointer; transition:.15s;
+  }
+  .add-btn:hover { border-color:var(--accent); background:rgba(30,58,138,.06); }
+
+  /* ============ MODAL & TOAST ============ */
+  .modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,.6); display:none; align-items:center; justify-content:center; z-index:100; backdrop-filter:blur(3px); }
+  .modal-overlay.open { display:flex; }
+  .modal { background:#fff; border-radius:16px; width:380px; max-width:92vw; padding:28px; box-shadow:0 24px 70px rgba(15,23,42,.4); }
+  .modal h2 { font-family:var(--font-head); font-size:17px; color:var(--heading); margin-bottom:4px; }
+  .modal p { font-size:12px; color:var(--muted); margin-bottom:18px; }
+  .modal label { display:block; font-size:11px; font-weight:600; color:var(--heading); margin:12px 0 5px; }
+  .modal input { width:100%; border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-family:var(--font-body); font-size:13px; color:var(--ink); outline:none; }
+  .modal input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(30,58,138,.12); }
+  .modal-actions { display:flex; gap:10px; margin-top:22px; }
+  .modal-actions button { flex:1; padding:10px; border-radius:9px; font-family:var(--font-body); font-size:13px; font-weight:600; cursor:pointer; border:none; }
+  .m-cancel { background:#F1F5F9; color:var(--muted); }
+  .m-ok { background:var(--accent); color:#fff; }
+  .m-ok:disabled { opacity:.5; cursor:wait; }
+
+  #toast {
+    position:fixed; bottom:22px; right:22px; z-index:200;
+    background:var(--heading); color:#fff; font-size:12.5px; padding:11px 16px; border-radius:10px;
+    box-shadow:0 10px 30px rgba(15,23,42,.35); max-width:340px;
+    opacity:0; transform:translateY(12px); transition:.25s; pointer-events:none;
+  }
+  #toast.show { opacity:1; transform:translateY(0); }
+  #toast.err { background:#B91C1C; }
+
+  /* ============ IN ẤN ============ */
+  @page { size:A4; margin:0; }
+  @media print {
+    body { display:block; background:#fff; }
+    #sidebar, #emptyState, #toast, .modal-overlay, .ctl, .rm-dot, .add-btn, .av-actions { display:none !important; }
+    #stage { padding:0; overflow:visible; display:block; }
+    .page { box-shadow:none; margin:0; width:210mm; min-height:297mm; }
+    [contenteditable]:hover, [contenteditable]:focus { box-shadow:none; outline:none; background:none; }
+    .side-section,.timeline-item,.project,.edu-item,.cert-item,.lang-item,.job-points li { break-inside:avoid; page-break-inside:avoid; }
+  }
+  @media (max-width:1100px){ body{flex-direction:column;} #sidebar{width:100%;height:auto;position:static;} }
+</style>
+</head>
+<body>
+
+<!-- ==================== SIDEBAR ==================== -->
+<aside id="sidebar">
+  <div class="brand">
+    <div class="brand-logo">CV</div>
+    <div>
+      <h1>CV Studio</h1>
+      <small>Supabase · Multi-user CV Builder</small>
+    </div>
+  </div>
+
+  <div class="conn"><span class="dot" id="connDot"></span><span id="connText">Đang kết nối Supabase…</span></div>
+
+  <div>
+    <div class="panel-label">
+      <span>Danh sách hồ sơ</span>
+      <button class="icon-btn" id="btnRefresh" title="Làm mới danh sách">⟳</button>
+    </div>
+    <div id="userList"><div class="empty-list">Đang tải…</div></div>
+  </div>
+
+  <button class="sb-btn primary" id="btnNewUser">＋ Tạo hồ sơ mới</button>
+
+  <div class="meta-box">
+    <div>
+      <label for="metaPortfolio">Portfolio URL</label>
+      <input type="text" id="metaPortfolio" placeholder="https://…" disabled>
+    </div>
+  </div>
+
+  <button class="sb-btn ghost" id="btnSaveAll" disabled>💾 Lưu ngay tất cả</button>
+  <button class="sb-btn ghost" id="btnPrint" disabled>🖨 In / Xuất PDF</button>
+  <button class="sb-btn danger" id="btnDelete" disabled>🗑 Xóa hồ sơ này</button>
+
+  <div id="saveStatus"></div>
+</aside>
+
+<!-- ==================== STAGE ==================== -->
+<main id="stage">
+
+  <div id="emptyState">
+    <div class="big">📄</div>
+    <h2>Chưa có hồ sơ nào được chọn</h2>
+    <p>Chọn một hồ sơ từ danh sách bên trái để xem &amp; chỉnh sửa CV, hoặc bấm <b>“Tạo hồ sơ mới”</b> để bắt đầu.</p>
+  </div>
+
+  <div class="page" id="cvPage" style="display:none">
+    <div class="topbar"></div>
+    <div class="columns">
+
+      <!-- CỘT TRÁI 32% -->
+      <aside class="col-left">
+        <div class="avatar-wrap" id="monoBox"></div>
+
+        <section class="side-section">
+          <h2 class="side-title">Liên hệ</h2>
+          <ul class="contact-list" id="contactList"></ul>
+        </section>
+
+        <section class="side-section">
+          <h2 class="side-title">Kỹ năng</h2>
+          <div id="skillsBox"></div>
+          <button class="add-btn" data-action="add-group">＋ Thêm nhóm kỹ năng</button>
+        </section>
+
+        <section class="side-section">
+          <h2 class="side-title">Học vấn</h2>
+          <div id="eduBox"></div>
+          <button class="add-btn" data-action="add-edu">＋ Thêm học vấn</button>
+        </section>
+
+        <section class="side-section">
+          <h2 class="side-title">Chứng chỉ</h2>
+          <div id="certBox"></div>
+          <button class="add-btn" data-action="add-cert">＋ Thêm chứng chỉ</button>
+        </section>
+
+        <section class="side-section">
+          <h2 class="side-title">Ngôn ngữ</h2>
+          <div id="langBox"></div>
+          <button class="add-btn" data-action="add-lang">＋ Thêm ngôn ngữ</button>
+        </section>
+      </aside>
+
+      <!-- CỘT PHẢI 68% -->
+      <main class="col-right">
+        <header class="header" id="hdrBox"></header>
+
+        <section class="main-section">
+          <h2 class="main-title">Giới thiệu</h2>
+          <p class="summary" id="summaryBox" contenteditable="true" data-field="profile.summary"
+             data-ph="Viết đoạn giới thiệu ngắn về bản thân…" spellcheck="false"></p>
+        </section>
+
+        <section class="main-section">
+          <h2 class="main-title">Kinh nghiệm làm việc</h2>
+          <div class="timeline" id="timelineBox"></div>
+          <button class="add-btn" data-action="add-exp">＋ Thêm công việc</button>
+        </section>
+
+        <section class="main-section">
+          <h2 class="main-title">Dự án nổi bật</h2>
+          <div id="projectsBox"></div>
+          <button class="add-btn" data-action="add-proj">＋ Thêm dự án</button>
+        </section>
+      </main>
+
+    </div>
+  </div>
+</main>
+
+<!-- Input chọn ảnh từ thiết bị (điện thoại / laptop) -->
+<input type="file" id="avatarInput" accept="image/*" hidden>
+
+<!-- ==================== MODAL: TẠO USER MỚI ==================== -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Tạo hồ sơ mới</h2>
+    <p>Một tài khoản Supabase Auth sẽ được tạo để ràng buộc <code>user_id</code> cho hồ sơ.</p>
+    <label>Họ và tên</label>
+    <input type="text" id="mName" placeholder="Nguyễn Văn A">
+    <label>Vị trí / Chức danh</label>
+    <input type="text" id="mRole" placeholder="Senior Software Engineer">
+    <label>Email</label>
+    <input type="email" id="mEmail" placeholder="email@example.com">
+    <label>Mật khẩu (tối thiểu 6 ký tự)</label>
+    <input type="password" id="mPass" placeholder="••••••••">
+    <div class="modal-actions">
+      <button class="m-cancel" id="mCancel">Hủy</button>
+      <button class="m-ok" id="mOk">Tạo hồ sơ</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   CẤU HÌNH SUPABASE
+============================================================ */
+const SUPABASE_URL = 'https://mlcqsdjkydevtixcjeqf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1sY3FzZGpreWRldnRpeGNqZXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyOTUyODUsImV4cCI6MjA3OTg3MTI4NX0.QiXkFZ5VReRMqIZKLLXecP0-Nt4WOo66AS__LIpWXl8';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const AVATAR_BUCKET = 'avatars';
+const AVATAR_MAX_MB = 5;
+
+/* ============================================================
+   TRẠNG THÁI ỨNG DỤNG
+============================================================ */
+let USERS = [];
+let CURRENT_UID = null;
+let STATE = null;            // STATE.avatarUrl + STATE.avatarPath (runtime, lưu trên Storage)
+const saveTimers = {};
+
+const blankState = () => ({
+  profile: { full_name:'', role_tag:'', summary:'', monogram:'', portfolio_url:'' },
+  contact: { email:'', phone:'', location:'', website:'', linkedin:'', behance:'', github:'' },
+  experiences: [], projects: [], skillGroups: [],
+  educations: [], certifications: [], languages: [],
+  avatarUrl: null, avatarPath: null
+});
+
+/* ============================================================
+   TIỆN ÍCH
+============================================================ */
+const $ = s => document.querySelector(s);
+const esc = s => (s==null?'':String(s)).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function toast(msg, isErr=false){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'show' + (isErr ? ' err' : '');
+  clearTimeout(t._h);
+  t._h = setTimeout(()=>{ t.className=''; }, 3600);
+}
+function setStatus(text, cls=''){
+  const el = $('#saveStatus');
+  el.textContent = text;
+  el.className = cls;
+}
+function initials(name){
+  return (name||'?').trim().split(/\s+/).slice(-2).map(w=>w[0]||'').join('').toUpperCase().slice(0,2) || '?';
+}
+function fmtDate(d){
+  if(!d) return '';
+  const dt = new Date(d);
+  if(isNaN(dt)) return '';
+  return String(dt.getMonth()+1).padStart(2,'0') + '/' + dt.getFullYear();
+}
+function timeAgo(iso){
+  if(!iso) return '';
+  const s = (Date.now() - new Date(iso).getTime())/1000;
+  if(s<60) return 'vừa xong';
+  if(s<3600) return Math.floor(s/60)+' phút';
+  if(s<86400) return Math.floor(s/3600)+' giờ';
+  return Math.floor(s/86400)+' ngày';
+}
+function setPath(obj, path, val){
+  const parts = path.split('.');
+  let cur = obj;
+  for(let i=0;i<parts.length-1;i++){ cur = cur[parts[i]]; }
+  cur[parts[parts.length-1]] = val;
+}
+const sectionOf = field => field.split('.')[0];
+const SECTION_MAP = { profile:'profile', contact:'contact', exp:'exp', proj:'proj', sg:'sg', edu:'edu', cert:'cert', lang:'lang' };
+const intOrNull = v => { if(v==null||v==='') return null; const n=parseInt(v,10); return isNaN(n)?null:n; };
+
+/* ============================================================
+   SUPABASE STORAGE — AVATAR (thêm / sửa / xóa / cập nhật)
+============================================================ */
+async function ensureBucket(){
+  // Cố tạo bucket nếu chưa có (có thể bị chặn quyền → bỏ qua, bucket nên tạo bằng SQL ở đầu file)
+  try{ await sb.storage.createBucket(AVATAR_BUCKET, { public:true }); }catch(e){ /* ignore */ }
+}
+function avatarPublicUrl(path){
+  return sb.storage.from(AVATAR_BUCKET).getPublicUrl(path).data.publicUrl;
+}
+async function listAvatarFiles(uid){
+  const { data, error } = await sb.storage.from(AVATAR_BUCKET).list(String(uid), { limit:20 });
+  if(error) return [];
+  return (data||[]).filter(f => f.name && f.name.startsWith('avatar.'));
+}
+async function loadAvatar(uid){
+  STATE.avatarUrl = null; STATE.avatarPath = null;
+  try{
+    const files = await listAvatarFiles(uid);
+    if(files.length){
+      STATE.avatarPath = `${uid}/${files[0].name}`;
+      STATE.avatarUrl  = avatarPublicUrl(STATE.avatarPath) + '?v=' + Date.now();
+    }
+  }catch(e){ /* bucket chưa có hoặc lỗi mạng → dùng monogram */ }
+}
+async function uploadAvatar(file){
+  if(!CURRENT_UID || !STATE) return;
+  if(!file || !file.type.startsWith('image/')){ toast('Vui lòng chọn file ảnh (JPG/PNG/WebP…).', true); return; }
+  if(file.size > AVATAR_MAX_MB*1024*1024){ toast(`Ảnh vượt quá ${AVATAR_MAX_MB}MB. Hãy chọn ảnh nhỏ hơn.`, true); return; }
+
+  const ext = (file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
+  const path = `${CURRENT_UID}/avatar.${ext}`;
+
+  setStatus('Đang tải ảnh lên Storage…','saving');
+  toast('Đang tải ảnh lên…');
+
+  try{
+    await ensureBucket();
+
+    // Xóa các file avatar cũ có đuôi khác (tránh file rác khi đổi định dạng)
+    const old = await listAvatarFiles(CURRENT_UID);
+    const stale = old.filter(f => f.name !== `avatar.${ext}`).map(f => `${CURRENT_UID}/${f.name}`);
+    if(stale.length) await sb.storage.from(AVATAR_BUCKET).remove(stale);
+
+    // Upload / cập nhật (upsert = ghi đè nếu đã có)
+    const { error } = await sb.storage.from(AVATAR_BUCKET).upload(path, file, {
+      upsert: true, contentType: file.type, cacheControl: '3600'
+    });
+    if(error){
+      const msg = /bucket not found/i.test(error.message||'')
+        ? 'Bucket "avatars" chưa tồn tại. Hãy chạy đoạn SQL ở đầu file này trong SQL Editor.'
+        : error.message;
+      throw new Error(msg);
+    }
+
+    STATE.avatarPath = path;
+    STATE.avatarUrl  = avatarPublicUrl(path) + '?v=' + Date.now();
+    renderMono(); renderUserList();
+    setStatus('✓ Ảnh đại diện đã cập nhật','saved');
+    toast('✓ Đã tải ảnh đại diện lên Supabase Storage.');
+  }catch(err){
+    setStatus('✗ Lỗi tải ảnh','error');
+    toast('Tải ảnh thất bại: ' + (err.message||err), true);
+  }
+}
+async function deleteAvatar(){
+  if(!CURRENT_UID || !STATE || !STATE.avatarPath) return;
+  if(!confirm('Xóa ảnh đại diện và quay về monogram chữ?')) return;
+  try{
+    setStatus('Đang xóa ảnh…','saving');
+    const files = await listAvatarFiles(CURRENT_UID);
+    const paths = files.map(f => `${CURRENT_UID}/${f.name}`);
+    if(paths.length){
+      const { error } = await sb.storage.from(AVATAR_BUCKET).remove(paths);
+      if(error) throw error;
+    }
+    STATE.avatarUrl = null; STATE.avatarPath = null;
+    renderMono(); renderUserList();
+    setStatus('✓ Đã xóa ảnh đại diện','saved');
+    toast('Đã xóa ảnh đại diện.');
+  }catch(err){
+    setStatus('✗ Lỗi xóa ảnh','error');
+    toast('Xóa ảnh thất bại: ' + (err.message||err), true);
+  }
+}
+// Fallback nếu ảnh lỗi (VD: file bị xóa ngoài hệ thống)
+window.__avatarFallback = function(){
+  if(STATE){ STATE.avatarUrl = null; STATE.avatarPath = null; renderMono(); }
+};
+
+/* ============================================================
+   RENDER — BIỂU MẪU CV (giữ nguyên thiết kế Executive)
+============================================================ */
+const ICONS = {
+  email:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
+  location:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  website:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  linkedin:'<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>',
+  behance:'<path d="M10 13a5 5 0 0 1-5 5H2V6h3.5A4.5 4.5 0 0 1 10 10.5"/><path d="M14 17a4 4 0 0 0 8 0 4 4 0 0 0-8 0z"/><path d="M15 7h5"/>',
+  github:'<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 5 5 5 5 5c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 12c0 3.5 3 5.5 6 5.5-.39.49-.68 1.06-.85 1.67S8.93 20.4 9 21v1"/>'
+};
+const CONTACT_FIELDS = [
+  ['email','email','Email…'],['phone','phone','Số điện thoại…'],['location','location','Địa chỉ…'],
+  ['website','website','Website…'],['linkedin','linkedin','LinkedIn…'],['behance','behance','Behance…'],['github','github','GitHub…']
+];
+
+function renderAll(){
+  if(!STATE) return;
+  renderMono(); renderHeader(); renderContact(); renderSkills();
+  renderEdu(); renderCert(); renderLang(); renderTimeline(); renderProjects();
+  $('#summaryBox').innerHTML = esc(STATE.profile.summary||'').replace(/\n/g,'<br>');
+  $('#metaPortfolio').value = STATE.profile.portfolio_url || '';
+}
+
+function renderMono(){
+  const box = $('#monoBox');
+  const hasImg = !!STATE.avatarUrl;
+  const m = STATE.profile.monogram || initials(STATE.profile.full_name);
+  box.innerHTML = `
+    <div class="avatar-stack">
+      <div class="avatar-ring">
+        ${hasImg
+          ? `<img class="avatar-img" src="${esc(STATE.avatarUrl)}" alt="Ảnh đại diện" onerror="window.__avatarFallback()">`
+          : `<div class="monogram" contenteditable="true" data-field="profile.monogram" data-single="1" spellcheck="false">${esc(m)}</div>`}
+      </div>
+      <div class="av-actions">
+        <button class="av-btn" data-av="upload" title="Tải ảnh lên từ điện thoại hoặc máy tính">
+          📷 <span>${hasImg ? 'Đổi ảnh' : 'Tải ảnh lên'}</span>
+        </button>
+        ${hasImg ? `<button class="av-btn danger" data-av="remove" title="Xóa ảnh khỏi Storage">✕ <span>Xóa ảnh</span></button>` : ''}
+      </div>
+    </div>`;
+}
+function renderHeader(){
+  $('#hdrBox').innerHTML = `
+    <h1 class="name" contenteditable="true" data-field="profile.full_name" data-single="1" data-ph="Họ và tên" spellcheck="false">${esc(STATE.profile.full_name)}</h1>
+    <div class="role" contenteditable="true" data-field="profile.role_tag" data-single="1" data-ph="Chức danh" spellcheck="false">${esc(STATE.profile.role_tag)}</div>`;
+}
+function renderContact(){
+  $('#contactList').innerHTML = CONTACT_FIELDS.map(([key,icon,ph]) => `
+    <li>
+      <svg viewBox="0 0 24 24">${ICONS[icon]}</svg>
+      <span contenteditable="true" data-field="contact.${key}" data-single="1" data-ph="${ph}" spellcheck="false">${esc(STATE.contact[key])}</span>
+    </li>`).join('');
+}
+function renderSkills(){
+  $('#skillsBox').innerHTML = STATE.skillGroups.map((g,i) => `
+    <div class="skill-group hoverable">
+      <button class="ctl" data-action="rm-group" data-idx="${i}" title="Xóa nhóm">✕</button>
+      <div class="sg-name" contenteditable="true" data-field="sg.${i}.name" data-single="1" data-ph="Tên nhóm…" spellcheck="false">${esc(g.name)}</div>
+      <div class="badges">
+        ${(g.skills||[]).map((s,j)=>`
+          <span class="badge">
+            <span contenteditable="true" data-field="sg.${i}.skills.${j}" data-single="1" data-ph="Kỹ năng" spellcheck="false">${esc(s)}</span>
+            <button class="rm-dot" data-action="rm-skill" data-idx="${i}" data-sub="${j}" title="Xóa kỹ năng">✕</button>
+          </span>`).join('')}
+        <button class="add-btn" style="margin-top:0" data-action="add-skill" data-idx="${i}">＋</button>
+      </div>
+    </div>`).join('');
+}
+function renderEdu(){
+  $('#eduBox').innerHTML = STATE.educations.map((e,i)=>`
+    <div class="edu-item hoverable">
+      <button class="ctl" data-action="rm-edu" data-idx="${i}" title="Xóa">✕</button>
+      <div class="edu-degree" contenteditable="true" data-field="edu.${i}.degree" data-single="1" data-ph="Bằng cấp…" spellcheck="false">${esc(e.degree)}</div>
+      <div class="edu-school" contenteditable="true" data-field="edu.${i}.school" data-single="1" data-ph="Trường / Tổ chức…" spellcheck="false">${esc(e.school)}</div>
+      <div class="edu-meta">
+        <span contenteditable="true" data-field="edu.${i}.start_year" data-single="1" data-ph="Năm bắt đầu" spellcheck="false">${esc(e.start_year||'')}</span>
+        <span class="dim"> – </span>
+        <span contenteditable="true" data-field="edu.${i}.end_year" data-single="1" data-ph="Năm kết thúc" spellcheck="false">${esc(e.end_year||'')}</span>
+        <span class="dim"> · </span>
+        <span contenteditable="true" data-field="edu.${i}.notes" data-single="1" data-ph="Ghi chú (GPA, chuyên ngành…)" spellcheck="false">${esc(e.notes)}</span>
+      </div>
+    </div>`).join('');
+}
+function renderCert(){
+  $('#certBox').innerHTML = STATE.certifications.map((c,i)=>`
+    <div class="cert-item hoverable">
+      <button class="ctl" data-action="rm-cert" data-idx="${i}" title="Xóa">✕</button>
+      <div class="cert-name" contenteditable="true" data-field="cert.${i}.name" data-single="1" data-ph="Tên chứng chỉ…" spellcheck="false">${esc(c.name)}</div>
+      <div class="cert-meta">
+        <span contenteditable="true" data-field="cert.${i}.issuer" data-single="1" data-ph="Đơn vị cấp" spellcheck="false">${esc(c.issuer)}</span>
+        <span class="dim"> · </span>
+        <span contenteditable="true" data-field="cert.${i}.year" data-single="1" data-ph="Năm" spellcheck="false">${esc(c.year||'')}</span>
+      </div>
+    </div>`).join('');
+}
+function renderLang(){
+  $('#langBox').innerHTML = STATE.languages.map((l,i)=>`
+    <div class="lang-item hoverable">
+      <button class="ctl" data-action="rm-lang" data-idx="${i}" title="Xóa">✕</button>
+      <div class="lang-row">
+        <b contenteditable="true" data-field="lang.${i}.name" data-single="1" data-ph="Ngôn ngữ" spellcheck="false">${esc(l.name)}</b>
+        <span class="dim"> — </span>
+        <span class="lvl" contenteditable="true" data-field="lang.${i}.level" data-single="1" data-ph="Trình độ (VD: IELTS 7.5)" spellcheck="false">${esc(l.level)}</span>
+      </div>
+    </div>`).join('');
+}
+function renderTimeline(){
+  $('#timelineBox').innerHTML = STATE.experiences.map((x,i)=>`
+    <article class="timeline-item hoverable">
+      <button class="ctl" data-action="rm-exp" data-idx="${i}" title="Xóa công việc">✕</button>
+      <div class="job-head">
+        <h3 class="job-role" contenteditable="true" data-field="exp.${i}.role" data-single="1" data-ph="Chức danh…" spellcheck="false">${esc(x.role)}</h3>
+        <span class="job-date">
+          <span contenteditable="true" data-field="exp.${i}.start" data-single="1" data-ph="MM/YYYY" spellcheck="false">${fmtDate(x.start)||''}</span>
+          <span class="sep">–</span>
+          <span contenteditable="true" data-field="exp.${i}.end" data-single="1" data-ph="Nay" spellcheck="false">${x.end ? fmtDate(x.end) : 'Nay'}</span>
+        </span>
+      </div>
+      <div class="job-company">
+        <span contenteditable="true" data-field="exp.${i}.company" data-single="1" data-ph="Công ty…" spellcheck="false">${esc(x.company)}</span>
+        <span class="dim"> · </span>
+        <span contenteditable="true" data-field="exp.${i}.industry" data-single="1" data-ph="Lĩnh vực" spellcheck="false">${esc(x.industry)}</span>
+        <span class="dim"> · </span>
+        <span contenteditable="true" data-field="exp.${i}.location" data-single="1" data-ph="Địa điểm" spellcheck="false">${esc(x.location)}</span>
+      </div>
+      <ul class="job-points">
+        ${(x.bullets||[]).map((b,j)=>`
+          <li class="hoverable">
+            <span contenteditable="true" data-field="exp.${i}.bullets.${j}" data-bullet="1" data-single="1" data-ph="Mô tả thành tựu / trách nhiệm…" spellcheck="false">${esc(b)}</span>
+            <button class="ctl" style="top:0" data-action="rm-bullet" data-idx="${i}" data-sub="${j}" title="Xóa dòng">✕</button>
+          </li>`).join('')}
+      </ul>
+      <button class="add-btn" data-action="add-bullet" data-idx="${i}">＋ Thêm mô tả</button>
+    </article>`).join('');
+}
+function renderProjects(){
+  $('#projectsBox').innerHTML = STATE.projects.map((p,i)=>`
+    <article class="project hoverable">
+      <button class="ctl" data-action="rm-proj" data-idx="${i}" title="Xóa dự án">✕</button>
+      <div class="project-head">
+        <h3 class="project-name" contenteditable="true" data-field="proj.${i}.title" data-single="1" data-ph="Tên dự án…" spellcheck="false">${esc(p.title)}</h3>
+        <span class="proj-meta">
+          <span class="proj-role" contenteditable="true" data-field="proj.${i}.role_meta" data-single="1" data-ph="Vai trò" spellcheck="false">${esc(p.role_meta)}</span>
+          <span class="project-year" contenteditable="true" data-field="proj.${i}.year" data-single="1" data-ph="Năm" spellcheck="false">${esc(p.year||'')}</span>
+        </span>
+      </div>
+      <p class="project-desc" contenteditable="true" data-field="proj.${i}.description" data-ph="Mô tả ngắn về dự án…" spellcheck="false">${esc(p.description||'').replace(/\n/g,'<br>')}</p>
+      <p class="project-result"><em>Kết quả:</em>
+        <span contenteditable="true" data-field="proj.${i}.result" data-single="1" data-ph="Chỉ số / tác động đạt được…" spellcheck="false">${esc(p.result)}</span>
+      </p>
+    </article>`).join('');
+}
+
+/* ============================================================
+   RENDER — DANH SÁCH USER (có thumbnail avatar từ Storage)
+============================================================ */
+function renderUserList(){
+  const box = $('#userList');
+  if(!USERS.length){ box.innerHTML = '<div class="empty-list">Chưa có hồ sơ nào.<br>Bấm “＋ Tạo hồ sơ mới” để bắt đầu.</div>'; return; }
+  box.innerHTML = USERS.map(u=>{
+    const thumb = (u.user_id===CURRENT_UID && STATE?.avatarUrl)
+      ? `<img src="${esc(STATE.avatarUrl)}" alt="">`
+      : esc(u.monogram || initials(u.full_name));
+    return `
+    <button class="user-item ${u.user_id===CURRENT_UID?'active':''}" data-uid="${u.user_id}">
+      <span class="u-mono">${thumb}</span>
+      <span class="u-info">
+        <span class="u-name">${esc(u.full_name)}</span>
+        <span class="u-role">${esc(u.role_tag||'—')}</span>
+      </span>
+      <span class="u-time">${timeAgo(u.updated_at)}</span>
+    </button>`;}).join('');
+}
+
+/* ============================================================
+   LOAD DỮ LIỆU TỪ SUPABASE
+============================================================ */
+async function loadUsers(){
+  const { data, error } = await sb.from('cv_profiles')
+    .select('user_id, full_name, role_tag, monogram, updated_at')
+    .order('updated_at', { ascending:false });
+  if(error) throw error;
+  USERS = data || [];
+  renderUserList();
+}
+async function selectUser(uid){
+  CURRENT_UID = uid;
+  setStatus('Đang tải dữ liệu…','saving');
+  const { data, error } = await sb.from('cv_full_view').select('*').eq('user_id', uid).maybeSingle();
+  if(error){ setStatus('Lỗi tải dữ liệu','error'); toast('Lỗi: '+error.message,true); return; }
+  const v = data || {};
+  STATE = {
+    profile: { full_name:v.full_name||'', role_tag:v.role_tag||'', summary:v.summary||'', monogram:v.monogram||'', portfolio_url:v.portfolio_url||'' },
+    contact: Object.assign({email:'',phone:'',location:'',website:'',linkedin:'',behance:'',github:''}, v.contact||{}),
+    experiences: (v.experiences||[]).map(x=>({ role:x.role, company:x.company||'', industry:x.industry||'', location:x.location||'', start:x.start_date, end:x.end_date, is_current:!!x.is_current, bullets:x.bullets||[] })),
+    projects: (v.projects||[]).map(p=>({ title:p.title, role_meta:p.role_meta||'', year:p.year, description:p.description||'', result:p.result||'' })),
+    skillGroups: (v.skill_groups||[]).map(g=>({ name:g.group, skills:g.skills||[] })),
+    educations: (v.educations||[]).map(e=>({ school:e.school, degree:e.degree||'', start_year:e.start_year, end_year:e.end_year, notes:e.notes||'' })),
+    certifications: (v.certifications||[]).map(c=>({ name:c.name, issuer:c.issuer||'', year:c.year })),
+    languages: (v.languages||[]).map(l=>({ name:l.name, level:l.level||'' })),
+    avatarUrl:null, avatarPath:null
+  };
+  await loadAvatar(uid);       // lấy ảnh từ Storage bucket 'avatars'
+  renderAll(); renderUserList();
+  $('#emptyState').style.display='none';
+  $('#cvPage').style.display='flex';
+  ['#btnSaveAll','#btnPrint','#btnDelete'].forEach(s=>$(s).disabled=false);
+  $('#metaPortfolio').disabled=false;
+  setStatus('✓ Đã tải hồ sơ của '+(STATE.profile.full_name||'người dùng'),'saved');
+}
+function clearSelection(){
+  CURRENT_UID=null; STATE=null;
+  $('#emptyState').style.display='block';
+  $('#cvPage').style.display='none';
+  ['#btnSaveAll','#btnPrint','#btnDelete'].forEach(s=>$(s).disabled=true);
+  $('#metaPortfolio').disabled=true; $('#metaPortfolio').value='';
+  setStatus('');
+}
+
+/* ============================================================
+   LƯU DỮ LIỆU (auto-save debounce theo từng section)
+============================================================ */
+async function saveProfile(){
+  const p = STATE.profile;
+  const { error } = await sb.from('cv_profiles').upsert({
+    user_id:CURRENT_UID, full_name:p.full_name||'', role_tag:p.role_tag||null,
+    summary:p.summary||null, monogram:(p.monogram||null), portfolio_url:p.portfolio_url||null
+  }, { onConflict:'user_id' });
+  if(error) throw error;
+}
+async function saveContact(){
+  const c = STATE.contact;
+  const { error } = await sb.from('contact_infos').upsert({
+    user_id:CURRENT_UID, email:c.email||null, phone:c.phone||null, location:c.location||null,
+    website:c.website||null, linkedin:c.linkedin||null, behance:c.behance||null, github:c.github||null
+  }, { onConflict:'user_id' });
+  if(error) throw error;
+}
+async function saveExp(){
+  const uid=CURRENT_UID;
+  let r = await sb.from('experience_bullets').delete().eq('user_id',uid);
+  if(r.error) throw r.error;
+  r = await sb.from('work_experiences').delete().eq('user_id',uid);
+  if(r.error) throw r.error;
+  const rows = STATE.experiences.map((x,i)=>({
+    user_id:uid, role:x.role||'', company:x.company||null, industry:x.industry||null,
+    location:x.location||null, start_date:x.start||null, end_date:x.end||null,
+    is_current:!x.end, sort_order:i
+  }));
+  if(rows.length){
+    const ins = await sb.from('work_experiences').insert(rows).select('id').order('id');
+    if(ins.error) throw ins.error;
+    const brows=[];
+    ins.data.forEach((row,i)=>{
+      (STATE.experiences[i].bullets||[]).forEach((b,j)=>{
+        if(String(b).trim()) brows.push({ experience_id:row.id, user_id:uid, content:b, sort_order:j });
+      });
+    });
+    if(brows.length){
+      const br = await sb.from('experience_bullets').insert(brows);
+      if(br.error) throw br.error;
+    }
+  }
+}
+async function saveProjects(){
+  const uid=CURRENT_UID;
+  let r = await sb.from('projects').delete().eq('user_id',uid);
+  if(r.error) throw r.error;
+  const rows = STATE.projects.map((p,i)=>({
+    user_id:uid, title:p.title||'', role_meta:p.role_meta||null, year:intOrNull(p.year),
+    description:p.description||null, result:p.result||null, sort_order:i
+  }));
+  if(rows.length){ r = await sb.from('projects').insert(rows); if(r.error) throw r.error; }
+}
+async function saveSkills(){
+  const uid=CURRENT_UID;
+  let r = await sb.from('skills').delete().eq('user_id',uid);
+  if(r.error) throw r.error;
+  r = await sb.from('skill_groups').delete().eq('user_id',uid);
+  if(r.error) throw r.error;
+  const rows = STATE.skillGroups.map((g,i)=>({ user_id:uid, name:g.name||'', sort_order:i }));
+  if(rows.length){
+    const ins = await sb.from('skill_groups').insert(rows).select('id').order('id');
+    if(ins.error) throw ins.error;
+    const srows=[];
+    ins.data.forEach((row,i)=>{
+      (STATE.skillGroups[i].skills||[]).forEach((s,j)=>{
+        if(String(s).trim()) srows.push({ group_id:row.id, user_id:uid, name:s, sort_order:j });
+      });
+    });
+    if(srows.length){ const sr=await sb.from('skills').insert(srows); if(sr.error) throw sr.error; }
+  }
+}
+async function saveEdu(){
+  const uid=CURRENT_UID;
+  let r = await sb.from('educations').delete().eq('user_id',uid);
+  if(r.error) throw r.error;
+  const rows = STATE.educations.map((e,i)=>({
+    user_id:uid, school:e.school||'', degree:e.degree||null,
+    start_year:intOrNull(e.start_year), end_year:intOrNull(e.end_year), notes:e.notes||null, sort_order:i
+  }));
+  if(rows.length){ r=await sb.from('educations').insert(rows); if(r.error) throw r.error; }
+}
+async function saveCert(){
+  const uid=CURRENT_UID;
+  let r = await sb.from('certifications').delete().eq('user_id',uid);
+  if(r.error) throw r.error;
+  const rows = STATE.certifications.map((c,i)=>({
+    user_id:uid, name:c.name||'', issuer:c.issuer||null, year:intOrNull(c.year), sort_order:i
+  }));
+  if(rows.length){ r=await sb.from('certifications').insert(rows); if(r.error) throw r.error; }
+}
+async function saveLang(){
+  const uid=CURRENT_UID;
+  let r = await sb.from('languages').delete().eq('user_id',uid);
+  if(r.error) throw r.error;
+  const rows = STATE.languages.map((l,i)=>({ user_id:uid, name:l.name||'', level:l.level||null, sort_order:i }));
+  if(rows.length){ r=await sb.from('languages').insert(rows); if(r.error) throw r.error; }
+}
+
+const SAVERS = { profile:saveProfile, contact:saveContact, exp:saveExp, proj:saveProjects, sg:saveSkills, edu:saveEdu, cert:saveCert, lang:saveLang };
+
+function markDirty(section){
+  if(!CURRENT_UID || !STATE) return;
+  setStatus('Đang lưu…','saving');
+  clearTimeout(saveTimers[section]);
+  saveTimers[section] = setTimeout(async ()=>{
+    try{
+      await SAVERS[section]();
+      if(section!=='profile'){
+        await sb.from('cv_profiles').update({ updated_at:new Date().toISOString() }).eq('user_id',CURRENT_UID);
+      }
+      setStatus('✓ Đã lưu lúc '+new Date().toLocaleTimeString('vi-VN'),'saved');
+      loadUsers().catch(()=>{});
+    }catch(err){
+      setStatus('✗ Lỗi khi lưu','error');
+      toast('Lưu thất bại: '+(err.message||err), true);
+    }
+  }, 700);
+}
+async function saveAll(){
+  if(!CURRENT_UID) return;
+  setStatus('Đang lưu toàn bộ…','saving');
+  try{
+    for(const k of Object.keys(SAVERS)) await SAVERS[k]();
+    await sb.from('cv_profiles').update({ updated_at:new Date().toISOString() }).eq('user_id',CURRENT_UID);
+    setStatus('✓ Đã lưu toàn bộ','saved');
+    toast('Đã lưu toàn bộ dữ liệu hồ sơ.');
+    loadUsers().catch(()=>{});
+  }catch(err){ setStatus('✗ Lỗi khi lưu','error'); toast('Lưu thất bại: '+(err.message||err), true); }
+}
+
+/* ============================================================
+   SỰ KIỆN NHẬP LIỆU (contenteditable → STATE)
+============================================================ */
+document.addEventListener('input', e=>{
+  const el = e.target.closest('[data-field]');
+  if(!el || !STATE) return;
+  const field = el.dataset.field;
+  let text = el.innerText || '';
+  if(el.dataset.single!=null) text = text.replace(/\n+/g,' ').trim();
+
+  if(field==='profile.monogram'){
+    text = text.toUpperCase().slice(0,2);
+    if(el.innerText!==text) el.innerText = text;
+  }
+  setPath(STATE, field, text);
+  markDirty(SECTION_MAP[sectionOf(field)] || sectionOf(field));
+});
+
+document.addEventListener('keydown', e=>{
+  const el = e.target.closest('[data-field]');
+  if(!el || !STATE) return;
+  if(e.key!=='Enter') return;
+
+  if(el.dataset.bullet!=null){
+    e.preventDefault();
+    const parts = el.dataset.field.split('.');
+    const i=+parts[1], j=+parts[3];
+    STATE.experiences[i].bullets.splice(j+1,0,'');
+    renderTimeline(); markDirty('exp');
+    const nx = document.querySelector(`[data-field="exp.${i}.bullets.${j+1}"]`);
+    if(nx) nx.focus();
+    return;
+  }
+  if(el.dataset.single!=null){ e.preventDefault(); el.blur(); }
+});
+
+/* Blur trên ô ngày tháng: parse MM/YYYY */
+document.addEventListener('focusout', e=>{
+  const el = e.target.closest('[data-field]');
+  if(!el || !STATE) return;
+  const field = el.dataset.field;
+  if(!(field.endsWith('.start')||field.endsWith('.end'))) return;
+
+  const raw = (el.innerText||'').trim();
+  const isEnd = field.endsWith('.end');
+  let val = null, ok = true;
+  const low = raw.toLowerCase();
+  if(isEnd && ['nay','hiện tại','hien tai','now',''].includes(low)){ val=null; }
+  else if(raw===''){ val=null; }
+  else{
+    const m = raw.match(/^(\d{1,2})[\/\-.](\d{4})$/);
+    const m2 = raw.match(/^(\d{4})$/);
+    if(m) val = `${m[2]}-${String(+m[1]).padStart(2,'0')}-01`;
+    else if(m2) val = `${m2[1]}-01-01`;
+    else ok=false;
+  }
+  if(ok){
+    setPath(STATE, field, val);
+    if(isEnd){ const i=+field.split('.')[1]; STATE.experiences[i].is_current = !val; }
+  }
+  renderTimeline(); markDirty('exp');
+});
+
+/* ============================================================
+   NÚT CẤU TRÚC + NÚT AVATAR
+============================================================ */
+document.addEventListener('click', e=>{
+  // Nút avatar (Storage)
+  const av = e.target.closest('[data-av]');
+  if(av && STATE){
+    if(av.dataset.av==='upload') $('#avatarInput').click();
+    if(av.dataset.av==='remove') deleteAvatar();
+    return;
+  }
+
+  const btn = e.target.closest('[data-action]');
+  if(!btn || !STATE) return;
+  const act = btn.dataset.action;
+  const i = btn.dataset.idx!=null ? +btn.dataset.idx : null;
+  const j = btn.dataset.sub!=null ? +btn.dataset.sub : null;
+
+  switch(act){
+    case 'add-exp':
+      STATE.experiences.push({ role:'Chức danh mới', company:'Tên công ty', industry:'', location:'', start:null, end:null, is_current:true, bullets:['Mô tả thành tựu nổi bật…'] });
+      renderTimeline(); markDirty('exp'); break;
+    case 'rm-exp': STATE.experiences.splice(i,1); renderTimeline(); markDirty('exp'); break;
+    case 'add-bullet':
+      STATE.experiences[i].bullets.push('');
+      renderTimeline(); markDirty('exp');
+      { const el=document.querySelector(`[data-field="exp.${i}.bullets.${STATE.experiences[i].bullets.length-1}"]`); if(el) el.focus(); }
+      break;
+    case 'rm-bullet': STATE.experiences[i].bullets.splice(j,1); renderTimeline(); markDirty('exp'); break;
+
+    case 'add-proj':
+      STATE.projects.push({ title:'Dự án mới', role_meta:'Vai trò', year:null, description:'Mô tả ngắn…', result:'' });
+      renderProjects(); markDirty('proj'); break;
+    case 'rm-proj': STATE.projects.splice(i,1); renderProjects(); markDirty('proj'); break;
+
+    case 'add-group': STATE.skillGroups.push({ name:'Nhóm kỹ năng', skills:['Kỹ năng mới'] }); renderSkills(); markDirty('sg'); break;
+    case 'rm-group': STATE.skillGroups.splice(i,1); renderSkills(); markDirty('sg'); break;
+    case 'add-skill': STATE.skillGroups[i].skills.push('Kỹ năng'); renderSkills(); markDirty('sg'); break;
+    case 'rm-skill': STATE.skillGroups[i].skills.splice(j,1); renderSkills(); markDirty('sg'); break;
+
+    case 'add-edu': STATE.educations.push({ school:'Trường / Tổ chức', degree:'Bằng cấp', start_year:null, end_year:null, notes:'' }); renderEdu(); markDirty('edu'); break;
+    case 'rm-edu': STATE.educations.splice(i,1); renderEdu(); markDirty('edu'); break;
+
+    case 'add-cert': STATE.certifications.push({ name:'Chứng chỉ mới', issuer:'', year:null }); renderCert(); markDirty('cert'); break;
+    case 'rm-cert': STATE.certifications.splice(i,1); renderCert(); markDirty('cert'); break;
+
+    case 'add-lang': STATE.languages.push({ name:'Ngôn ngữ', level:'' }); renderLang(); markDirty('lang'); break;
+    case 'rm-lang': STATE.languages.splice(i,1); renderLang(); markDirty('lang'); break;
+  }
+});
+
+/* Chọn file từ thiết bị (mobile / laptop) → upload */
+$('#avatarInput').addEventListener('change', e=>{
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';          // reset để chọn lại cùng file vẫn hoạt động
+  if(file) uploadAvatar(file);
+});
+
+/* ============================================================
+   SIDEBAR ACTIONS
+============================================================ */
+$('#userList').addEventListener('click', e=>{
+  const item = e.target.closest('.user-item');
+  if(item && item.dataset.uid !== CURRENT_UID) selectUser(item.dataset.uid);
+});
+$('#btnRefresh').addEventListener('click', async ()=>{
+  try{ await loadUsers(); toast('Đã làm mới danh sách hồ sơ.'); }
+  catch(err){ toast('Không tải được danh sách: '+err.message, true); }
+});
+$('#btnSaveAll').addEventListener('click', saveAll);
+$('#btnPrint').addEventListener('click', ()=>window.print());
+$('#metaPortfolio').addEventListener('input', e=>{
+  if(!STATE) return;
+  STATE.profile.portfolio_url = e.target.value;
+  markDirty('profile');
+});
+$('#btnDelete').addEventListener('click', async ()=>{
+  if(!CURRENT_UID) return;
+  const name = STATE?.profile.full_name || 'người dùng này';
+  if(!confirm(`Xóa toàn bộ hồ sơ CV của "${name}"?\nBao gồm dữ liệu các bảng và ảnh trên Storage.\nHành động này không thể hoàn tác.`)) return;
+  const uid = CURRENT_UID;
+  try{
+    // 1. Xóa ảnh trong Storage
+    const files = await listAvatarFiles(uid);
+    if(files.length){
+      await sb.storage.from(AVATAR_BUCKET).remove(files.map(f => `${uid}/${f.name}`));
+    }
+    // 2. Xóa dữ liệu các bảng (theo thứ tự FK an toàn)
+    const tables = ['experience_bullets','work_experiences','skill_groups','projects','educations','certifications','languages','contact_infos','cv_profiles'];
+    for(const t of tables){
+      const { error } = await sb.from(t).delete().eq('user_id', uid);
+      if(error) throw error;
+    }
+    toast('Đã xóa hồ sơ và ảnh đại diện.');
+    clearSelection();
+    await loadUsers();
+    if(USERS.length) selectUser(USERS[0].user_id);
+  }catch(err){ toast('Xóa thất bại: '+err.message, true); }
+});
+
+/* ============================================================
+   MODAL — TẠO USER MỚI
+============================================================ */
+$('#btnNewUser').addEventListener('click', ()=>{
+  $('#mName').value=''; $('#mRole').value=''; $('#mEmail').value=''; $('#mPass').value='';
+  $('#modal').classList.add('open');
+  setTimeout(()=>$('#mName').focus(),50);
+});
+$('#mCancel').addEventListener('click', ()=>$('#modal').classList.remove('open'));
+$('#modal').addEventListener('click', e=>{ if(e.target.id==='modal') $('#modal').classList.remove('open'); });
+
+$('#mOk').addEventListener('click', async ()=>{
+  const name = $('#mName').value.trim();
+  const role = $('#mRole').value.trim();
+  const email = $('#mEmail').value.trim();
+  const pass = $('#mPass').value;
+  if(!name){ toast('Vui lòng nhập họ tên.', true); return; }
+  if(!email || !pass){ toast('Vui lòng nhập email và mật khẩu.', true); return; }
+  if(pass.length < 6){ toast('Mật khẩu cần tối thiểu 6 ký tự.', true); return; }
+
+  const okBtn = $('#mOk');
+  okBtn.disabled = true; okBtn.textContent = 'Đang tạo…';
+  try{
+    const { data, error } = await sb.auth.signUp({ email, password: pass });
+    if(error) throw error;
+    const uid = data?.user?.id;
+    if(!uid) throw new Error('Không nhận được user_id từ Supabase Auth.');
+
+    const { error: e2 } = await sb.from('cv_profiles').insert({
+      user_id: uid, full_name: name, role_tag: role || null,
+      summary: 'Đoạn giới thiệu ngắn về bản thân: số năm kinh nghiệm, thế mạnh chuyên môn và mục tiêu nghề nghiệp.',
+      monogram: initials(name), portfolio_url: null
+    });
+    if(e2) throw e2;
+    await sb.from('contact_infos').insert({ user_id: uid });
+
+    await loadUsers();
+    await selectUser(uid);
+    $('#modal').classList.remove('open');
+    toast('Đã tạo hồ sơ cho '+name+'. Bắt đầu chỉnh sửa ngay trên CV!');
+  }catch(err){
+    toast('Tạo hồ sơ thất bại: '+err.message, true);
+  }finally{
+    okBtn.disabled = false; okBtn.textContent = 'Tạo hồ sơ';
+  }
+});
+
+/* ============================================================
+   KHỞI ĐỘNG
+============================================================ */
+(async function init(){
+  const dot = $('#connDot'), txt = $('#connText');
+  ensureBucket(); // cố tạo bucket 'avatars' (bỏ qua nếu không đủ quyền)
+  try{
+    await loadUsers();
+    dot.classList.add('ok');
+    txt.textContent = 'Kết nối Supabase thành công · ' + SUPABASE_URL.replace('https://','');
+    if(USERS.length) await selectUser(USERS[0].user_id);
+  }catch(err){
+    dot.classList.add('err');
+    txt.textContent = 'Lỗi kết nối: ' + (err.message||err);
+    $('#userList').innerHTML = '<div class="empty-list">Không kết nối được Supabase.<br>Kiểm tra URL &amp; API key.</div>';
+    toast('Không kết nối được Supabase: '+err.message, true);
+  }
+})();
+</script>
+</body>
+</html>

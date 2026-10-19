@@ -1085,9 +1085,553 @@ body {
   }
 }
 
-@media (max-width:1100px) {
-  body{flex-direction:column;}
-  #sidebar{width:100%;height:auto;position:static;}
+/* ================= UI/UX RESPONSIVE REFRESH ================= */
+:root {
+  --ui-ink:#172033;
+  --ui-muted:#64748B;
+  --ui-line:#E2E8F0;
+  --ui-surface:#FFFFFF;
+  --ui-canvas:#F3F6FB;
+  --ui-accent:#4263EB;
+  --ui-accent-soft:#EEF2FF;
+  --ui-space-1:4px;
+  --ui-space-2:8px;
+  --ui-space-3:12px;
+  --ui-space-4:16px;
+  --ui-radius-sm:8px;
+  --ui-radius-md:12px;
+  --ui-radius-lg:18px;
+  --ui-shadow-card:0 2px 8px rgba(15,23,42,.035);
+  --focus-ring:#4263EB;
+  --shell-shadow:0 18px 48px rgba(15,23,42,.12);
+}
+
+body {
+  min-width:320px;
+  background:radial-gradient(1000px 520px at 12% -10%,#FFFFFF 0%,rgba(255,255,255,0) 62%),var(--ui-canvas);
+}
+#sidebar {
+  padding:24px 20px; gap:var(--ui-space-3); color:var(--ui-ink); background:var(--ui-surface);
+  border-right:1px solid var(--ui-line); box-shadow:4px 0 24px rgba(15,23,42,.045);
+  scrollbar-width:thin; scrollbar-color:#CBD5E1 transparent;
+}
+#sidebar::-webkit-scrollbar { width:7px; }
+#sidebar::-webkit-scrollbar-thumb { background:#CBD5E1; border-radius:99px; }
+#sidebar::-webkit-scrollbar-thumb:hover { background:#94A3B8; }
+.brand { gap:12px; }
+.brand-logo { width:42px; height:42px; border-radius:13px; background:var(--ui-accent); box-shadow:0 5px 12px rgba(66,99,235,.22); }
+.brand h1 { font-size:17px; letter-spacing:-.025em; color:var(--ui-ink); }
+.brand small { margin-top:2px; font-size:10.5px; color:var(--ui-muted); }
+.conn { min-height:38px; border-radius:var(--ui-radius-sm); background:#F8FAFC; border-color:var(--ui-line); color:#475569; }
+.panel-label { color:#64748B; letter-spacing:.10em; }
+.icon-btn { width:34px; height:34px; border-radius:9px; font-size:15px; color:#475569; background:#fff; border-color:#D8E0EA; }
+.icon-btn:hover { background:var(--ui-accent-soft); border-color:#C7D2FE; color:#3155C8; }
+.user-item { min-height:58px; padding:10px 11px; border-radius:var(--ui-radius-md); color:#334155; background:#fff; border-color:#E2E8F0; }
+.user-item:hover { background:#F8FAFC; }
+.user-item.active { border-color:#A5B4FC; background:var(--ui-accent-soft); box-shadow:0 0 0 1px rgba(66,99,235,.10); }
+.u-mono { box-shadow:none; }
+.u-name { font-size:13px; }
+.u-role { font-size:11px; color:#64748B; }
+.u-time { font-size:10px; color:#64748B; }
+.empty-list { color:#64748B; border-color:#CBD5E1; }
+.tpl-grid { gap:var(--ui-space-2); }
+.tpl-card { padding:9px; border-radius:12px; color:#334155; background:#fff; border-color:#E2E8F0; }
+.tpl-card:hover { background:#F8FAFC; box-shadow:0 5px 14px rgba(15,23,42,.08); }
+.tpl-card.active { border-color:#A5B4FC; background:#F8FAFF; box-shadow:0 0 0 1px rgba(66,99,235,.16); }
+.tpl-prev { height:66px; border-radius:7px; margin-bottom:8px; }
+.tpl-name { font-size:11.5px; color:#1E293B; }
+.tpl-desc { font-size:9.5px; color:#64748B; }
+.sb-btn { min-height:42px; border-radius:11px; font-size:12.5px; }
+.sb-btn.primary,.m-ok { background:var(--ui-accent); box-shadow:0 5px 14px rgba(66,99,235,.20); }
+.sb-btn.primary:hover:not(:disabled),.m-ok:hover:not(:disabled) { background:#3454D1; filter:none; }
+.sb-btn.ghost { color:#334155; background:#fff; border-color:#D8E0EA; }
+.sb-btn.ghost:hover:not(:disabled) { color:#1E293B; background:#F8FAFC; }
+.sb-btn.danger { color:#B42318; background:#FFF7F6; border-color:#F2C9C5; }
+.sb-btn.danger:hover:not(:disabled) { color:#991B1B; background:#FEF2F2; }
+.meta-box { padding:var(--ui-space-3); gap:var(--ui-space-3); border-radius:var(--ui-radius-md); background:#fff; border-color:var(--ui-line); box-shadow:var(--ui-shadow-card); }
+.meta-box label { color:#64748B; font-size:10px; letter-spacing:.06em; }
+.meta-box input[type=text] { min-height:39px; border-radius:9px; color:#1E293B; background:#F8FAFC; border-color:#D8E0EA; font-size:12.5px; }
+.meta-box input[type=text]:focus { border-color:#8095F3; box-shadow:0 0 0 3px rgba(66,99,235,.12); }
+.meta-box input[type=text]:disabled { color:#94A3B8; background:#F1F5F9; opacity:1; }
+.color-row input[type=color] { height:38px; border-radius:9px; }
+.color-row input[type=color]:disabled { opacity:.55; }
+.switch-row { color:#334155; }
+.switch-row .hint { color:#64748B; }
+.switch-row input,.slider-row input[type=range] { accent-color:var(--ui-accent); }
+.slider-row .s-head { color:#475569; }
+.slider-row .s-head b { color:#1E293B; }
+.switch-row { min-height:24px; }
+.switch-row input { width:17px; height:17px; }
+.slider-row { padding-top:2px; }
+.slider-row input[type=range] { min-height:24px; }
+#saveStatus { font-size:11.5px; }
+#saveStatus.saving::before {
+  content:''; display:inline-block; width:9px; height:9px; margin:0 6px 0 0; vertical-align:-1px;
+  border:1.5px solid currentColor; border-right-color:transparent; border-radius:50%; animation:saveSpin .8s linear infinite;
+}
+@keyframes saveSpin { to { transform:rotate(360deg); } }
+
+#stage { min-width:0; padding:34px clamp(18px,3vw,48px); scrollbar-width:thin; scrollbar-color:#AAB8CA transparent; }
+.stage-col { max-width:100%; }
+.stage-tools { max-width:100%; margin-bottom:12px; justify-content:space-between; align-items:center; }
+.stage-caption { color:var(--ui-muted); font-size:12px; font-weight:600; }
+.preview-zoom { display:none; width:38px; height:38px; align-items:center; justify-content:center; border:1px solid #D8E0EA; border-radius:10px; color:#334155; background:#fff; cursor:pointer; }
+.preview-zoom:hover { color:var(--ui-accent); background:var(--ui-accent-soft); border-color:#C7D2FE; }
+.preview-zoom[aria-pressed="true"] { color:var(--ui-accent); background:var(--ui-accent-soft); border-color:#C7D2FE; }
+.fit { padding:7px 14px; border-radius:999px; box-shadow:0 5px 16px rgba(15,23,42,.10); }
+#emptyState {
+  width:min(100%,460px); border:1px solid rgba(148,163,184,.20); border-top:4px solid #5578F2;
+  border-radius:20px; padding:clamp(30px,5vw,52px) clamp(22px,4vw,44px); box-shadow:var(--shell-shadow);
+}
+#emptyState .big { display:grid; place-items:center; width:68px; height:68px; margin:0 auto 18px; border-radius:20px; background:linear-gradient(145deg,#EEF2FF,#E0E7FF); font-size:34px; }
+#emptyState h2 { font-size:19px; letter-spacing:-.025em; }
+#emptyState p { line-height:1.7; }
+.page { border:1px solid rgba(148,163,184,.20); border-radius:3mm; box-shadow:0 22px 62px rgba(15,23,42,.24),0 5px 16px rgba(15,23,42,.10); }
+.ui-icon { width:16px; height:16px; flex:0 0 auto; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.icon-btn .ui-icon { width:16px; height:16px; }
+.sb-btn .ui-icon,.av-btn .ui-icon { width:16px; height:16px; }
+.ctl-btn .ui-icon { width:12px; height:12px; }
+.button-plus { font-size:19px; font-weight:400; line-height:1; }
+.empty-state-icon { width:34px; height:34px; color:var(--ui-accent); stroke-width:1.6; }
+.sb-btn { gap:9px; }
+.sec-ctl .ctl-btn svg { width:12px; height:12px; }
+.sec-ctl { display:flex; opacity:0; pointer-events:none; transition:opacity .12s; }
+.sec:hover > .sec-ctl,.sec:focus-within > .sec-ctl { opacity:1; pointer-events:auto; }
+.hoverable:focus-within > .ctl { display:flex; }
+.badge:focus-within .rm-dot { display:flex; }
+.modal h2 { letter-spacing:-.02em; }
+.modal p { line-height:1.65; }
+.modal label { margin-top:14px; }
+.m-cancel { background:#F1F5F9; color:#475569; }
+.m-cancel:hover { background:#E8EDF4; }
+
+button,input,[contenteditable="true"] { -webkit-tap-highlight-color:transparent; }
+button:focus-visible,input:focus-visible,[contenteditable="true"]:focus-visible { outline:3px solid var(--focus-ring); outline-offset:2px; }
+button:disabled:focus-visible,input:disabled:focus-visible { outline:none; }
+.modal-overlay { padding:18px; }
+.modal {
+  width:min(440px,100%); max-height:min(92vh,760px); overflow:auto; border:1px solid rgba(148,163,184,.25);
+  border-top:4px solid #5578F2; border-radius:var(--ui-radius-lg); padding:clamp(22px,4vw,30px);
+}
+.modal input { min-height:43px; border-radius:10px; }
+.modal-actions button { min-height:44px; border-radius:10px; }
+#toast { border-radius:12px; line-height:1.55; }
+
+@media (max-width:1023px) {
+  body { flex-direction:column; }
+  #sidebar {
+    display:grid; width:100%; height:auto; position:static;
+    grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);
+    grid-template-areas:"brand brand" "conn live" "users create" "templates portfolio" "templates layout" "save print" "delete delete" "status status";
+    align-items:start; gap:12px; padding:20px clamp(18px,3vw,32px);
+  }
+  #sidebar > .brand { grid-area:brand; }
+  #sidebar > .conn-primary { grid-area:conn; }
+  #sidebar > .conn-realtime { grid-area:live; }
+  #sidebar > .user-panel { grid-area:users; min-width:0; }
+  #sidebar > #btnNewUser { grid-area:create; align-self:start; }
+  #sidebar > .template-panel { grid-area:templates; min-width:0; }
+  #sidebar > .portfolio-box { grid-area:portfolio; min-width:0; }
+  #sidebar > .layout-box { grid-area:layout; min-width:0; }
+  #sidebar > #btnSaveAll { grid-area:save; }
+  #sidebar > #btnPrint { grid-area:print; }
+  #sidebar > #btnDelete { grid-area:delete; }
+  #sidebar > #saveStatus { grid-area:status; }
+  #userList { max-height:170px; }
+  #stage { padding:28px 24px; }
+}
+
+@media (max-width:720px) {
+  #sidebar {
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"brand" "conn" "live" "users" "create" "templates" "portfolio" "layout" "save" "print" "delete" "status";
+    gap:10px; padding:17px 16px;
+  }
+  #userList { max-height:150px; }
+  #stage { flex:none; width:100%; overflow-x:auto; overflow-y:hidden; justify-content:flex-start; padding:18px 16px 28px; }
+  .stage-col { width:max-content; max-width:none; margin:0 auto; }
+  .stage-tools { width:auto; min-height:38px; }
+  .stage-caption { display:none; }
+  #emptyState { margin:22px auto; }
+  #toast { left:14px; right:14px; bottom:14px; max-width:none; }
+  .modal-actions { position:sticky; bottom:-1px; background:#fff; padding-top:8px; }
+}
+
+@media (max-width:1220px) { .preview-zoom { display:inline-flex; } }
+
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+}
+
+/* ================= TEMPLATE LIBRARY + PREVIEW ================= */
+.page { overflow:visible; }
+.tpl-tools { display:grid; grid-template-columns:1fr; gap:5px; margin:0 0 10px; }
+.tpl-search-label { color:#64748B; font-size:10px; font-weight:700; letter-spacing:.04em; }
+.tpl-tools input,.tpl-tools select {
+  width:100%; min-width:0; min-height:38px; padding:8px 10px; border:1px solid #D8E0EA;
+  border-radius:9px; background:#F8FAFC; color:#1E293B; font:12px var(--font-body); outline:none;
+}
+.tpl-tools input:focus,.tpl-tools select:focus { border-color:#8095F3; box-shadow:0 0 0 3px rgba(66,99,235,.12); }
+.tpl-total { color:#64748B; font:600 10px var(--font-body); letter-spacing:normal; }
+.tpl-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; max-height:min(54vh,560px); overflow:auto; padding:1px 3px 4px 1px; scrollbar-width:thin; scrollbar-color:#CBD5E1 transparent; }
+.tpl-card {
+  min-width:0; padding:8px; border-radius:12px; text-align:left; color:#334155; background:#fff;
+  border:1px solid #E2E8F0; box-shadow:0 1px 3px rgba(15,23,42,.035); transition:border-color .16s,box-shadow .16s,transform .16s;
+}
+.tpl-card:hover { background:#fff; border-color:#C7D2FE; box-shadow:0 6px 15px rgba(15,23,42,.09); }
+.tpl-card.active { border-color:#8095F3; background:#F8FAFF; box-shadow:0 0 0 1px rgba(66,99,235,.12); }
+.tpl-card[hidden] { display:none; }
+.tpl-prev { display:grid; place-items:center; height:104px; margin:0 0 8px; background:#EEF2F7; box-shadow:inset 0 0 0 1px rgba(15,23,42,.06); }
+.pv-sheet { position:relative; display:block; width:70px; height:96px; overflow:hidden; background:#fff; border:1px solid #D9E1EB; box-shadow:0 3px 9px rgba(15,23,42,.16); }
+.pv-sheet i { position:absolute; display:block; font-style:normal; }
+.pv-band { top:0; left:0; right:0; height:6px; background:var(--pv-accent,#3157B7); }
+.pv-sidebar { top:6px; left:0; bottom:0; width:25px; background:var(--pv-side,#EEF2F7); }
+.pv-photo { top:11px; left:7px; width:12px; height:12px; border:1.5px solid var(--pv-accent,#3157B7); border-radius:50%; background:#fff; }
+.pv-name { top:12px; left:30px; width:32px; height:4px; background:#1E293B; border-radius:2px; }
+.pv-role { top:19px; left:30px; width:25px; height:2px; background:#94A3B8; border-radius:2px; }
+.pv-lines { left:30px; right:7px; top:28px; height:55px; background:repeating-linear-gradient(to bottom,#D5DDE7 0 1.5px,transparent 1.5px 6px); }
+.pv-side-lines { left:6px; right:47px; top:31px; height:49px; background:repeating-linear-gradient(to bottom,#AEBAC9 0 1px,transparent 1px 5px); }
+.pv-title { top:26px; left:30px; right:7px; height:2px; background:var(--pv-accent,#3157B7); }
+.pv-rule { left:6px; right:6px; top:26px; height:1px; background:#C7D0DC; }
+.pv-cols .pv-sidebar { width:24px; }
+.pv-cols .pv-name { left:30px; width:34px; }
+.pv-one { --pv-accent:#334155; }
+.pv-executive { --pv-accent:#9A7B43; --pv-side:#F3F4F6; }
+.pv-executive .pv-sidebar { width:21px; }
+.pv-executive .pv-photo { border-radius:2px; }
+.pv-executive .pv-name { left:27px; width:37px; height:5px; }
+.pv-executive .pv-lines { left:27px; top:32px; }
+.pv-darkside { --pv-accent:#7EA6FF; --pv-side:#14213D; }
+.pv-darkside .pv-sidebar { width:25px; }
+.pv-darkside .pv-side-lines { background:repeating-linear-gradient(to bottom,rgba(255,255,255,.55) 0 1px,transparent 1px 5px); }
+.pv-darkside .pv-name { background:#F8FAFC; }
+.pv-classic { --pv-accent:#475569; }
+.pv-classic .pv-sidebar { display:none; }
+.pv-classic .pv-photo { left:auto; right:7px; }
+.pv-classic .pv-name,.pv-classic .pv-role { left:7px; }
+.pv-classic .pv-lines { left:7px; top:34px; }
+.pv-classic .pv-title { left:7px; }
+.pv-minimal { --pv-accent:#111827; }
+.pv-minimal .pv-sidebar,.pv-minimal .pv-photo { display:none; }
+.pv-minimal .pv-name { left:14px; top:14px; width:42px; height:3px; }
+.pv-minimal .pv-role { left:20px; top:21px; width:30px; }
+.pv-minimal .pv-title { left:7px; top:31px; background:#CBD5E1; }
+.pv-minimal .pv-lines { left:7px; top:36px; }
+.pv-analyst { --pv-accent:#0F766E; --pv-side:#E9F2F3; }
+.pv-analyst .pv-sidebar { width:25px; }
+.pv-analyst .pv-photo { border-radius:3px; }
+.pv-analyst .pv-title { height:3px; }
+.pv-corporate { --pv-accent:#2357A5; --pv-side:#F1F5FA; }
+.pv-corporate .pv-band { height:12px; }
+.pv-corporate .pv-sidebar { top:12px; width:23px; }
+.pv-corporate .pv-photo { top:18px; }
+.pv-corporate .pv-name { top:19px; left:30px; }
+.pv-corporate .pv-role { top:25px; left:30px; }
+.pv-corporate .pv-lines { top:35px; }
+.pv-software { --pv-accent:#0B8793; --pv-side:#102C3A; }
+.pv-software .pv-sidebar { width:27px; }
+.pv-software .pv-side-lines { background:repeating-linear-gradient(to bottom,#7DD3C7 0 1px,transparent 1px 5px); }
+.pv-software .pv-name { background:#123044; }
+.pv-software .pv-title { height:3px; }
+.pv-itsupport { --pv-accent:#2764B5; --pv-side:#EAF1FB; }
+.pv-itsupport .pv-band { width:8px; bottom:0; height:auto; }
+.pv-itsupport .pv-sidebar { left:8px; top:0; }
+.pv-itsupport .pv-name { left:37px; }
+.pv-itsupport .pv-lines { left:37px; }
+.pv-quality { --pv-accent:#2C7A59; }
+.pv-quality .pv-sidebar { display:none; }
+.pv-quality .pv-photo { display:none; }
+.pv-quality .pv-name,.pv-quality .pv-role { left:8px; }
+.pv-quality .pv-title { left:8px; height:2px; }
+.pv-quality .pv-lines { left:8px; top:31px; }
+.pv-creative { --pv-accent:#A34876; --pv-side:#F8EDF4; }
+.pv-creative .pv-band { height:9px; }
+.pv-creative .pv-sidebar { display:none; }
+.pv-creative .pv-photo { left:auto; right:8px; top:15px; width:18px; height:18px; border-radius:5px; }
+.pv-creative .pv-name { top:17px; left:8px; width:34px; height:5px; }
+.pv-creative .pv-role { top:25px; left:8px; }
+.pv-creative .pv-title { left:8px; top:34px; }
+.pv-creative .pv-lines { left:8px; top:39px; }
+.pv-ats { --pv-accent:#111827; }
+.pv-ats .pv-sidebar,.pv-ats .pv-photo,.pv-ats .pv-band { display:none; }
+.pv-ats .pv-name { top:9px; left:7px; width:48px; background:#111827; }
+.pv-ats .pv-role { top:16px; left:7px; }
+.pv-ats .pv-title { left:7px; top:24px; background:#94A3B8; }
+.pv-ats .pv-lines { left:7px; top:29px; }
+.pv-academic { --pv-accent:#4B6384; }
+.pv-academic .pv-sidebar,.pv-academic .pv-photo { display:none; }
+.pv-academic .pv-name { left:7px; top:10px; width:45px; height:5px; }
+.pv-academic .pv-role { left:7px; top:18px; }
+.pv-academic .pv-title { left:7px; top:26px; }
+.pv-academic .pv-lines { left:7px; top:31px; }
+.pv-graduate { --pv-accent:#6D5BD0; --pv-side:#F0EEFC; }
+.pv-graduate .pv-sidebar { width:18px; }
+.pv-graduate .pv-photo { left:5px; top:12px; width:9px; height:9px; }
+.pv-graduate .pv-name { left:25px; top:12px; width:38px; }
+.pv-graduate .pv-role { left:25px; top:19px; }
+.pv-graduate .pv-title { left:25px; top:28px; }
+.pv-graduate .pv-lines { left:25px; top:33px; }
+.tpl-card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:5px; min-height:30px; }
+.tpl-name { min-width:0; color:#1E293B; font-size:10.5px; line-height:1.25; }
+.tpl-desc { min-height:27px; margin-top:3px; color:#64748B; font-size:9px; line-height:1.4; }
+.tpl-category { display:inline-flex; align-items:center; width:max-content; max-width:80px; padding:3px 5px; border-radius:99px; color:#475569; background:#F1F5F9; font-size:8px; font-weight:700; line-height:1.2; }
+.tpl-status { display:block; margin-top:5px; color:#3155C8; font-size:8.5px; font-weight:700; line-height:1.2; }
+.tpl-status[hidden] { display:none; }
+.tpl-card-actions { display:grid; grid-template-columns:1fr; gap:5px; margin-top:8px; }
+.tpl-action { min-width:0; min-height:31px; padding:5px 4px; border:1px solid #D8E0EA; border-radius:8px; background:#fff; color:#334155; font:600 9px var(--font-body); cursor:pointer; }
+.tpl-action:hover:not(:disabled) { border-color:#A5B4FC; background:#EEF2FF; color:#3155C8; }
+.tpl-action.apply { color:#fff; background:#4263EB; border-color:#4263EB; }
+.tpl-action.apply:hover:not(:disabled) { background:#3454D1; }
+.tpl-action:disabled { cursor:default; opacity:.65; }
+.tpl-action:focus-visible { outline:2px solid #4263EB; outline-offset:2px; }
+.tpl-empty { padding:12px 8px; color:#64748B; text-align:center; font-size:11px; }
+.tpl-empty[hidden] { display:none; }
+
+.template-preview-overlay { z-index:150; padding:14px; }
+.template-preview-modal {
+  display:flex; flex-direction:column; width:min(100%,1020px); height:min(94vh,980px); overflow:hidden;
+  background:#F4F6FA; border:1px solid #D8E0EA; border-radius:18px; box-shadow:0 28px 90px rgba(15,23,42,.32);
+}
+.template-preview-head { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:20px 22px 15px; background:#fff; border-bottom:1px solid #E2E8F0; }
+.template-preview-head h2 { margin:7px 0 4px; color:#172033; font:700 19px var(--font-head); letter-spacing:-.02em; }
+.template-preview-head p { margin:0; color:#64748B; font-size:12px; line-height:1.5; }
+.template-preview-x { flex:0 0 auto; font-size:20px; }
+.template-preview-window { flex:1; min-height:0; overflow:auto; padding:20px; overscroll-behavior:contain; scrollbar-width:thin; }
+.template-preview-page { flex:0 0 auto; margin:0 auto 24px; zoom:.8; transform:none !important; box-shadow:0 12px 34px rgba(15,23,42,.2); }
+.template-preview-actions { display:flex; justify-content:flex-end; gap:10px; padding:13px 20px; background:#fff; border-top:1px solid #E2E8F0; }
+.template-preview-actions button { min-height:42px; padding:0 17px; border:0; border-radius:10px; font:600 12px var(--font-body); cursor:pointer; }
+.template-preview-actions .m-ok { color:#fff; }
+.template-preview-actions .m-cancel { background:#F1F5F9; color:#475569; }
+.template-preview-actions .m-cancel:hover { background:#E8EDF4; }
+body.preview-modal-open { overflow:hidden; }
+
+/* Individual CV layouts keep the same live fields while changing typography and composition. */
+.tpl-executive { --font-head:'Source Serif 4',Georgia,serif; --font-body:'Inter',Arial,sans-serif; }
+.tpl-executive .topbar { height:1.3mm; background:var(--accent); }
+.tpl-executive .col-left { width:30%; background:var(--side-bg); border-right:1px solid #D8DDE5; }
+.tpl-executive .col-right { width:70%; }
+.tpl-executive .name { font-size:calc(24pt * var(--fs)); letter-spacing:.01em; text-transform:none; }
+.tpl-executive .role { color:var(--accent); font-size:calc(9pt * var(--fs)); letter-spacing:.13em; text-transform:uppercase; background:transparent; border:0; box-shadow:none; padding:0; }
+.tpl-executive .header::after { height:.4mm; background:var(--accent); box-shadow:none; }
+.tpl-executive .summary { background:transparent; border-left:1mm solid var(--accent); border-radius:0; box-shadow:none; }
+.tpl-executive .timeline-item,.tpl-executive .project { border-radius:0; box-shadow:none; background:#fff; border:0; border-bottom:1px solid #E5E7EB; padding:0 0 3mm; }
+.tpl-executive .side-title,.tpl-executive .main-title { letter-spacing:.12em; }
+.tpl-executive .side-title::before,.tpl-executive .main-title::before { background:var(--accent); }
+.tpl-executive .side-title::after,.tpl-executive .main-title::after { height:.35mm; background:color-mix(in srgb,var(--accent) 24%,#fff); }
+
+.tpl-corporate { --font-head:'Inter',Arial,sans-serif; --font-body:'Inter',Arial,sans-serif; }
+.tpl-corporate .topbar { height:5mm; background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 65%,#102C4D),var(--accent)); }
+.tpl-corporate .col-left { width:34%; background:var(--side-bg); border-right:1px solid #DCE4EF; }
+.tpl-corporate .name { font-size:calc(21pt * var(--fs)); letter-spacing:-.025em; }
+.tpl-corporate .role { border-radius:1.5mm; background:color-mix(in srgb,var(--accent) 9%,#fff); color:var(--accent); box-shadow:none; }
+.tpl-corporate .summary { background:color-mix(in srgb,var(--accent) 4%,#fff); border-left:1mm solid var(--accent); box-shadow:none; border-radius:1mm; }
+.tpl-corporate .side-title::before,.tpl-corporate .main-title::before { width:1.2mm; height:4mm; transform:none; border-radius:1mm; background:var(--accent); }
+.tpl-corporate .side-title::after,.tpl-corporate .main-title::after { height:.4mm; background:#D7E1ED; }
+.tpl-corporate .timeline-item { border-radius:1.5mm; box-shadow:none; }
+
+.tpl-software { --font-head:'Inter',Arial,sans-serif; --font-body:'Inter',Arial,sans-serif; }
+.tpl-software .topbar { height:2.7mm; background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 55%,#0C3B48),var(--accent),color-mix(in srgb,var(--accent) 40%,#fff)); }
+.tpl-software .col-left { width:35%; background:var(--side-bg); border-right:1px solid #D5E7E7; }
+.tpl-software .name { font-size:calc(20pt * var(--fs)); letter-spacing:-.02em; }
+.tpl-software .role { color:var(--accent); letter-spacing:.09em; }
+.tpl-software .side-title,.tpl-software .main-title { letter-spacing:.1em; }
+.tpl-software .side-title::before,.tpl-software .main-title::before { width:1.25mm; height:3.8mm; transform:none; border-radius:1mm; background:var(--accent); }
+.tpl-software .side-title::after,.tpl-software .main-title::after { background:linear-gradient(90deg,var(--accent) 0 26%,#D4E7E7 26%); height:.45mm; }
+.tpl-software .badge { border-radius:1.3mm; border-left-width:.7mm; background:#E5F4F3; }
+.tpl-software .timeline-item { border-left:1mm solid var(--accent); border-radius:1.2mm; box-shadow:none; }
+.tpl-software .project { border-radius:1.5mm; }
+
+.tpl-itsupport { --font-head:'Inter',Arial,sans-serif; --font-body:'Inter',Arial,sans-serif; }
+.tpl-itsupport .topbar { height:3mm; background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 60%,#173F77) 0 68%,var(--accent)); }
+.tpl-itsupport .col-left { width:33%; background:var(--side-bg); border-right:1px solid #D4E0F0; }
+.tpl-itsupport .header { padding:2mm 0 3mm; border-bottom:1px solid #D6E1EF; }
+.tpl-itsupport .name { font-size:calc(20pt * var(--fs)); }
+.tpl-itsupport .role { color:var(--accent); background:transparent; border:0; box-shadow:none; padding:0; }
+.tpl-itsupport .summary { background:color-mix(in srgb,var(--accent) 5%,#fff); border:0; border-top:1mm solid var(--accent); border-radius:0 0 1.5mm 1.5mm; box-shadow:none; }
+.tpl-itsupport .side-title::before,.tpl-itsupport .main-title::before { background:var(--accent); }
+.tpl-itsupport .timeline { padding-left:5mm; }
+.tpl-itsupport .timeline::before { background:#C7D8ED; }
+.tpl-itsupport .timeline-item::before { background:var(--accent); }
+.tpl-itsupport .badge { background:color-mix(in srgb,var(--accent) 6%,#fff); border-color:#D9E5F3; border-left-color:var(--accent); }
+
+.tpl-quality { --font-head:'Inter',Arial,sans-serif; --font-body:'Inter',Arial,sans-serif; }
+.tpl-quality .topbar { height:3.3mm; background:var(--accent); }
+.tpl-quality .col-single { display:flex; flex-direction:column; }
+.tpl-quality .classic-head { order:0; border-bottom:1px solid #D7E6DD; border-image:none; }
+.tpl-quality .sec[data-sec="contact"] { order:1; }
+.tpl-quality .sec[data-sec="summary"] { order:2; }
+.tpl-quality .sec[data-sec="skills"] { order:3; }
+.tpl-quality .sec[data-sec="experiences"] { order:4; }
+.tpl-quality .sec[data-sec="educations"] { order:5; }
+.tpl-quality .sec[data-sec="projects"] { order:6; }
+.tpl-quality .sec[data-sec="certifications"] { order:7; }
+.tpl-quality .sec[data-sec="languages"] { order:8; }
+.tpl-quality .sec[data-sec^="cust"] { order:9; }
+.tpl-quality .add-sec { order:20; }
+.tpl-quality .name { font-size:calc(22pt * var(--fs)); }
+.tpl-quality .role { color:#28734F; }
+.tpl-quality .side-title::before,.tpl-quality .main-title::before { width:1.2mm; height:3.8mm; transform:none; border-radius:1mm; background:var(--accent); }
+.tpl-quality .side-title::after,.tpl-quality .main-title::after { height:.35mm; background:#D6E5DC; }
+.tpl-quality .timeline-item,.tpl-quality .project { border:1px solid #DDE9E1; border-left:1mm solid var(--accent); border-radius:1.5mm; box-shadow:none; }
+
+.tpl-creative { --font-head:'Inter',Arial,sans-serif; --font-body:'Inter',Arial,sans-serif; }
+.tpl-creative .topbar { height:5mm; background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#D36C84),#E2A06D); }
+.tpl-creative .col-left { width:31%; background:var(--side-bg); border-right:1px solid #EBD8E3; }
+.tpl-creative .name { font-size:calc(23pt * var(--fs)); letter-spacing:-.04em; }
+.tpl-creative .role { color:var(--accent); background:color-mix(in srgb,var(--accent) 8%,#fff); border-color:#EDD4E1; box-shadow:none; }
+.tpl-creative .avatar-ring { border-radius:5mm; background:var(--accent); }
+.tpl-creative .avatar-img,.tpl-creative .monogram { border-radius:4.2mm; }
+.tpl-creative .summary { background:color-mix(in srgb,var(--accent) 4%,#fff); border-left:1mm solid var(--accent); border-radius:0 2mm 2mm 0; box-shadow:none; }
+.tpl-creative .side-title::before,.tpl-creative .main-title::before { width:1.3mm; height:4mm; transform:none; border-radius:1mm; background:var(--accent); }
+.tpl-creative .side-title::after,.tpl-creative .main-title::after { height:.4mm; background:linear-gradient(90deg,var(--accent) 0 25%,#ECD9E3 25%); }
+.tpl-creative .project { border-radius:2.5mm; box-shadow:0 1mm 2.5mm rgba(163,72,118,.07); }
+
+.tpl-ats { --font-head:Arial,sans-serif; --font-body:Arial,sans-serif; --ink:#111827; --heading:#111827; --muted:#374151; }
+.tpl-ats .topbar { display:none; }
+.tpl-ats .col-single { display:flex; flex-direction:column; }
+.tpl-ats .classic-head { order:0; align-items:flex-start; border-bottom:1px solid #6B7280; border-image:none; }
+.tpl-ats .classic-head-text { width:100%; }
+.tpl-ats .avatar-wrap { margin:0; }
+.tpl-ats .avatar-ring { width:20mm; height:20mm; border:1px solid #9CA3AF; padding:0; background:#fff; box-shadow:none; }
+.tpl-ats .name { font-size:calc(20pt * var(--fs)); letter-spacing:0; text-transform:none; }
+.tpl-ats .role { margin-top:1mm; padding:0; color:#374151; background:none; border:0; box-shadow:none; letter-spacing:0; }
+.tpl-ats .side-title::before,.tpl-ats .main-title::before { display:none; }
+.tpl-ats .side-title,.tpl-ats .main-title { padding:0 0 1.5mm; border-bottom:1px solid #6B7280; color:#111827; font:700 calc(10pt * var(--fs)) Arial,sans-serif; letter-spacing:0; }
+.tpl-ats .side-title::after,.tpl-ats .main-title::after { display:none; }
+.tpl-ats .summary,.tpl-ats .timeline-item,.tpl-ats .project,.tpl-ats .edu-item,.tpl-ats .cert-item,.tpl-ats .lang-item { background:none; border:0; border-radius:0; box-shadow:none; padding:0 0 2mm; }
+.tpl-ats .summary { border-left:0; }
+.tpl-ats .timeline { padding-left:0; margin-left:0; }
+.tpl-ats .timeline::before,.tpl-ats .timeline-item::before { display:none; }
+.tpl-ats .job-date,.tpl-ats .proj-role,.tpl-ats .badge { color:#1F2937; background:none; border:0; box-shadow:none; padding:0; }
+.tpl-ats .contact-list li { padding:0; border-radius:0; }
+.tpl-ats .c-icon { display:none; }
+.tpl-ats .sec[data-sec="contact"] { order:1; }
+.tpl-ats .sec[data-sec="summary"] { order:2; }
+.tpl-ats .sec[data-sec="experiences"] { order:3; }
+.tpl-ats .sec[data-sec="educations"] { order:4; }
+.tpl-ats .sec[data-sec="skills"] { order:5; }
+.tpl-ats .sec[data-sec="projects"] { order:6; }
+.tpl-ats .sec[data-sec="certifications"] { order:7; }
+.tpl-ats .sec[data-sec="languages"] { order:8; }
+.tpl-ats .sec[data-sec^="cust"] { order:9; }
+.tpl-ats .add-sec { order:20; }
+
+.tpl-academic { --font-head:'Source Serif 4',Georgia,serif; --font-body:'Source Serif 4',Georgia,serif; }
+.tpl-academic .topbar { height:1mm; background:var(--accent); }
+.tpl-academic .col-single { display:flex; flex-direction:column; }
+.tpl-academic .classic-head { order:0; align-items:flex-start; border-bottom:1px solid #9BAABD; border-image:none; }
+.tpl-academic .name { font-size:calc(23pt * var(--fs)); font-weight:600; }
+.tpl-academic .role { color:var(--accent); background:none; border:0; box-shadow:none; padding:0; font-style:italic; }
+.tpl-academic .side-title::before,.tpl-academic .main-title::before { display:none; }
+.tpl-academic .side-title,.tpl-academic .main-title { color:var(--accent); font-size:calc(10pt * var(--fs)); letter-spacing:.08em; border-bottom:1px solid #B9C4D2; padding-bottom:1.2mm; }
+.tpl-academic .side-title::after,.tpl-academic .main-title::after { display:none; }
+.tpl-academic .summary { background:none; border-left:1px solid #9BAABD; border-radius:0; box-shadow:none; }
+.tpl-academic .sec[data-sec="contact"] { order:1; }
+.tpl-academic .sec[data-sec="summary"] { order:2; }
+.tpl-academic .sec[data-sec="educations"] { order:3; }
+.tpl-academic .sec[data-sec="experiences"] { order:4; }
+.tpl-academic .sec[data-sec="projects"] { order:5; }
+.tpl-academic .sec[data-sec="certifications"] { order:6; }
+.tpl-academic .sec[data-sec="skills"] { order:7; }
+.tpl-academic .sec[data-sec="languages"] { order:8; }
+.tpl-academic .sec[data-sec^="cust"] { order:9; }
+.tpl-academic .add-sec { order:20; }
+.tpl-academic .timeline-item,.tpl-academic .project { border-radius:0; box-shadow:none; border-bottom:1px solid #D9E0E8; }
+
+.tpl-graduate { --font-head:'Inter',Arial,sans-serif; --font-body:'Inter',Arial,sans-serif; }
+.tpl-graduate .topbar { height:4mm; background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 74%,#30266D),var(--accent)); }
+.tpl-graduate .col-single { display:flex; flex-direction:column; }
+.tpl-graduate .classic-head { order:0; border-bottom:1px solid #E2DFF5; border-image:none; }
+.tpl-graduate .name { font-size:calc(22pt * var(--fs)); }
+.tpl-graduate .role { color:var(--accent); background:color-mix(in srgb,var(--accent) 8%,#fff); border:0; box-shadow:none; }
+.tpl-graduate .sec[data-sec="contact"] { order:1; }
+.tpl-graduate .sec[data-sec="summary"] { order:2; }
+.tpl-graduate .sec[data-sec="educations"] { order:3; }
+.tpl-graduate .sec[data-sec="projects"] { order:4; }
+.tpl-graduate .sec[data-sec="skills"] { order:5; }
+.tpl-graduate .sec[data-sec="experiences"] { order:6; }
+.tpl-graduate .sec[data-sec="certifications"] { order:7; }
+.tpl-graduate .sec[data-sec="languages"] { order:8; }
+.tpl-graduate .sec[data-sec^="cust"] { order:9; }
+.tpl-graduate .add-sec { order:20; }
+.tpl-graduate .side-title::before,.tpl-graduate .main-title::before { width:1.25mm; height:3.8mm; transform:none; border-radius:1mm; background:var(--accent); }
+.tpl-graduate .side-title::after,.tpl-graduate .main-title::after { height:.4mm; background:#E1DDF6; }
+.tpl-graduate .edu-item,.tpl-graduate .project { border-left:1mm solid var(--accent); border-radius:1.5mm; }
+
+@media(max-width:720px) {
+  .tpl-grid { max-height:400px; }
+  .template-preview-window { padding:12px; }
+  .template-preview-modal { width:100%; height:96vh; border-radius:14px; }
+  .template-preview-head { padding:16px; }
+  .template-preview-head h2 { font-size:17px; }
+  .template-preview-actions { padding:11px 14px; }
+  .template-preview-actions button { flex:1; }
+}
+@media print {
+  .page { overflow:visible !important; }
+  .page [contenteditable][data-ph]:empty::before { display:none !important; }
+  .side-section,.main-section { break-inside:auto; page-break-inside:auto; }
+  .tpl-grid,.tpl-tools,.tpl-empty { display:none !important; }
+}
+
+@media print {
+  body { min-width:0; background:#fff; }
+  #stage { padding:0; overflow:visible; display:block; }
+  .page { zoom:1 !important; }
+  .page { border:0; box-shadow:none; margin:0; width:210mm; min-height:297mm; border-radius:0; animation:none; }
+}
+
+/* Compact skill groups: keep the group label beside its skill chips. */
+.skill-group {
+  display:grid; grid-template-columns:minmax(17mm,26mm) minmax(0,1fr);
+  align-items:start; column-gap:2mm; margin-bottom:1.8mm;
+}
+.skill-group:last-of-type { margin-bottom:0; }
+.sg-name {
+  display:flex; align-items:baseline; gap:1.2mm; min-width:0;
+  margin:0; font-size:calc(7.1pt * var(--fs)); line-height:1.25;
+  letter-spacing:.06em; overflow-wrap:anywhere;
+}
+.sg-name::before {
+  flex:0 0 2.4mm; width:2.4mm; height:.65mm; margin:0;
+  vertical-align:baseline;
+}
+.badges { min-width:0; gap:.9mm 1.2mm; }
+.badge {
+  border-left-width:.6mm; border-radius:999px; padding:.55mm 1.7mm;
+  font-size:calc(7pt * var(--fs)); line-height:1.2; box-shadow:none;
+}
+.badge:hover { transform:none; box-shadow:none; }
+.add-btn { margin-top:0; padding:.45mm 1.8mm; font-size:calc(6.8pt * var(--fs)); }
+
+/* Keep the ATS template's plain, scan-friendly skill list treatment. */
+.tpl-ats .skill-group { display:block; margin-bottom:1.5mm; }
+.tpl-ats .sg-name { display:block; margin-bottom:.6mm; }
+.tpl-ats .sg-name::before { display:none; }
+
+@media print {
+  /* Print skills as clean text rows instead of cramped UI chips. */
+  .page .skill-group {
+    display:block !important; margin:0 0 1.1mm !important;
+    line-height:1.35; break-inside:avoid; page-break-inside:avoid;
+  }
+  .page .sg-name {
+    display:inline !important; margin:0 !important; color:var(--heading) !important;
+    font-size:calc(7.2pt * var(--fs)) !important; font-weight:700 !important;
+    letter-spacing:0 !important; text-transform:none !important;
+  }
+  .page .sg-name::before { display:none !important; }
+  .page .sg-name::after { content:": "; white-space:pre; }
+  .page .badges { display:inline !important; min-width:0; }
+  .page .badge {
+    display:inline !important; padding:0 !important; margin:0 !important;
+    border:0 !important; border-radius:0 !important; background:none !important;
+    box-shadow:none !important; color:var(--ink) !important;
+    font-size:calc(7.2pt * var(--fs)) !important; font-weight:400 !important;
+    line-height:inherit !important; white-space:normal !important; transform:none !important;
+  }
+  .page .badge:not(:last-of-type)::after { content:", "; }
+  .page .badge:hover { border:0 !important; box-shadow:none !important; }
 }
 </style>
 </head>
@@ -1098,29 +1642,48 @@ body {
     <div class="brand-logo">CV</div>
     <div>
       <h1>CV Studio</h1>
-      <small>Supabase · Realtime · 5 Mẫu CV · Analyst Pro</small>
+      <small>Không gian chỉnh sửa hồ sơ chuyên nghiệp</small>
     </div>
   </div>
 
-  <div class="conn"><span class="dot" id="connDot"></span><span id="connText">Đang kết nối Supabase…</span></div>
-  <div class="conn" style="margin-top:-8px"><span class="dot live" id="liveDot"></span><span id="liveText">Realtime: đang kết nối…</span></div>
+  <div class="conn conn-primary" role="status" aria-live="polite"><span class="dot" id="connDot"></span><span id="connText">Đang kết nối Supabase…</span></div>
+  <div class="conn conn-realtime" role="status" aria-live="polite"><span class="dot live" id="liveDot"></span><span id="liveText">Realtime: đang kết nối…</span></div>
 
-  <div>
+  <div class="sidebar-section user-panel">
     <div class="panel-label">
       <span>Danh sách hồ sơ</span>
-      <button class="icon-btn" id="btnRefresh" title="Làm mới danh sách">⟳</button>
+      <button class="icon-btn" id="btnRefresh" type="button" title="Làm mới danh sách" aria-label="Làm mới danh sách">
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5"/><path d="M19 12a7 7 0 1 1-2-5l3 5"/></svg>
+      </button>
     </div>
-    <div id="userList"><div class="empty-list">Đang tải…</div></div>
+    <div id="userList" role="group" aria-label="Danh sách hồ sơ CV"><div class="empty-list" role="status" aria-live="polite">Đang tải…</div></div>
   </div>
 
-  <button class="sb-btn primary" id="btnNewUser">＋ Tạo hồ sơ mới</button>
+  <button class="sb-btn primary" id="btnNewUser" type="button"><span class="button-plus" aria-hidden="true">＋</span><span>Tạo hồ sơ mới</span></button>
 
-  <div>
-    <div class="panel-label"><span>Mẫu giao diện CV</span></div>
-    <div class="tpl-grid" id="tplList"></div>
+  <div class="sidebar-section template-panel">
+    <div class="panel-label"><span>Thư viện mẫu CV</span><span class="tpl-total" id="tplTotal"></span></div>
+    <div class="tpl-tools">
+      <label class="tpl-search-label" for="tplSearch">Tìm mẫu</label>
+      <input type="search" id="tplSearch" placeholder="Tên mẫu, phong cách…" autocomplete="off">
+      <label class="tpl-search-label" for="tplFilter">Nhóm mẫu</label>
+      <select id="tplFilter">
+        <option value="all">Tất cả mẫu</option>
+        <option value="professional">Chuyên nghiệp</option>
+        <option value="technology">Công nghệ / IT</option>
+        <option value="data">Phân tích dữ liệu</option>
+        <option value="qa">QA / QC</option>
+        <option value="creative">Sáng tạo</option>
+        <option value="ats">ATS-Friendly</option>
+        <option value="academic">Học thuật</option>
+        <option value="graduate">Sinh viên mới tốt nghiệp</option>
+      </select>
+    </div>
+    <div class="tpl-grid" id="tplList" role="group" aria-label="Chọn mẫu CV"></div>
+    <p class="tpl-empty" id="tplEmpty" hidden>Không tìm thấy mẫu phù hợp.</p>
   </div>
 
-  <div class="meta-box">
+  <div class="meta-box portfolio-box">
     <div>
       <label for="metaPortfolio">Portfolio URL</label>
       <input type="text" id="metaPortfolio" placeholder="https://…" disabled>
@@ -1138,10 +1701,12 @@ body {
     </div>
   </div>
 
-  <div class="meta-box">
+  <div class="meta-box layout-box">
     <div class="panel-label" style="margin-bottom:0">
       <span>Căn chỉnh bố cục (fit A4)</span>
-      <button class="icon-btn" id="btnLayoutReset" title="Về mặc định" disabled>↺</button>
+      <button class="icon-btn" id="btnLayoutReset" type="button" title="Về mặc định" aria-label="Đặt bố cục về mặc định" disabled>
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/><path d="M3 3v5h5"/></svg>
+      </button>
     </div>
 
     <label class="switch-row" style="margin:0">
@@ -1151,68 +1716,92 @@ body {
 
     <div class="slider-row">
       <div class="s-head"><span>Cỡ chữ toàn trang</span><b id="fsVal">100%</b></div>
-      <input type="range" id="sFs" min="75" max="125" step="1" disabled>
+      <input type="range" id="sFs" min="75" max="125" step="1" aria-label="Cỡ chữ toàn trang" disabled>
     </div>
 
     <div class="slider-row">
       <div class="s-head"><span>Khoảng cách giữa các mục</span><b id="gapVal">6.5mm</b></div>
-      <input type="range" id="sGap" min="2" max="12" step="0.5" disabled>
+      <input type="range" id="sGap" min="2" max="12" step="0.5" aria-label="Khoảng cách giữa các mục" disabled>
     </div>
 
     <div class="slider-row">
       <div class="s-head"><span>Lề trang (padding)</span><b id="padVal">9mm</b></div>
-      <input type="range" id="sPad" min="4" max="14" step="0.5" disabled>
+      <input type="range" id="sPad" min="4" max="14" step="0.5" aria-label="Lề trang" disabled>
     </div>
   </div>
 
-  <button class="sb-btn ghost" id="btnSaveAll" disabled>💾 Lưu ngay tất cả</button>
-  <button class="sb-btn ghost" id="btnPrint" disabled>🖨 In / Xuất PDF</button>
-  <button class="sb-btn danger" id="btnDelete" disabled>🗑 Xóa hồ sơ này</button>
+  <button class="sb-btn ghost" id="btnSaveAll" type="button" disabled>
+    <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h12l3 3v13H4V4z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></svg><span>Lưu ngay tất cả</span>
+  </button>
+  <button class="sb-btn ghost" id="btnPrint" type="button" disabled>
+    <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V4h10v4M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v6H7zM17 11h.01"/></svg><span>In / Xuất PDF</span>
+  </button>
+  <button class="sb-btn danger" id="btnDelete" type="button" disabled>
+    <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/></svg><span>Xóa hồ sơ này</span>
+  </button>
 
-  <div id="saveStatus"></div>
+  <div id="saveStatus" role="status" aria-live="polite"></div>
 </aside>
 
-<main id="stage">
-  <div id="emptyState">
-    <div class="big">📄</div>
+<main id="stage" aria-label="Khu vực xem trước CV">
+  <div id="emptyState" role="status">
+    <div class="big" aria-hidden="true"><svg class="ui-icon empty-state-icon" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v6h5M9 13h6M9 17h6"/></svg></div>
     <h2>Chưa có hồ sơ nào được chọn</h2>
     <p>Chọn một hồ sơ từ danh sách bên trái để xem &amp; chỉnh sửa CV, hoặc bấm <b>“Tạo hồ sơ mới”</b> để bắt đầu.</p>
   </div>
 
   <div class="stage-col" id="stageCol" style="display:none">
-    <div class="stage-tools"><span class="fit" id="fitBadge">Đang đo khổ trang…</span></div>
+    <div class="stage-tools"><span class="stage-caption">Bản xem trước</span><span class="fit" id="fitBadge" role="status" aria-live="polite">Đang đo khổ trang…</span><button class="preview-zoom" id="btnPreviewZoom" type="button" aria-label="Xem bản CV ở kích thước thật" title="Xem bản CV ở kích thước thật" aria-pressed="false"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5M10.8 7.8v6M7.8 10.8h6"/></svg></button></div>
     <div class="page" id="cvPage"></div>
   </div>
 </main>
 
 <input type="file" id="avatarInput" accept="image/*" hidden>
-<div class="icon-pop" id="iconPop"></div>
+<div class="icon-pop" id="iconPop" role="group" aria-label="Chọn biểu tượng liên hệ"></div>
 
 <div class="modal-overlay" id="modal">
-  <div class="modal">
-    <h2>Tạo hồ sơ mới</h2>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">Tạo hồ sơ mới</h2>
     <p>Một tài khoản Supabase Auth sẽ được tạo để ràng buộc <code>user_id</code> cho hồ sơ.</p>
 
-    <label>Họ và tên</label>
-    <input type="text" id="mName" placeholder="Nguyễn Văn A">
+    <label for="mName">Họ và tên</label>
+    <input type="text" id="mName" placeholder="Nguyễn Văn A" autocomplete="name">
 
-    <label>Vị trí / Chức danh</label>
-    <input type="text" id="mRole" placeholder="Business Analyst">
+    <label for="mRole">Vị trí / Chức danh</label>
+    <input type="text" id="mRole" placeholder="Business Analyst" autocomplete="organization-title">
 
-    <label>Email</label>
-    <input type="email" id="mEmail" placeholder="email@example.com">
+    <label for="mEmail">Email</label>
+    <input type="email" id="mEmail" placeholder="email@example.com" autocomplete="email">
 
-    <label>Mật khẩu (tối thiểu 6 ký tự)</label>
-    <input type="password" id="mPass" placeholder="••••••••">
+    <label for="mPass">Mật khẩu (tối thiểu 6 ký tự)</label>
+    <input type="password" id="mPass" placeholder="••••••••" autocomplete="new-password">
 
     <div class="modal-actions">
-      <button class="m-cancel" id="mCancel">Hủy</button>
-      <button class="m-ok" id="mOk">Tạo hồ sơ</button>
+      <button class="m-cancel" id="mCancel" type="button">Hủy</button>
+      <button class="m-ok" id="mOk" type="button">Tạo hồ sơ</button>
     </div>
   </div>
 </div>
 
-<div id="toast"></div>
+<div class="modal-overlay template-preview-overlay" id="templatePreviewModal" aria-hidden="true">
+  <section class="template-preview-modal" role="dialog" aria-modal="true" aria-labelledby="templatePreviewTitle" aria-describedby="templatePreviewDesc">
+    <header class="template-preview-head">
+      <div>
+        <span class="tpl-category" id="templatePreviewCategory"></span>
+        <h2 id="templatePreviewTitle">Xem trước mẫu CV</h2>
+        <p id="templatePreviewDesc"></p>
+      </div>
+      <button class="icon-btn template-preview-x" id="tplPreviewX" type="button" aria-label="Đóng xem trước">×</button>
+    </header>
+    <div class="template-preview-window" id="templatePreviewWindow" tabindex="0" aria-label="Bản xem trước CV theo khổ A4"></div>
+    <div class="template-preview-actions">
+      <button class="m-cancel" id="tplPreviewClose" type="button">Đóng</button>
+      <button class="m-ok" id="tplPreviewApply" type="button">Sử dụng mẫu này</button>
+    </div>
+  </section>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 /* ============================================================
@@ -1232,40 +1821,35 @@ const AVATAR_MAX_MB = 5;
 TEMPLATES
 ============================================================ */
 const TEMPLATES = {
-  executive: { name:'Executive Navy', desc:'2 cột · sidebar xám · deep navy', cols:2, accent:'#1E3A8A', sideBg:'#F8FAFC' },
-  darkside:  { name:'Dark Sidebar', desc:'2 cột · sidebar đậm · hiện đại', cols:2, accent:'#1E3A8A', sideBg:'#F8FAFC' },
-  classic:   { name:'Classic Serif', desc:'1 cột · serif sang trọng · ATS-friendly', cols:1, accent:'#1F2937', sideBg:'#FFFFFF' },
-  minimal:   { name:'Minimal Mono', desc:'1 cột · tối giản · đơn sắc', cols:1, accent:'#111827', sideBg:'#FFFFFF' },
-  analyst:   { name:'Analyst Pro', desc:'2 cột · compact · BA/ERP/SAP', cols:2, accent:'#0F766E', sideBg:'#F1F5F9' }
+  executive: { name:'Executive Professional', desc:'Hai cột trang nhã cho quản lý và trưởng nhóm.', category:'professional', categoryLabel:'Professional', cols:2, accent:'#9A7B43', sideBg:'#F3F4F6' },
+  darkside:  { name:'Dark Sidebar', desc:'Hai cột tương phản, nhấn mạnh hồ sơ lãnh đạo.', category:'professional', categoryLabel:'Professional', cols:2, accent:'#1E3A8A', sideBg:'#F8FAFC' },
+  classic:   { name:'Classic Serif', desc:'Một cột serif chỉn chu, hợp hồ sơ truyền thống.', category:'professional', categoryLabel:'Professional', cols:1, accent:'#1F2937', sideBg:'#FFFFFF' },
+  minimal:   { name:'Minimal Mono', desc:'Một cột gọn gàng, tập trung vào nội dung.', category:'ats', categoryLabel:'ATS-Friendly', cols:1, accent:'#111827', sideBg:'#FFFFFF' },
+  analyst:   { name:'Data Analyst', desc:'Hai cột cho phân tích dữ liệu, báo cáo và BI.', category:'data', categoryLabel:'Data', cols:2, accent:'#0F766E', sideBg:'#F1F5F9' },
+  corporate: { name:'Modern Corporate', desc:'Bố cục văn phòng hiện đại, dễ quét thông tin.', category:'professional', categoryLabel:'Professional', cols:2, accent:'#2357A5', sideBg:'#F1F5FA' },
+  software:  { name:'Software Engineer', desc:'Nhấn mạnh kỹ năng công nghệ, dự án và kinh nghiệm.', category:'technology', categoryLabel:'Technology', cols:2, accent:'#0B8793', sideBg:'#F0F7F7' },
+  itsupport: { name:'IT Support Specialist', desc:'Làm rõ năng lực hỗ trợ, hệ thống và xử lý sự cố.', category:'technology', categoryLabel:'Technology', cols:2, accent:'#2764B5', sideBg:'#EDF3FB' },
+  quality:   { name:'Quality Assurance', desc:'Một cột rõ ràng cho QA/QC, kiểm thử và quy trình.', category:'qa', categoryLabel:'QA / QC', cols:1, accent:'#2C7A59', sideBg:'#F2F7F3' },
+  creative:  { name:'Creative Portfolio', desc:'Hai cột giàu cá tính cho thiết kế và truyền thông.', category:'creative', categoryLabel:'Creative', cols:2, accent:'#A34876', sideBg:'#F8EDF4' },
+  ats:       { name:'ATS Minimalist', desc:'Một cột thuần văn bản, ưu tiên khả năng đọc ATS.', category:'ats', categoryLabel:'ATS-Friendly', cols:1, accent:'#111827', sideBg:'#FFFFFF' },
+  academic:  { name:'Academic & Research', desc:'Một cột trang trọng cho nghiên cứu và học bổng.', category:'academic', categoryLabel:'Academic', cols:1, accent:'#4B6384', sideBg:'#FFFFFF' },
+  graduate:  { name:'Fresh Graduate', desc:'Đưa học vấn, dự án và kỹ năng lên trước kinh nghiệm.', category:'graduate', categoryLabel:'Graduate', cols:1, accent:'#6D5BD0', sideBg:'#F4F2FC' }
 };
 
 const PREVIEWS = {
-  executive:`<i class="pv-top" style="background:linear-gradient(90deg,#0F172A,#1E3A8A,#60A5FA)"></i>
-<i class="pv-side" style="background:#EEF2F7;border-right:1px solid #E2E8F0"></i>
-<i class="pv-circle" style="left:9px;top:9px;background:#fff;border:2px solid #1E3A8A"></i>
-<i class="pv-lines"></i>
-<i class="pv-lines" style="left:9px;right:70%;top:27px;bottom:6px;background:repeating-linear-gradient(#D7DEE9 0 2px,transparent 2px 6px)"></i>`,
-
-  darkside:`<i class="pv-top" style="background:linear-gradient(90deg,#020617,#3B5BDB,#60A5FA)"></i>
-<i class="pv-side" style="background:#0F172A"></i>
-<i class="pv-circle" style="left:9px;top:9px;background:#0F172A;border:2px solid #7EA6FF"></i>
-<i class="pv-lines"></i>
-<i class="pv-lines" style="left:9px;right:70%;top:27px;bottom:6px;background:repeating-linear-gradient(rgba(255,255,255,.4) 0 2px,transparent 2px 6px)"></i>`,
-
-  classic:`<i class="pv-hdr"></i>
-<i class="pv-circle" style="right:8px;top:7px;background:#fff;border:1.5px solid #1F2937"></i>
-<i class="pv-rule"></i>
-<i class="pv-lines" style="left:6px;right:6px;top:23px;background:repeating-linear-gradient(#CBD5E1 0 1.5px,transparent 1.5px 6px)"></i>`,
-
-  minimal:`<i class="pv-circle" style="left:50%;top:6px;margin-left:-6px;background:#fff;border:1px solid #D1D5DB"></i>
-<i class="pv-hdr" style="top:23px;left:32%;right:32%;width:auto;height:3px;background:#111827"></i>
-<i class="pv-lines" style="left:6px;right:6px;top:31px;background:repeating-linear-gradient(#E5E7EB 0 1.5px,transparent 1.5px 6px)"></i>`,
-
-  analyst:`<i class="pv-top" style="background:linear-gradient(90deg,#020617,#0F766E,#67E8F9)"></i>
-<i class="pv-side" style="background:#F1F5F9;border-right:1px solid #D8E2EC"></i>
-<i class="pv-circle" style="left:9px;top:9px;border-radius:4px;background:#fff;border:2px solid #0F766E"></i>
-<i class="pv-lines"></i>
-<i class="pv-lines" style="left:9px;right:70%;top:27px;bottom:6px;background:repeating-linear-gradient(#D7DEE9 0 2px,transparent 2px 6px)"></i>`
+  executive:`<span class="pv-sheet pv-executive"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i><i class="pv-side-lines"></i></span>`,
+  darkside:`<span class="pv-sheet pv-darkside"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i><i class="pv-side-lines"></i></span>`,
+  classic:`<span class="pv-sheet pv-classic"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-rule"></i><i class="pv-title"></i><i class="pv-lines"></i></span>`,
+  minimal:`<span class="pv-sheet pv-minimal"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i></span>`,
+  analyst:`<span class="pv-sheet pv-analyst"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i><i class="pv-side-lines"></i></span>`,
+  corporate:`<span class="pv-sheet pv-corporate"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i><i class="pv-side-lines"></i></span>`,
+  software:`<span class="pv-sheet pv-software"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i><i class="pv-side-lines"></i></span>`,
+  itsupport:`<span class="pv-sheet pv-itsupport"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i><i class="pv-side-lines"></i></span>`,
+  quality:`<span class="pv-sheet pv-quality"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i></span>`,
+  creative:`<span class="pv-sheet pv-creative"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i></span>`,
+  ats:`<span class="pv-sheet pv-ats"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i></span>`,
+  academic:`<span class="pv-sheet pv-academic"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i></span>`,
+  graduate:`<span class="pv-sheet pv-graduate"><i class="pv-band"></i><i class="pv-sidebar"></i><i class="pv-photo"></i><i class="pv-name"></i><i class="pv-role"></i><i class="pv-title"></i><i class="pv-lines"></i><i class="pv-side-lines"></i></span>`
 };
 
 const DEFAULT_SEC = {
@@ -1305,6 +1889,8 @@ TRẠNG THÁI
 let USERS = [];
 let CURRENT_UID = null;
 let STATE = null;
+let previewZoomed = false;
+let previewTemplateKey = null;
 let contactAvail = true;
 
 const saveTimers = {};
@@ -1549,10 +2135,10 @@ async function uploadAvatar(file){
     renderMono();
     renderUserList();
 
-    setStatus('✓ Ảnh đại diện đã cập nhật','saved');
-    toast('✓ Đã tải ảnh đại diện lên Supabase Storage.');
+    setStatus('Ảnh đại diện đã cập nhật','saved');
+    toast('Đã tải ảnh đại diện lên Supabase Storage.');
   }catch(err){
-    setStatus('✗ Lỗi tải ảnh','error');
+    setStatus('Lỗi tải ảnh','error');
     toast('Tải ảnh thất bại: ' + (err.message||err), true);
   }
 }
@@ -1578,7 +2164,7 @@ async function deleteAvatar(){
     renderMono();
     renderUserList();
 
-    setStatus('✓ Đã xóa ảnh đại diện','saved');
+    setStatus('Đã xóa ảnh đại diện','saved');
     toast('Đã xóa ảnh đại diện.');
   }catch(err){
     toast('Xóa ảnh thất bại: ' + (err.message||err), true);
@@ -1722,18 +2308,22 @@ function secHtml(id, col, is1col){
   const titleCls = is1col ? 'main-title' : (col==='left' ? 'side-title' : 'main-title');
 
   const body = hidden
-    ? `<div class="sec-off">Mục đang ẩn — bấm 👁 để hiện lại (sẽ không xuất hiện khi in PDF).</div>`
+    ? `<div class="sec-off">Mục này đang ẩn. Dùng nút Hiện mục để đưa nội dung trở lại bản CV.</div>`
     : isCustom
       ? `<div class="custom-content" id="custom_${id}" contenteditable="true" data-custom="${id}" data-ph="Nhập nội dung tùy chỉnh…" spellcheck="false"></div>`
       : (def ? def.body() : '');
 
   return `
-    <section class="${secCls} sec ${hidden?'sec-hidden':''}">
+    <section class="${secCls} sec ${hidden?'sec-hidden':''}" data-sec="${esc(id)}">
       <div class="sec-ctl">
-        <button class="ctl-btn" data-secaction="up" data-sec="${id}" title="Đẩy lên">▲</button>
-        <button class="ctl-btn" data-secaction="down" data-sec="${id}" title="Đẩy xuống">▼</button>
-        <button class="ctl-btn" data-secaction="toggle" data-sec="${id}" title="${hidden?'Hiện mục':'Ẩn mục'}">${hidden?'◌':'👁'}</button>
-        ${isCustom?`<button class="ctl-btn danger" data-secaction="rm" data-sec="${id}" title="Xóa mục">✕</button>`:''}
+        <button class="ctl-btn" data-secaction="up" data-sec="${id}" title="Đẩy lên" aria-label="Đẩy mục lên">▲</button>
+        <button class="ctl-btn" data-secaction="down" data-sec="${id}" title="Đẩy xuống" aria-label="Đẩy mục xuống">▼</button>
+        <button class="ctl-btn" data-secaction="toggle" data-sec="${id}" title="${hidden?'Hiện mục':'Ẩn mục'}" aria-label="${hidden?'Hiện mục':'Ẩn mục'}">
+          ${hidden
+            ? '<svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10.8 10.8 0 0 1 12 5c5.2 0 8.8 5 9.5 6.1a1.6 1.6 0 0 1 0 1.8 15 15 0 0 1-3.1 3.5M6.2 6.2A15 15 0 0 0 2.5 11a1.6 1.6 0 0 0 0 2C3.2 14.2 6.8 19 12 19c1 0 2-.2 2.9-.5"/></svg>'
+            : '<svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.2-7 9.5-7 9.5 7 9.5 7-3.2 7-9.5 7-9.5-7-9.5-7z"/><circle cx="12" cy="12" r="2.5"/></svg>'}
+        </button>
+        ${isCustom?`<button class="ctl-btn danger" data-secaction="rm" data-sec="${id}" title="Xóa mục" aria-label="Xóa mục tùy chỉnh">✕</button>`:''}
       </div>
       <h2 class="${titleCls}" contenteditable="true" data-sectitle="${id}" data-single="1" data-ph="Tiêu đề mục…" spellcheck="false">${esc(title)}</h2>
       ${body}
@@ -1793,17 +2383,110 @@ function renderPageStructure(){
 
 function renderTplList(){
   const cur = curTpl();
+  const query = ($('#tplSearch')?.value||'').trim().toLocaleLowerCase('vi');
+  const filter = $('#tplFilter')?.value||'all';
+  const norm = value => String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('vi');
+  let visible = 0;
 
   $('#tplList').innerHTML = Object.keys(TEMPLATES).map(k=>{
     const T = TEMPLATES[k];
+    const matchesQuery = !query || norm([T.name,T.desc,T.categoryLabel,T.category].join(' ')).includes(norm(query));
+    const matchesFilter = filter==='all' || T.category===filter;
+    if(!matchesQuery || !matchesFilter) return '';
+    visible++;
+    const active = !!STATE && k===cur;
     return `
-      <button class="tpl-card ${k===cur?'active':''}" data-tpl="${k}" title="Áp dụng mẫu ${T.name}">
+      <article class="tpl-card ${active?'active':''}" data-tpl="${k}" aria-label="Mẫu ${esc(T.name)}">
         <span class="tpl-prev">${PREVIEWS[k]}</span>
-        <span class="tpl-name">${T.name}</span>
-        <span class="tpl-desc">${T.desc}</span>
-      </button>
+        <span class="tpl-card-head"><span class="tpl-name">${esc(T.name)}</span><span class="tpl-category">${esc(T.categoryLabel)}</span></span>
+        <span class="tpl-desc">${esc(T.desc)}</span>
+        <span class="tpl-status" ${active?'':'hidden'}>Đang sử dụng</span>
+        <span class="tpl-card-actions">
+          <button class="tpl-action preview" type="button" data-tpl-action="preview" ${STATE?'':'disabled'}>Xem trước</button>
+          <button class="tpl-action apply" type="button" data-tpl-action="apply" aria-pressed="${active}" ${!STATE||active?'disabled':''}>${active?'Đang dùng':'Sử dụng mẫu'}</button>
+        </span>
+      </article>
     `;
   }).join('');
+
+  $('#tplTotal').textContent = `${visible}/${Object.keys(TEMPLATES).length}`;
+  $('#tplEmpty').hidden = visible!==0;
+}
+
+function stripTemplatePreviewControls(page){
+  page.querySelectorAll('.sec-ctl,.add-btn,.ctl,.rm-dot,.av-actions').forEach(el=>el.remove());
+  page.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
+  page.querySelectorAll('[contenteditable]').forEach(el=>{
+    el.removeAttribute('contenteditable');
+    el.removeAttribute('data-ph');
+    el.removeAttribute('data-field');
+    el.removeAttribute('data-single');
+    el.removeAttribute('spellcheck');
+  });
+  page.querySelectorAll('button').forEach(button=>{
+    button.disabled = true;
+    button.tabIndex = -1;
+  });
+  page.classList.add('template-preview-page');
+}
+
+function fitTemplatePreview(){
+  const windowEl = $('#templatePreviewWindow');
+  const page = windowEl?.querySelector('.template-preview-page');
+  if(!page) return;
+  const pageWidth = 210 * 96 / 25.4;
+  const available = Math.max(1,windowEl.clientWidth-40);
+  page.style.zoom = Math.min(.92,available/pageWidth).toFixed(3);
+}
+
+function openTemplatePreview(key){
+  if(!STATE || !TEMPLATES[key]) return;
+  const T = TEMPLATES[key];
+  const oldLayout = STATE.layout;
+  previewTemplateKey = key;
+
+  try{
+    STATE.layout = Object.assign({},oldLayout||DEFAULT_LAYOUT,{
+      template:key,
+      accent:T.accent,
+      sideBg:T.sideBg
+    });
+    renderAll();
+    const clone = $('#cvPage').cloneNode(true);
+    stripTemplatePreviewControls(clone);
+    $('#templatePreviewWindow').replaceChildren(clone);
+  }finally{
+    STATE.layout = oldLayout;
+    renderAll();
+  }
+
+  $('#templatePreviewCategory').textContent = T.categoryLabel;
+  $('#templatePreviewTitle').textContent = T.name;
+  $('#templatePreviewDesc').textContent = T.desc+' Bản xem trước dùng dữ liệu CV hiện tại.';
+  $('#tplPreviewApply').textContent = key===curTpl() ? 'Mẫu đang được sử dụng' : 'Sử dụng mẫu này';
+  $('#tplPreviewApply').disabled = key===curTpl();
+  const overlay = $('#templatePreviewModal');
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden','false');
+  document.body.classList.add('preview-modal-open');
+  requestAnimationFrame(()=>{
+    fitTemplatePreview();
+    $('#tplPreviewClose').focus();
+  });
+}
+
+function closeTemplatePreview(){
+  const overlay = $('#templatePreviewModal');
+  const focusKey = previewTemplateKey;
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden','true');
+  document.body.classList.remove('preview-modal-open');
+  $('#templatePreviewWindow').replaceChildren();
+  previewTemplateKey = null;
+  const focusTarget = focusKey
+    ? document.querySelector(`#tplList [data-tpl="${focusKey}"] [data-tpl-action="preview"]`)
+    : null;
+  if(focusTarget) focusTarget.focus();
 }
 
 function setTemplate(key){
@@ -1819,7 +2502,7 @@ function setTemplate(key){
 
   renderAll();
   markDirty('layout');
-  toast('✓ Đã áp dụng mẫu "'+T.name+'".');
+  toast('Đã áp dụng mẫu "'+T.name+'".');
 }
 
 /* ============================================================
@@ -1875,9 +2558,10 @@ function renderMono(){
       </div>
       <div class="av-actions">
         <button class="av-btn" data-av="upload" title="Tải ảnh lên từ điện thoại hoặc máy tính">
-          📷 <span>${hasImg ? 'Đổi ảnh' : 'Tải ảnh lên'}</span>
+          <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.2"/></svg>
+          <span>${hasImg ? 'Đổi ảnh' : 'Tải ảnh lên'}</span>
         </button>
-        ${hasImg ? `<button class="av-btn danger" data-av="remove" title="Xóa ảnh khỏi Storage">✕ <span>Xóa ảnh</span></button>` : ''}
+        ${hasImg ? `<button class="av-btn danger" data-av="remove" title="Xóa ảnh khỏi Storage" aria-label="Xóa ảnh đại diện">✕ <span>Xóa ảnh</span></button>` : ''}
       </div>
     </div>
   `;
@@ -1903,7 +2587,7 @@ function renderContact(){
         <svg viewBox="0 0 24 24">${ICONS[it.icon]||ICONS.email}</svg>
       </button>
       <span contenteditable="true" data-field="ci.${i}.value" data-single="1" data-ph="Nội dung liên hệ…" spellcheck="false">${esc(it.value)}</span>
-      <button class="ctl" style="top:-1mm" data-action="rm-contact" data-idx="${i}" title="Xóa mục liên hệ">✕</button>
+      <button class="ctl" style="top:-1mm" data-action="rm-contact" data-idx="${i}" title="Xóa mục liên hệ" aria-label="Xóa mục liên hệ">✕</button>
     </li>
   `).join('');
 }
@@ -1914,16 +2598,16 @@ function renderSkills(){
 
   box.innerHTML = (STATE.skillGroups||[]).map((g,i) => `
     <div class="skill-group hoverable">
-      <button class="ctl" data-action="rm-group" data-idx="${i}" title="Xóa nhóm">✕</button>
+      <button class="ctl" data-action="rm-group" data-idx="${i}" title="Xóa nhóm" aria-label="Xóa nhóm kỹ năng">✕</button>
       <div class="sg-name" contenteditable="true" data-field="sg.${i}.name" data-single="1" data-ph="Tên nhóm…" spellcheck="false">${esc(g.name)}</div>
       <div class="badges">
         ${(g.skills||[]).map((s,j)=>`
           <span class="badge">
             <span contenteditable="true" data-field="sg.${i}.skills.${j}" data-single="1" data-ph="Kỹ năng" spellcheck="false">${esc(s)}</span>
-            <button class="rm-dot" data-action="rm-skill" data-idx="${i}" data-sub="${j}" title="Xóa kỹ năng">✕</button>
+            <button class="rm-dot" data-action="rm-skill" data-idx="${i}" data-sub="${j}" title="Xóa kỹ năng" aria-label="Xóa kỹ năng">✕</button>
           </span>
         `).join('')}
-        <button class="add-btn" style="margin-top:0" data-action="add-skill" data-idx="${i}">＋</button>
+        <button class="add-btn" style="margin-top:0" data-action="add-skill" data-idx="${i}" aria-label="Thêm kỹ năng">＋</button>
       </div>
     </div>
   `).join('');
@@ -1935,7 +2619,7 @@ function renderEdu(){
 
   box.innerHTML = (STATE.educations||[]).map((e,i)=>`
     <div class="edu-item hoverable">
-      <button class="ctl" data-action="rm-edu" data-idx="${i}" title="Xóa">✕</button>
+      <button class="ctl" data-action="rm-edu" data-idx="${i}" title="Xóa" aria-label="Xóa học vấn">✕</button>
       <div class="edu-degree" contenteditable="true" data-field="edu.${i}.degree" data-single="1" data-ph="Bằng cấp…" spellcheck="false">${esc(e.degree)}</div>
       <div class="edu-school" contenteditable="true" data-field="edu.${i}.school" data-single="1" data-ph="Trường / Tổ chức…" spellcheck="false">${esc(e.school)}</div>
       <div class="edu-meta">
@@ -1952,7 +2636,7 @@ function renderCert(){
 
   box.innerHTML = (STATE.certifications||[]).map((c,i)=>`
     <div class="cert-item hoverable">
-      <button class="ctl" data-action="rm-cert" data-idx="${i}" title="Xóa">✕</button>
+      <button class="ctl" data-action="rm-cert" data-idx="${i}" title="Xóa" aria-label="Xóa chứng chỉ">✕</button>
       <div class="cert-name" contenteditable="true" data-field="cert.${i}.name" data-single="1" data-ph="Tên chứng chỉ…" spellcheck="false">${esc(c.name)}</div>
       <div class="cert-meta">
         <span contenteditable="true" data-field="cert.${i}.issuer" data-single="1" data-ph="Đơn vị cấp" spellcheck="false">${esc(c.issuer)}</span>
@@ -1969,7 +2653,7 @@ function renderLang(){
 
   box.innerHTML = (STATE.languages||[]).map((l,i)=>`
     <div class="lang-item hoverable">
-      <button class="ctl" data-action="rm-lang" data-idx="${i}" title="Xóa">✕</button>
+      <button class="ctl" data-action="rm-lang" data-idx="${i}" title="Xóa" aria-label="Xóa ngôn ngữ">✕</button>
       <div class="lang-row">
         <b contenteditable="true" data-field="lang.${i}.name" data-single="1" data-ph="Ngôn ngữ" spellcheck="false">${esc(l.name)}</b>
         <span class="dim"> — </span>
@@ -1985,7 +2669,7 @@ function renderTimeline(){
 
   box.innerHTML = (STATE.experiences||[]).map((x,i)=>`
     <article class="timeline-item hoverable">
-      <button class="ctl" data-action="rm-exp" data-idx="${i}" title="Xóa công việc">✕</button>
+      <button class="ctl" data-action="rm-exp" data-idx="${i}" title="Xóa công việc" aria-label="Xóa kinh nghiệm làm việc">✕</button>
 
       <div class="job-head">
         <h3 class="job-role" contenteditable="true" data-field="exp.${i}.role" data-single="1" data-ph="Chức danh…" spellcheck="false">${esc(x.role)}</h3>
@@ -2008,7 +2692,7 @@ function renderTimeline(){
         ${(x.bullets||[]).map((b,j)=>`
           <li class="hoverable">
             <span contenteditable="true" data-field="exp.${i}.bullets.${j}" data-bullet="1" data-single="1" data-ph="Mô tả thành tựu / trách nhiệm…" spellcheck="false">${esc(b)}</span>
-            <button class="ctl" style="top:0" data-action="rm-bullet" data-idx="${i}" data-sub="${j}" title="Xóa dòng">✕</button>
+            <button class="ctl" style="top:0" data-action="rm-bullet" data-idx="${i}" data-sub="${j}" title="Xóa dòng" aria-label="Xóa mô tả công việc">✕</button>
           </li>
         `).join('')}
       </ul>
@@ -2024,7 +2708,7 @@ function renderProjects(){
 
   box.innerHTML = (STATE.projects||[]).map((p,i)=>`
     <article class="project hoverable">
-      <button class="ctl" data-action="rm-proj" data-idx="${i}" title="Xóa dự án">✕</button>
+      <button class="ctl" data-action="rm-proj" data-idx="${i}" title="Xóa dự án" aria-label="Xóa dự án">✕</button>
 
       <div class="project-head">
         <h3 class="project-name" contenteditable="true" data-field="proj.${i}.title" data-single="1" data-ph="Tên dự án…" spellcheck="false">${esc(p.title)}</h3>
@@ -2052,7 +2736,7 @@ function renderUserList(){
       : esc(u.monogram || initials(u.full_name));
 
     return `
-      <button class="user-item ${u.user_id===CURRENT_UID?'active':''}" data-uid="${u.user_id}">
+      <button class="user-item ${u.user_id===CURRENT_UID?'active':''}" data-uid="${u.user_id}" aria-pressed="${u.user_id===CURRENT_UID}" aria-label="Chọn hồ sơ ${esc(u.full_name)}">
         <span class="u-mono">${thumb}</span>
         <span class="u-info">
           <span class="u-name">${esc(u.full_name)}</span>
@@ -2109,26 +2793,49 @@ function setLayout(patch){
   markDirty('layout');
 }
 
+function fitPreview(){
+  const stage = $('#stage');
+  const page = $('#cvPage');
+  const tools = $('.stage-tools');
+  const zoomButton = $('#btnPreviewZoom');
+  const style = getComputedStyle(stage);
+  const sidePadding = (parseFloat(style.paddingLeft)||0) + (parseFloat(style.paddingRight)||0);
+  const available = Math.max(1, stage.clientWidth - sidePadding);
+  const pageWidth = 210 * 96 / 25.4;
+  const zoom = previewZoomed ? 1 : Math.min(1, Math.max(.35, available / pageWidth));
+
+  page.style.zoom = zoom.toFixed(3);
+  tools.style.width = `${Math.min(pageWidth,available)}px`;
+  zoomButton.setAttribute('aria-pressed',String(previewZoomed));
+  zoomButton.setAttribute('aria-label',previewZoomed ? 'Vừa bản CV theo chiều rộng màn hình' : 'Xem bản CV ở kích thước thật');
+  zoomButton.title = previewZoomed ? 'Vừa bản CV theo chiều rộng màn hình' : 'Xem bản CV ở kích thước thật';
+
+  if(STATE) requestAnimationFrame(checkFit);
+}
+
+window.addEventListener('resize', fitPreview, { passive:true });
+
 function checkFit(){
   if(!STATE) return;
 
   const page = $('#cvPage');
+  const zoom = Math.max(.35, parseFloat(page.style.zoom)||1);
   let hiddenH = 0;
 
   page.querySelectorAll('.sec-hidden').forEach(el=>{
-    hiddenH += el.offsetHeight + (parseFloat(getComputedStyle(el).marginBottom)||0);
+    hiddenH += el.getBoundingClientRect().height + (parseFloat(getComputedStyle(el).marginBottom)||0)*zoom;
   });
 
-  const h = page.getBoundingClientRect().height - hiddenH;
+  const h = (page.getBoundingClientRect().height - hiddenH) / zoom;
   const a4 = 297 * 96 / 25.4;
   const b = $('#fitBadge');
 
   if(h <= a4 + 2){
-    b.textContent = '✓ Vừa khổ A4 (210 × 297mm)';
+    b.textContent = 'Vừa khổ A4 · 210 × 297 mm';
     b.className = 'fit';
   }else{
     const mm = Math.round((h - a4) * 25.4 / 96);
-    b.textContent = `⚠ Tràn ~${mm}mm — giảm cỡ chữ / khoảng cách / ẩn bớt mục`;
+    b.textContent = `Tràn khoảng ${mm} mm · giảm cỡ chữ hoặc khoảng cách`;
     b.className = 'fit over';
   }
 }
@@ -2231,13 +2938,14 @@ async function selectUser(uid){
 
   $('#emptyState').style.display = 'none';
   $('#stageCol').style.display = 'flex';
+  fitPreview();
 
   ['#btnSaveAll','#btnPrint','#btnDelete','#sFs','#sGap','#sPad','#btnLayoutReset','#cAccent','#cSide','#cbFx']
     .forEach(s=>$(s).disabled=false);
 
   $('#metaPortfolio').disabled = false;
 
-  setStatus('✓ Đã tải hồ sơ của '+(STATE.profile.full_name||'người dùng'),'saved');
+  setStatus('Đã tải hồ sơ của '+(STATE.profile.full_name||'người dùng'),'saved');
 }
 
 function clearSelection(){
@@ -2515,10 +3223,10 @@ function markDirty(section){
           .eq('user_id',CURRENT_UID);
       }
 
-      setStatus('✓ Đã lưu lúc '+new Date().toLocaleTimeString('vi-VN'),'saved');
+      setStatus('Đã lưu lúc '+new Date().toLocaleTimeString('vi-VN'),'saved');
       loadUsers().catch(()=>{});
     }catch(err){
-      setStatus('✗ Lỗi khi lưu','error');
+      setStatus('Lỗi khi lưu','error');
       toast('Lưu thất bại: '+(err.message||err), true);
     }finally{
       pendingSaves.delete(section);
@@ -2540,12 +3248,12 @@ async function saveAll(){
 
     markOwnWrite();
 
-    setStatus('✓ Đã lưu toàn bộ','saved');
+    setStatus('Đã lưu toàn bộ','saved');
     toast('Đã lưu toàn bộ dữ liệu hồ sơ.');
 
     loadUsers().catch(()=>{});
   }catch(err){
-    setStatus('✗ Lỗi khi lưu','error');
+    setStatus('Lỗi khi lưu','error');
     toast('Lưu thất bại: '+(err.message||err), true);
   }
 }
@@ -2615,10 +3323,10 @@ function onRemoteChange(payload){
 
     if(affectedUid && affectedUid === CURRENT_UID){
       if(!hasPendingSaves() && !document.activeElement?.isContentEditable){
-        toast('🔄 Hồ sơ vừa được cập nhật từ nơi khác — đang tải lại…');
+        toast('Hồ sơ vừa được cập nhật từ nơi khác — đang tải lại…');
         selectUser(CURRENT_UID);
       }else{
-        toast('⚡ Có thay đổi mới từ phiên khác. Bấm ⟳ để tải lại khi chỉnh xong.');
+        toast('Có thay đổi mới từ phiên khác. Chọn Làm mới để tải lại khi chỉnh xong.');
       }
     }
   }, 700);
@@ -2635,7 +3343,7 @@ function onRemoteStorage(payload){
       await loadAvatar(CURRENT_UID);
       renderMono();
       renderUserList();
-      toast('🔄 Ảnh đại diện được cập nhật từ Storage.');
+      toast('Ảnh đại diện được cập nhật từ Storage.');
     })();
   }
 }
@@ -3045,9 +3753,52 @@ $('#avatarInput').addEventListener('change', e=>{
 });
 
 $('#tplList').addEventListener('click', e=>{
-  const c = e.target.closest('[data-tpl]');
-  if(c) setTemplate(c.dataset.tpl);
+  const button = e.target.closest('[data-tpl-action]');
+  const card = button?.closest('[data-tpl]');
+  if(!button || !card) return;
+  if(button.dataset.tplAction==='preview') openTemplatePreview(card.dataset.tpl);
+  if(button.dataset.tplAction==='apply') setTemplate(card.dataset.tpl);
 });
+
+$('#tplSearch').addEventListener('input',()=>{
+  $('#tplList').scrollTop = 0;
+  renderTplList();
+});
+$('#tplFilter').addEventListener('change',()=>{
+  $('#tplList').scrollTop = 0;
+  renderTplList();
+});
+$('#tplPreviewClose').addEventListener('click',closeTemplatePreview);
+$('#tplPreviewX').addEventListener('click',closeTemplatePreview);
+$('#templatePreviewModal').addEventListener('click',e=>{
+  if(e.target.id==='templatePreviewModal') closeTemplatePreview();
+});
+$('#templatePreviewModal').addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    e.preventDefault();
+    closeTemplatePreview();
+    return;
+  }
+  if(e.key==='Tab'){
+    const items = [...$('#templatePreviewModal').querySelectorAll('button:not(:disabled)')];
+    const first = items[0];
+    const last = items[items.length-1];
+    if(e.shiftKey && document.activeElement===first){
+      e.preventDefault();
+      last?.focus();
+    }else if(!e.shiftKey && document.activeElement===last){
+      e.preventDefault();
+      first?.focus();
+    }
+  }
+});
+$('#tplPreviewApply').addEventListener('click',()=>{
+  const key = previewTemplateKey;
+  if(!key || key===curTpl()) return;
+  setTemplate(key);
+  closeTemplatePreview();
+});
+window.addEventListener('resize',fitTemplatePreview,{passive:true});
 
 /* ============================================================
 SLIDERS · MÀU · FX TOGGLE
@@ -3077,7 +3828,7 @@ $('#cSide').addEventListener('input', e=> setLayout({ sideBg: e.target.value }))
 
 $('#cbFx').addEventListener('change', e=>{
   setLayout({ fx: e.target.checked });
-  toast(e.target.checked ? '✨ Đã bật hiệu ứng nổi bật.' : 'Đã tắt hiệu ứng — CV phẳng tối giản.');
+  toast(e.target.checked ? 'Đã bật hiệu ứng nổi bật.' : 'Đã tắt hiệu ứng — CV phẳng tối giản.');
 });
 
 $('#btnLayoutReset').addEventListener('click', ()=>{
@@ -3118,6 +3869,10 @@ $('#btnRefresh').addEventListener('click', async ()=>{
 
 $('#btnSaveAll').addEventListener('click', saveAll);
 $('#btnPrint').addEventListener('click', ()=>window.print());
+$('#btnPreviewZoom').addEventListener('click', ()=>{
+  previewZoomed = !previewZoomed;
+  fitPreview();
+});
 
 $('#metaPortfolio').addEventListener('input', e=>{
   if(!STATE) return;
@@ -3183,10 +3938,36 @@ $('#btnNewUser').addEventListener('click', ()=>{
   setTimeout(()=>$('#mName').focus(),50);
 });
 
-$('#mCancel').addEventListener('click', ()=>$('#modal').classList.remove('open'));
+function closeNewUserModal(){
+  $('#modal').classList.remove('open');
+  $('#btnNewUser').focus();
+}
+
+$('#mCancel').addEventListener('click', closeNewUserModal);
 
 $('#modal').addEventListener('click', e=>{
-  if(e.target.id==='modal') $('#modal').classList.remove('open');
+  if(e.target.id==='modal') closeNewUserModal();
+});
+
+$('#modal').addEventListener('keydown', e=>{
+  if(e.key==='Escape'){
+    e.preventDefault();
+    closeNewUserModal();
+    return;
+  }
+
+  if(e.key!=='Tab') return;
+  const items = [...$('#modal').querySelectorAll('input:not(:disabled),button:not(:disabled)')];
+  const first = items[0];
+  const last = items[items.length-1];
+
+  if(e.shiftKey && document.activeElement===first){
+    e.preventDefault();
+    last?.focus();
+  }else if(!e.shiftKey && document.activeElement===last){
+    e.preventDefault();
+    first?.focus();
+  }
 });
 
 $('#mOk').addEventListener('click', async ()=>{
@@ -3255,7 +4036,7 @@ $('#mOk').addEventListener('click', async ()=>{
     await loadUsers();
     await selectUser(uid);
 
-    $('#modal').classList.remove('open');
+    closeNewUserModal();
 
     toast('Đã tạo hồ sơ cho '+name+'. Bắt đầu chỉnh sửa ngay trên CV!');
   }catch(err){

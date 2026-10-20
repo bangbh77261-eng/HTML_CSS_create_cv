@@ -1,5 +1,6 @@
--- Update the Vietnamese Bui Hai Bang CV to simple English.
--- Run in Supabase SQL Editor. The script checks that one matching profile exists.
+-- Update the existing English Bui Hai Bang CV with the translated, complete data.
+-- This script targets the separate English profile. It does not overwrite the Vietnamese profile.
+-- Run restore_vietnamese_cv.sql to restore the Vietnamese profile from the CSV.
 -- It keeps contact and certification data unchanged because the CSV has no values for them.
 
 BEGIN;
@@ -21,24 +22,48 @@ BEGIN
   SELECT count(*)
     INTO profile_count
     FROM public.cv_profiles
-   WHERE lower(trim(full_name)) IN (lower('BÙI HẢI BẰNG'), lower('BUI HAI BANG'))
-     AND (role_tag ILIKE '%Chuyên viên IT%' OR role_tag = 'IT Support | Business Analysis | ERP / SAP');
+   WHERE lower(trim(full_name)) = lower('BUI HAI BANG')
+     AND role_tag IN (
+       'Business Analyst | Process Improvement | ERP/SAP | Production Data Reporting',
+       'IT Specialist | Business Analysis & Process Improvement | ERP/SAP'
+     );
 
   IF profile_count <> 1 THEN
-    RAISE EXCEPTION 'Expected one Vietnamese Bui Hai Bang profile, found %.', profile_count;
+    RAISE EXCEPTION 'Expected one separate English Bui Hai Bang profile, found %.', profile_count;
   END IF;
 
   SELECT user_id
     INTO target_uid
     FROM public.cv_profiles
-   WHERE lower(trim(full_name)) IN (lower('BÙI HẢI BẰNG'), lower('BUI HAI BANG'))
-     AND (role_tag ILIKE '%Chuyên viên IT%' OR role_tag = 'IT Support | Business Analysis | ERP / SAP');
+   WHERE lower(trim(full_name)) = lower('BUI HAI BANG')
+     AND role_tag IN (
+       'Business Analyst | Process Improvement | ERP/SAP | Production Data Reporting',
+       'IT Specialist | Business Analysis & Process Improvement | ERP/SAP'
+     );
 
   UPDATE public.cv_profiles
      SET full_name = 'BUI HAI BANG',
-         role_tag = 'IT Support | Business Analysis | ERP / SAP',
+         role_tag = 'IT Specialist | Business Analysis & Process Improvement | ERP/SAP',
          summary = 'I have almost two years of experience, including an internship, in manufacturing. I study business needs, improve work steps, prepare reports, and support SAP and other business systems. I work with teams and software providers to move manual Excel tasks to clear system steps. I have an IT degree and can work with technical teams and learn new systems quickly. I am looking for jobs in business analysis, project support, ERP support, data reports, or process improvement.',
-         monogram = 'HB'
+         monogram = 'HB',
+         layout = jsonb_set(
+           COALESCE(layout, '{}'::jsonb),
+           '{sections}',
+           COALESCE(layout->'sections', '{}'::jsonb) || jsonb_build_object(
+             'titles',
+             COALESCE(layout #> '{sections,titles}', '{}'::jsonb) || jsonb_build_object(
+               'contact', 'Contact',
+               'skills', 'Skills',
+               'educations', 'Education',
+               'certifications', 'Certificates',
+               'languages', 'Languages',
+               'summary', 'About Me',
+               'experiences', 'Work Experience',
+               'projects', 'Projects'
+             )
+           ),
+           true
+         )
    WHERE user_id = target_uid;
 
   -- Regina Miracle experience
@@ -226,6 +251,7 @@ BEGIN
       ('Process Improvement', ARRAY['Move Excel work to software', 'Automate tasks with RPA and VBA']::text[]),
       ('Data and Reports', ARRAY['Check production and order data', 'Prepare reports', 'SQL Server, MySQL, PostgreSQL']::text[]),
       ('ERP and Business Systems', ARRAY['SAP data support', 'Help system users', 'Work with software vendors']::text[]),
+      ('Teamwork and Communication', ARRAY['Receive needs from different teams', 'Connect business users with technical teams']::text[]),
       ('Tools and Programming', ARRAY['Microsoft Office', 'C#/.NET', 'Flutter', 'JavaScript', 'REST API', 'Git', 'Postman', 'Figma']::text[])
     ) AS skill_data(group_name, skill_names)
   LOOP
